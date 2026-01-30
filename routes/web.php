@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ReservasiController;
 use App\Http\Controllers\PemesananController;
 use App\Http\Controllers\CustomerController;
@@ -11,8 +12,17 @@ use App\Http\Controllers\RiwayatController;
 use App\Http\Controllers\OutletController;
 
 //AUTH
-Route::get('/login', fn () => view('auth.login'))->name('login');
-Route::get('/register', fn () => view('auth.register'))->name('register');
+Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+Route::post('/login', [AuthController::class, 'login']);
+
+Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
+Route::post('/register', [AuthController::class, 'register']);
+
+
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+//DASHBOARD
+Route::get('/dashboard', function () {return view('dashboard.index');})->name('dashboard')->middleware('auth');
 
 //RESERVASI
 Route::prefix('reservasi')->name('reservasi.')->group(function () {
@@ -39,7 +49,7 @@ Route::get('/riwayat', [RiwayatController::class, 'index'])->name('riwayat.index
 Route::prefix('manajemen')->name('manajemen.')->group(function () {
     Route::get('/', [PromoController::class, 'index'])->name('indexpromo');
     Route::get('/create', [PromoController::class, 'create'])->name('createpromo');
-});
+    Route::get('/show', function () { return view('manajemen.showpromo'); })->name('show');});
 
 //PENGATURAN OUTLET
 Route::prefix('outlet')->group(function () {

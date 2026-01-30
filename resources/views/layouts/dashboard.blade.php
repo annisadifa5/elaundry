@@ -20,7 +20,8 @@
 
         .wrapper {
             display: flex;
-            height: 100vh;
+            min-height: 100vh;
+            align-items: stretch;
         }
 
         /* SIDEBAR */
@@ -230,6 +231,15 @@
             margin-bottom: 6px;
         }
 
+        .form-group {
+            margin-bottom: 14px;
+        }
+
+        .card h4 {
+            margin-top: 24px;
+            margin-bottom: 14px;
+        }
+
         .outlet-address {
             font-size: 13.5px;
             opacity: .95;
@@ -350,7 +360,11 @@
             </div>
         </div>
 
-        <button class="logout">⎋ Log Out</button>
+        <form method="POST" action="{{ route('logout') }}">
+            @csrf
+            <button class="logout">Log Out</button>
+        </form>
+
     </div>
 
     <div class="content">

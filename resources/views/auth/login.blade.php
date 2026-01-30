@@ -3,40 +3,35 @@
 @section('title', 'Login')
 
 @section('content')
-    <div class="left">
+    {{-- LEFT --}}
+    <div class="auth-left">
         <h1>Laundio</h1>
         <p>
-            Selamat Datang di Laundio! <br>
-            Buat akun baru atau Sign in
+            Selamat datang di sistem manajemen laundry.<br>
         </p>
+    </div>
+
+    {{-- RIGHT --}}
+    <div class="auth-right">
+        <div class="auth-title">Login</div>
 
         <form method="POST" action="{{ route('login') }}">
             @csrf
 
             <div class="form-group">
-                <div class="input-wrapper">
-                    <input type="text" name="username" placeholder="Username" required>
-                </div>
+                <input type="email" name="email" placeholder="Email" required>
             </div>
 
             <div class="form-group">
-                <div class="input-wrapper">
-                    <input type="password" name="password" placeholder="Password" required>
-                </div>
+                <input type="password" name="password" placeholder="Password" required>
             </div>
 
-            <!-- 👇 WRAPPER -->
-            <div class="btn-center">
-                <button type="submit" class="btn">Sign in</button>
-            </div>
+            <button type="submit" class="btn">Sign In</button>
         </form>
 
-
-        <div class="footer-text">
+        <div class="auth-footer">
             Belum punya akun?
             <a href="{{ route('register') }}">Sign up</a>
         </div>
     </div>
-
-    <div class="right"></div>
 @endsection

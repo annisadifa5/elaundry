@@ -54,8 +54,12 @@
 
             <div class="promo-footer">
                 <span>Berlaku : 26 Januari - 30 Januari</span>
-                <button class="promo-btn">Lihat Detail</button>
+
+                <a href="{{ route('manajemen.show') }}" class="promo-btn">
+                    Lihat Detail
+                </a>
             </div>
+
         </div>
 
     </div>

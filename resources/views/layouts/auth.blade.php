@@ -2,13 +2,11 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>@yield('title', 'Login')</title>
+    <title>@yield('title', 'Auth')</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    {{-- Font --}}
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 
-    {{-- Style --}}
     <style>
         * {
             box-sizing: border-box;
@@ -17,100 +15,127 @@
 
         body {
             margin: 0;
-            height: 100vh;
-        }
-
-        .container {
+            background: #f7fbfc;
             display: flex;
-            height: 100vh;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
         }
 
-        .left {
-            width: 50%;
-            padding: 80px;
-            background: #F6FCFF;
+        /* CARD LOGIN */
+        .auth-card {
+            display: flex;
+            width: 900px;
+            max-width: 95%;
+            background: #ffffff;
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,.12);
+        }
+
+        /* LEFT PANEL */
+        .auth-left {
+            width: 40%;
+            background: linear-gradient(135deg, #1fc8b8, #16a39a);
+            color: white;
+            padding: 40px;
             display: flex;
             flex-direction: column;
             justify-content: center;
         }
 
-        .right {
-            width: 50%;
-            background: #11A99D;
-        }
-
-        h1 {
-            text-align: center;
+        .auth-left h1 {
+            font-size: 32px;
             margin-bottom: 10px;
-            color: #0A254A;
         }
 
-        p {
-            text-align: center;
-            color: #0A254A;
-            margin-bottom: 30px;
+        .auth-left p {
+            font-size: 14.5px;
+            opacity: .95;
+            line-height: 1.6;
+        }
+
+        /* RIGHT PANEL */
+        .auth-right {
+            width: 60%;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .auth-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #0b2c4d;
+            margin-bottom: 25px;
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 14px;
         }
 
-        .input-wrapper {
-            display: flex;
-            align-items: center;
-            border: 1.5px solid #0A254A;
-            border-radius: 30px;
-            padding: 12px 18px;
-        }
-
-        .input-wrapper input {
-            border: none;
-            outline: none;
+        input {
             width: 100%;
+            padding: 12px 14px;
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
             font-size: 14px;
-            margin-left: 10px;
-            background: transparent;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #16a39a;
         }
 
         .btn {
-            background: #FD8300;
-            color: #F6FCFF;
+            background: #ff8a00;
+            color: white;
             border: none;
-            padding: 12px;
-            width: 140px;
-            border-radius: 30px;
-            font-weight: 600;
+            padding: 12px 18px;
+            border-radius: 20px;
             cursor: pointer;
-            align-items: center;
-        }
-
-        .btn-center {
-            display: flex;
-            justify-content: center; 
+            font-weight: 600;
+            width: 100%;
             margin-top: 10px;
         }
 
         .btn:hover {
-            background: #FD8300;
+            background: #e67800;
         }
 
-        .footer-text {
-            margin-top: 25px;
+        .auth-footer {
+            margin-top: 20px;
             font-size: 14px;
             text-align: center;
         }
 
-        .footer-text a {
-            color: #0A254A;
+        .auth-footer a {
+            color: #16a39a;
             font-weight: 600;
             text-decoration: none;
-            text-align: center;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .auth-card {
+                flex-direction: column;
+            }
+
+            .auth-left,
+            .auth-right {
+                width: 100%;
+            }
+
+            .auth-left {
+                text-align: center;
+            }
         }
     </style>
 </head>
 <body>
 
-<div class="container">
+<div class="auth-card">
     @yield('content')
 </div>
 

@@ -5,34 +5,60 @@
 @section('content')
 <div class="page-title">Form Tambah Outlet</div>
 
-<div class="card" style="max-width: 760px; border: 2px solid #3b82f6;">
+<div class="card" style="max-width: 100%; border: 2px solid #3b82f6;">
     <h4>DATA OUTLET</h4>
 
     <form method="POST" action="{{ route('outlet.store') }}">
         @csrf
 
-        <input type="text" name="nama" placeholder="Nama">
-
-        <h4 style="margin-top:20px;">ALAMAT</h4>
-        <input type="text" name="jalan" placeholder="Jalan">
-        <input type="text" name="desa" placeholder="Desa / Kelurahan">
-        <input type="text" name="kecamatan" placeholder="Kecamatan">
-        <input type="text" name="kota" placeholder="Kota / Kabupaten">
-        <input type="text" name="provinsi" placeholder="Provinsi">
-        <input type="text" name="kode_pos" placeholder="Kode Pos">
-
-        <h4 style="margin-top:20px;">KONTAK</h4>
-        <input type="text" name="telepon" placeholder="Telepon">
-        <input type="email" name="email" placeholder="Email">
-        <input type="text" name="website" placeholder="Website">
-
-        <h4 style="margin-top:20px;">PENANGGUNG JAWAB</h4>
-        <input type="text" name="pj_nama" placeholder="Nama">
-        <input type="text" name="pj_kontak" placeholder="Kontak">
-
-        <div style="display:flex; justify-content:flex-end; margin-top:20px;">
-            <button class="btn">+ Tambah</button>
+        <div class="form-group">
+            <input type="text" name="nama" placeholder="Nama">
         </div>
+
+        <h4>ALAMAT</h4>
+
+        <div class="form-group">
+            <input type="text" name="jalan" placeholder="Jalan">
+        </div>
+        <div class="form-group">
+            <input type="text" name="desa" placeholder="Desa / Kelurahan">
+        </div>
+        <div class="form-group">
+            <input type="text" name="kecamatan" placeholder="Kecamatan">
+        </div>
+        <div class="form-group">
+            <input type="text" name="kota" placeholder="Kota / Kabupaten">
+        </div>
+        <div class="form-group">
+            <input type="text" name="provinsi" placeholder="Provinsi">
+        </div>
+        <div class="form-group">
+            <input type="text" name="kode_pos" placeholder="Kode Pos">
+        </div>
+
+        <h4>KONTAK</h4>
+
+        <div class="form-group">
+            <input type="text" name="telepon" placeholder="Telepon">
+        </div>
+        <div class="form-group">
+            <input type="email" name="email" placeholder="Email">
+        </div>
+        <div class="form-group">
+        <input type="text" name="website" placeholder="Website">
+        </div>
+
+        <div class="btn-row" style="gap:10px;">
+            <a href="{{ route('outlet.index') }}" class="btn btn-secondary btn-sm">
+                Kembali
+            </a>
+
+            <button type="submit" class="btn">
+                Tambah
+            </button>
+        </div>
+
     </form>
+
 </div>
 @endsection

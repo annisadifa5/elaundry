@@ -5,7 +5,7 @@
 @section('content')
 <div class="page-title">Detail Outlet</div>
 
-<div class="card" style="max-width: 760px;">
+<div class="card" style="max-width: 100%;">
     <h4>DATA OUTLET</h4>
 
     <p><strong>Nama:</strong> {{ $outlet->nama }}</p>

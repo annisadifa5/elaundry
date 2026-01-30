@@ -2,24 +2,20 @@
 
 namespace App\Models;
 
+use Illuminate\Foundation\Auth\Users as Authenticatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 
-class User extends Model
+class Users extends Authenticatable
 {
     use HasFactory;
 
     protected $table = 'users';
-    protected $primaryKey = 'id_users';
-    protected $fillable = ['nama', 'email', 'password', 'role', 'no_telp'];
-
-    public function customer()
-    {
-        return $this->hasOne(Customer::class, 'id_users', 'id_users');
-    }
-
-    public function karyawan()
-    {
-        return $this->hasOne(Karyawan::class, 'id_user', 'id_users');
-    }
+    protected $primaryKey = 'id'; // 🔥 WAJIB
+    protected $fillable = [
+        'nama',
+        'email',
+        'password',
+        'role',
+        'no_telp',
+    ];
 }

@@ -3,56 +3,53 @@
 @section('title', 'Register')
 
 @section('content')
-    <div class="left">
+    {{-- LEFT --}}
+    <div class="auth-left">
         <h1>Laundio</h1>
         <p>
-            Buat akun baru di Laundio <br>
-            Isi data di bawah untuk melanjutkan:
+            Buat akun baru di Laundio.<br>
         </p>
+    </div>
 
-        <form method="POST" action="{{ route('register') }}">
+    {{-- RIGHT --}}
+    <div class="auth-right">
+        <div class="auth-title">Register</div>
+
+        @if ($errors->any())
+            <div style="color:red; margin-bottom:10px;">
+                {{ $errors->first() }}
+            </div>
+        @endif
+
+        <form method="POST" action="/register">
             @csrf
 
             <div class="form-group">
-                <div class="input-wrapper">
-                    <input type="text" name="name" placeholder="Nama Lengkap" required>
-                </div>
+                <input type="text" name="nama" placeholder="Nama Lengkap" required>
             </div>
 
             <div class="form-group">
-                <div class="input-wrapper">
-                    <input type="text" name="username" placeholder="Username" required>
-                </div>
+                <input type="email" name="email" placeholder="Email" required>
             </div>
 
             <div class="form-group">
-                <div class="input-wrapper">
-                    <input type="email" name="email" placeholder="Email" required>
-                </div>
+                <input type="text" name="no_telp" placeholder="No Telepon" required>
             </div>
 
             <div class="form-group">
-                <div class="input-wrapper">
-                    <input type="password" name="password" placeholder="Password" required>
-                </div>
+                <input type="password" name="password" placeholder="Password" required>
             </div>
 
             <div class="form-group">
-                <div class="input-wrapper">
-                    <input type="password" name="password_confirmation" placeholder="Konfirmasi Password" required>
-                </div>
+                <input type="password" name="password_confirmation" placeholder="Konfirmasi Password" required>
             </div>
 
-            <div class="btn-center">
-                <button type="submit" class="btn">Sign up</button>
-            </div>
+            <button type="submit" class="btn">Sign Up</button>
         </form>
 
-        <div class="footer-text">
+        <div class="auth-footer">
             Sudah punya akun?
             <a href="{{ route('login') }}">Sign in</a>
         </div>
     </div>
-
-    <div class="right"></div>
 @endsection

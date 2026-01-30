@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Auth;
+use App\Models\Customer;
 use App\Models\Pemesanan;
 use App\Models\HistoryPemesanan;
 use App\Models\TrackPemesanan;
@@ -62,6 +64,13 @@ class PemesananController extends Controller
                 'error' => $e->getMessage()
             ], 500);
         }
+    }
+
+    public function create()
+    {
+        $customer = Customer::where('id_users', Auth::id())->first();
+
+        return view('pemesanan.create', compact('customer'));
     }
 
     public function show($id)

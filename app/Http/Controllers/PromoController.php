@@ -15,5 +15,11 @@ class PromoController extends Controller
     {
         return view('manajemen.createpromo');
     }
+
+    public function show($id)
+    {
+        return view('manajemen.showpromo');
+    }
+
 }
     
