@@ -258,7 +258,7 @@
 
         <div class="menu">
             <!-- BERANDA -->
-            <a href="#">
+            <a href="{{ route('dashboard.index') }}">
                 <div class="menu-left">
                     <svg fill="none" viewBox="0 0 24 24">
                         <path d="M3 9.75L12 4.5l9 5.25v9.75H3z"/>
@@ -346,7 +346,7 @@
 
             <div class="submenu" id="pengaturan-menu">
                 <a href="{{ route('outlet.index') }}">Outlet</a>
-                <a href="#">Karyawan</a>
+                <a href="{{ route('karyawan.index') }}">Karyawan</a>
             </div>
         </div>
 
