@@ -13,17 +13,17 @@ return new class extends Migration
     {
         Schema::create('track_pemesanan', function (Blueprint $table) {
         $table->id('id_track');
-        $table->string('nama_lengkap');
-        $table->string('pembayaran');
-        $table->string('proses');
-        $table->string('jenis_layanan');
-        $table->date('tanggal_mulai');
+        $table->string('nama_lengkap')->nullable();
+        $table->string('pembayaran')->nullable();
+        $table->string('proses')->nullable();
+        $table->string('jenis_layanan')->nullable();
+        $table->date('tanggal_mulai')->nullable();
         $table->date('tanggal_selesai')->nullable();
         $table->unsignedBigInteger('id_pemesanan');
         $table->foreign('id_pemesanan')
-      ->references('id_pemesanan') // sesuai PK di pemesanan
-      ->on('pemesanan')
-      ->onDelete('cascade');
+            ->references('id_pemesanan') // sesuai PK di pemesanan
+            ->on('pemesanan')
+            ->onDelete('cascade');
         $table->timestamps();
         });
     }

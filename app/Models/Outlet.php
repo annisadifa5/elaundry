@@ -9,8 +9,9 @@ class Outlet extends Model
 {
     use HasFactory;
 
+    protected $table = 'outlet';
     protected $primaryKey = 'id_outlet';
-    protected $fillable = ['nama_outlet','jalan','kelurahan','kecamatan','kota_koab','provinsi','kode_pos','email','no_telp','website'];
+    protected $fillable = ['nama_outlet','jalan','kelurahan','kecamatan','kota_kab','provinsi','kode_pos','email','no_telp','website'];
 
     public function karyawan()
     {

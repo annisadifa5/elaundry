@@ -13,17 +13,17 @@ return new class extends Migration
     {
         Schema::create('history_pemesanan', function (Blueprint $table) {
         $table->id('id_history');
-        $table->string('nama_lengkap');
+        // $table->string('nama_lengkap');
         $table->string('pembayaran');
         $table->string('tipe_pemesanan');
         $table->string('status');
         $table->string('jenis_layanan');
-        $table->string('periode');
+        $table->string('periode')->nullable();
         $table->unsignedBigInteger('id_pemesanan');
-$table->foreign('id_pemesanan')
-      ->references('id_pemesanan') // sesuai PK di pemesanan
-      ->on('pemesanan')
-      ->onDelete('cascade');
+        $table->foreign('id_pemesanan')
+            ->references('id_pemesanan') // sesuai PK di pemesanan
+            ->on('pemesanan')
+            ->onDelete('cascade');
         $table->timestamps();
         });
     }

@@ -9,8 +9,9 @@ class HistoryPemesanan extends Model
 {
     use HasFactory;
 
+    protected $table = 'history_pemesanan';
     protected $primaryKey = 'id_history';
-    protected $fillable = ['id_pemesanan','nama_lengkap','pembayaran','tipe_pemesanan','status','jenis_layanan','periode'];
+    protected $fillable = ['id_pemesanan','pembayaran','tipe_pemesanan','status','jenis_layanan','periode'];
 
     public function pemesanan()
     {

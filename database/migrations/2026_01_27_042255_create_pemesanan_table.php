@@ -16,21 +16,23 @@ return new class extends Migration
         $table->unsignedBigInteger('id_track')->nullable();
             $table->unsignedBigInteger('id_cust');
             $table->foreign('id_cust')
-          ->references('id_cust')
-          ->on('customer')
-          ->onDelete('cascade');
+                ->references('id_cust')
+                ->on('customer')
+                ->onDelete('cascade');
+
         $table->unsignedBigInteger('id_outlet');
         $table->foreign('id_outlet')
-      ->references('id_outlet') // sesuai nama kolom di outlet
-      ->on('outlet')
-      ->onDelete('cascade');
+            ->references('id_outlet') // sesuai nama kolom di outlet
+            ->on('outlet')
+            ->onDelete('cascade');
+    
         $table->string('jenis_layanan');
         $table->string('tipe_pemesanan');
-        $table->string('no_order');
-        $table->date('tanggal_masuk');
+        $table->string('no_order')->nullable();
+        $table->date('tanggal_masuk')->nullable();
         $table->date('tanggal_selesai')->nullable();
-        $table->float('berat_cucian');
-        $table->integer('jumlah_item');
+        $table->float('berat_cucian')->nullable();
+        $table->integer('jumlah_item')->nullable();
         $table->text('catatan_khusus')->nullable();
         $table->timestamps();
         });

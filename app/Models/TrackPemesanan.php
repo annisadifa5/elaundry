@@ -9,6 +9,7 @@ class TrackPemesanan extends Model
 {
     use HasFactory;
 
+    protected $table = 'track_pemesanan';
     protected $primaryKey = 'id_track';
     protected $fillable = ['id_pemesanan','nama_lengkap','pembayaran','proses','jenis_layanan','tanggal_mulai','tanggal_selesai'];
 
