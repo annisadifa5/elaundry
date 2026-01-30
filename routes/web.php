@@ -10,6 +10,8 @@ use App\Http\Controllers\LacakController;
 use App\Http\Controllers\PembayaranController;
 use App\Http\Controllers\RiwayatController;
 use App\Http\Controllers\OutletController;
+use App\Http\Controllers\KaryawanController;
+
 
 //AUTH
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
@@ -23,6 +25,9 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 //DASHBOARD
 Route::get('/dashboard', function () {return view('dashboard.index');})->name('dashboard')->middleware('auth');
+
+// DASHBOARD
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
 
 //RESERVASI
 Route::prefix('reservasi')->name('reservasi.')->group(function () {
@@ -60,3 +65,18 @@ Route::prefix('outlet')->group(function () {
 
     Route::get('/{id}', [OutletController::class, 'show'])->name('outlet.show');
 });
+
+// PENGATURAN KARYAWAN
+Route::prefix('pengaturan/karyawan')->name('karyawan.')->group(function () {
+
+    Route::get('/', [KaryawanController::class, 'index'])->name('index');
+
+    Route::get('/create', [KaryawanController::class, 'create'])->name('create');
+    Route::post('/', [KaryawanController::class, 'store'])->name('store');
+
+    Route::get('/{id}', [KaryawanController::class, 'show'])->name('show');
+    Route::put('/{id}', [KaryawanController::class, 'update'])->name('update');
+    Route::delete('/{id}', [KaryawanController::class, 'destroy'])->name('destroy');
+});
+
+

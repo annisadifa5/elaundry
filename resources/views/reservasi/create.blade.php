@@ -8,41 +8,44 @@
     <div class="card">
         <h4>Form Reservasi Laundio</h4>
 
-        <form>
-            <div class="row">
-                <input type="text" placeholder="Nama">
-                <input type="text" placeholder="No. Telp">
-            </div>
+        <form action="{{ route('reservasi.store') }}" method="POST">
+    @csrf
 
-            <div class="row">
-                <input type="text" placeholder="Alamat">
-            </div>
+    <div class="row">
+        <input type="text" name="nama" placeholder="Nama" required>
+        <input type="text" name="no_telp" placeholder="No. Telp" required>
+    </div>
 
-            <div class="row">
-                <select>
-                    <option>Pilih Jenis Layanan</option>
-                    <option>Cuci</option>
-                    <option>Setrika</option>
-                    <option>Cuci Kering</option>
-                    <option>Cuci Setrika</option>
-                    <option>Express</option>
-                    <option>Sprei</option>
-                    <option>Bed Cover</option>
-                    <option>Boneka</option>
-                    <option>Bantal</option>
-                </select>
+    <div class="row">
+        <input type="text" name="alamat_jemput" placeholder="Alamat Jemput" required>
+    </div>
 
-                <input type="date">
-                <input type="time">
-            </div>
+    <div class="row">
+        <select name="jenis_layanan" required>
+            <option value="">Pilih Jenis Layanan</option>
+            <option value="cuci">Cuci</option>
+            <option value="setrika">Setrika</option>
+            <option value="cuci_kering">Cuci Kering</option>
+            <option value="cuci_setrika">Cuci Setrika</option>
+            <option value="express">Express</option>
+            <option value="sprei">Sprei</option>
+            <option value="bed_cover">Bed Cover</option>
+            <option value="boneka">Boneka</option>
+            <option value="bantal">Bantal</option>
+        </select>
 
-            <div class="row">
-                <textarea placeholder="Catatan Khusus"></textarea>
-            </div>
+        <input type="date" name="tanggal_pickup" required>
+        <input type="time" name="jam_pickup" required>
+    </div>
 
-            <div class="row btn-row">
-                <button class="btn">Pickup Now</button>
-            </div>
-        </form>
+    <div class="row">
+        <textarea name="catatan" placeholder="Catatan Khusus"></textarea>
+    </div>
+
+    <div class="row btn-row">
+        <button type="submit" class="btn">Pickup Now</button>
+    </div>
+</form>
+
     </div>
 @endsection
