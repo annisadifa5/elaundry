@@ -15,15 +15,17 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        User::create([
-            'nama' => 'Test User',
-            'email' => 'test@example.com',
-            'password' => bcrypt('password'),
-            'role' => 'customer',
-            'no_telp' => '08123456789',
-        ]);
+        // User::updateOrCreate(
+        //     ['email' => 'admin@laundry.test'],
+        //     [
+        //         'nama'     => 'Admin Laundry',
+        //         'password' => Hash::make('password'),
+        //         'role'     => 'admin',
+        //         'no_telp'  => '081234567890',
+        //     ]);
 
         $this->call([
+            AdminSeeder::class,
             CustomerSeeder::class,
             OutletSeeder::class,
         ]);

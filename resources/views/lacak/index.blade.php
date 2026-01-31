@@ -3,22 +3,31 @@
 @section('title', 'Lacak Pemesanan')
 
 @section('content')
-    <h3 class="page-title">Lacak Pemesanan Laundry</h3>
+    <h3 class="page-title">Update Status Pemesanan Laundry</h3>
 
     <div class="card">
         {{-- FILTER --}}
-        <form method="GET" action="#">
+        <form method="GET" action="{{ route('lacak.index') }}">
             <div class="row">
                 <select name="status">
                     <option value="">Proses</option>
-                    <option value="diterima">Diterima</option>
-                    <option value="dicuci">Dicuci</option>
-                    <option value="dikeringkan">Dikeringkan</option>
-                    <option value="disetrika">Disetrika</option>
+                    <option value="diterima" {{ request('status') == 'diterima' ? 'selected' : '' }}>
+                        Diterima
+                    </option>
+                    <option value="dicuci" {{ request('status') == 'dicuci' ? 'selected' : '' }}>
+                        Dicuci
+                    </option>
+                    <option value="dikeringkan" {{ request('status') == 'dikeringkan' ? 'selected' : '' }}>
+                        Dikeringkan
+                    </option>
+                    <option value="disetrika" {{ request('status') == 'disetrika' ? 'selected' : '' }}>
+                        Disetrika
+                    </option>
                 </select>
 
-                <input type="date" name="from">
-                <input type="date" name="to">
+                <input type="date" name="from" value="{{ request('from') }}">
+                <input type="date" name="to" value="{{ request('to') }}">
+
 
                 <button class="btn" type="submit">Terapkan</button>
             </div>
@@ -38,30 +47,34 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {{-- Dummy data --}}
-                    <tr>
-                        <td>1</td>
-                        <td>Aghist Aprilia Eka Putri</td>
-                        <td>Cash</td>
-                        <td>Pick Up</td>
-                        <td>Cuci Setrika</td>
-                        <td class="aksi">
-                            <button title="Detail">👁</button>
-                            <button title="Edit">✎</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>2</td>
-                        <td>Alvino Bintang Adiatma</td>
-                        <td>Qris</td>
-                        <td>Regular</td>
-                        <td>Express</td>
-                        <td class="aksi">
-                            <button title="Detail">👁</button>
-                            <button title="Edit">✎</button>
-                        </td>
-                    </tr>
+                @forelse($pemesanans as $p)
+                <tr>
+                    <td>{{ $p->no_order }}</td>
+                    <td>{{ $p->customer->nama ?? '-' }}</td>
+                    <td>-</td>
+                    <td>{{ $p->tipe_pemesanan }}</td>
+                    <td>{{ $p->jenis_layanan }}</td>
+                    <td class="aksi">
+                    <form method="POST" action="{{ route('lacak.next', $p->id_pemesanan) }}">
+                        @csrf
+
+                        @if ($p->status_proses === 'disetrika')
+                            <button title="Selesaikan Pesanan" class="selesai">Selesai</button>
+                        @else
+                            <button title="Next Proses">Next</button>
+                        @endif
+
+                    </form>
+                </td>
+
+                </tr>
+                @empty
+                <tr>
+                    <td colspan="6">Tidak ada data</td>
+                </tr>
+                @endforelse
                 </tbody>
+
             </table>
         </div>
     </div>
@@ -103,6 +116,11 @@
 
         .aksi button:hover {
             opacity: 0.7;
+        }
+
+        .aksi button.selesai {
+            color: #16a39a;
+            font-weight: bold;
         }
     </style>
 @endsection

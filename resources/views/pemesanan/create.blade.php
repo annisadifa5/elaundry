@@ -13,17 +13,31 @@
 
         {{-- CUSTOMER --}}
         <div class="row">
-            <input type="hidden" name="id_cust" value="1"> {{-- sementara --}}
-            <input type="hidden" name="id_outlet" value="1"> {{-- sementara --}}
+            <input type="hidden" name="id_cust" value="{{ $customer->id_cust }}">
+            <input type="hidden" name="id_outlet" value="1">
 
-            <input type="text" placeholder="Nama" readonly>
-            <input type="text" placeholder="No. Telp" readonly>
+            <input type="text"
+                name="nama"
+                value="{{ $customer->nama }}"
+                placeholder="Nama"
+                readonly>
+
+            <input type="text"
+                name="no_telp"
+                value="{{ $customer->no_telp }}"
+                placeholder="No. Telp"
+                readonly>
         </div>
 
         {{-- ALAMAT --}}
         <div class="row">
-            <input type="text" placeholder="Alamat" readonly>
+            <input type="text"
+                name="alamat"
+                value="{{ $customer->alamat }}"
+                placeholder="Alamat"
+                readonly>
         </div>
+
 
         {{-- LAYANAN --}}
         <div class="row">

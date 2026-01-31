@@ -268,7 +268,7 @@
 
         <div class="menu">
             <!-- BERANDA -->
-            <a href="{{ route('dashboard.index') }}">
+            <a href="{{ route('dashboard') }}">
                 <div class="menu-left">
                     <svg fill="none" viewBox="0 0 24 24">
                         <path d="M3 9.75L12 4.5l9 5.25v9.75H3z"/>
@@ -307,7 +307,7 @@
                         <circle cx="12" cy="12" r="9"/>
                         <path d="M12 7v5l3 2"/>
                     </svg>
-                    Lacak Pemesanan
+                    Update Status
                 </div>
             </a>
 

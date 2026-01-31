@@ -23,6 +23,8 @@ class PemesananController extends Controller
             'berat_cucian'   => 'required|numeric|min:0.1',
             'jumlah_item'    => 'required|integer|min:1',
             'catatan_khusus' => 'nullable|string',
+            'status_proses' =>  'diterima',
+
         ]);
 
         DB::beginTransaction();
@@ -68,9 +70,15 @@ class PemesananController extends Controller
 
     public function create()
     {
-        $customer = Customer::where('id_users', Auth::id())->first();
-
-        return view('pemesanan.create', compact('customer'));
+       $customer = Customer::firstOrCreate(
+        ['id_user' => Auth::id()],
+        [
+            'nama' => Auth::user()->name,
+            'no_telp' => '-',
+            'alamat' => '-',
+        ]
+    );
+    return view('pemesanan.create', compact('customer'));
     }
 
     public function show($id)

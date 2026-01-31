@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ReservasiController;
 use App\Http\Controllers\PemesananController;
 use App\Http\Controllers\CustomerController;
@@ -23,11 +24,8 @@ Route::post('/register', [AuthController::class, 'register']);
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-//DASHBOARD
-Route::get('/dashboard', function () {return view('dashboard.index');})->name('dashboard')->middleware('auth');
-
 // DASHBOARD
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
 //RESERVASI
 Route::prefix('reservasi')->name('reservasi.')->group(function () {
@@ -37,7 +35,7 @@ Route::prefix('reservasi')->name('reservasi.')->group(function () {
 
 //PEMESANAN
 Route::prefix('pemesanan')->name('pemesanan.')->group(function () {
-    Route::get('/', fn () => view('pemesanan.create'))->name('create');
+   Route::get('/', [PemesananController::class, 'create'])->name('create');
     Route::post('/', [PemesananController::class, 'store'])->name('store');
     Route::get('/{id}', [PemesananController::class, 'show'])->name('show');
     Route::patch('/{id}/status', [PemesananController::class, 'updateStatus'])
@@ -45,17 +43,34 @@ Route::prefix('pemesanan')->name('pemesanan.')->group(function () {
 });
 
 //LACAK PEMESANAN 
-Route::get('/lacak', [LacakController::class, 'index'])->name('lacak.index');
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::get('/admin/lacak', [LacakController::class, 'index'])->name('lacak.index');
+    Route::post('/admin/lacak/{id}/next', [LacakController::class, 'next'])->name('lacak.next');
+});
+
 
 //RIWAYAT PEMESANAN
-Route::get('/riwayat', [RiwayatController::class, 'index'])->name('riwayat.index');
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::get('/admin/riwayat', [RiwayatController::class, 'index'])->name('riwayat.index');
+    Route::get('/admin/riwayat/{id}/download', [RiwayatController::class, 'download'])->name('riwayat.download');
+    Route::delete('/admin/riwayat/{id}', [RiwayatController::class, 'destroy'])->name('riwayat.destroy');
+});
 
 //MANAJEMEN PROMO
 Route::prefix('manajemen')->name('manajemen.')->group(function () {
-    Route::get('/', [PromoController::class, 'index'])->name('indexpromo');
-    Route::get('/create', [PromoController::class, 'create'])->name('createpromo');
-    Route::get('/show', function () { return view('manajemen.showpromo'); })->name('show');});
 
+    Route::get('/promo', [PromoController::class, 'index'])
+        ->name('indexpromo');
+
+    Route::get('/promo/create', [PromoController::class, 'create'])
+        ->name('createpromo');
+
+    Route::post('/promo', [PromoController::class, 'store'])
+        ->name('storepromo');
+
+    Route::get('/promo/{id}', [PromoController::class, 'show'])
+        ->name('showpromo');
+});
 //PENGATURAN OUTLET
 Route::prefix('outlet')->group(function () {
     Route::get('/', [OutletController::class, 'index'])->name('outlet.index');

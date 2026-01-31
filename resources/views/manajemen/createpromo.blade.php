@@ -8,36 +8,38 @@
 <div class="card" style="max-width: 100%;">
     <h4>Input Promo</h4>
 
-    <form>
-        <!-- Baris 1 -->
-        <div class="row">
-            <input type="text" placeholder="Deskripsi Promo">
-            <input type="text" placeholder="Skema">
-        </div>
+    <form method="POST" action="{{ route('manajemen.storepromo') }}">
+    @csrf
 
-        <!-- Baris 2 -->
-        <div class="row">
-            <select>
-                <option value="">Status</option>
-                <option value="aktif">Aktif</option>
-                <option value="nonaktif">Non Aktif</option>
-            </select>
+    <div class="row">
+        <input type="text" name="nama_promo" placeholder="Nama Promo" required>
+        <input type="text" name="skema" placeholder="Skema Promo" required>
+    </div>
 
-            <input type="date">
-            <input type="date">
-        </div>
+    <div class="row">
+        <select name="status" required>
+            <option value="">Status</option>
+            <option value="aktif">Aktif</option>
+            <option value="nonaktif">Non Aktif</option>
+        </select>
 
-        <!-- BUTTON -->
-        <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
-            <a href="{{ route('manajemen.indexpromo') }}" class="btn btn-secondary btn-sm">
-                Kembali
-            </a>
+        <input type="date" name="tanggal_mulai" required>
+        <input type="date" name="tanggal_selesai" required>
+    </div>
 
-            <button type="submit" class="btn">
-                Simpan Promo
-            </button>
-        </div>
+    <div class="row">
+        <textarea name="deskripsi_promo"
+                placeholder="Deskripsi Promo"
+                required></textarea>
+    </div>
 
+    <div class="btn-row">
+        <a href="{{ route('manajemen.indexpromo') }}"
+        class="btn btn-secondary btn-sm">Kembali</a>
+
+        <button class="btn">Simpan Promo</button>
+    </div>
     </form>
+
 </div>
 @endsection

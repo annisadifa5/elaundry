@@ -7,21 +7,22 @@
 
     <div class="card">
         {{-- FILTER --}}
-        <form method="GET" action="#">
+        <form method="GET" action="{{ route('riwayat.index') }}">
             <div class="row">
                 <select name="layanan">
                     <option value="">Jenis Layanan</option>
-                    <option value="diterima">Cuci</option>
-                    <option value="dicuci">Strika</option>
-                    <option value="dikeringkan">Cuci Strika</option>
-                    <option value="disetrika">Sprei</option>
+                    <option value="cuci" {{ request('layanan')=='cuci'?'selected':'' }}>Cuci</option>
+                    <option value="setrika" {{ request('layanan')=='setrika'?'selected':'' }}>Setrika</option>
+                    <option value="cuci_setrika" {{ request('layanan')=='cuci_setrika'?'selected':'' }}>Cuci Setrika</option>
+                    <option value="sprei" {{ request('layanan')=='sprei'?'selected':'' }}>Sprei</option>
                 </select>
 
-                <input type="date" name="from">
+                <input type="date" name="from" value="{{ request('from') }}">
 
                 <button class="btn" type="submit">Terapkan</button>
             </div>
         </form>
+
 
         {{-- TABLE --}}
         <div style="margin-top: 20px; overflow-x: auto;">
@@ -37,30 +38,53 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {{-- Dummy data --}}
-                    <tr>
-                        <td>1</td>
-                        <td>Aghist Aprilia Eka Putri</td>
-                        <td>Cash</td>
-                        <td>Pick Up</td>
-                        <td>Cuci Setrika</td>
-                        <td class="aksi">
-                            <button title="Detail">👁</button>
-                            <button title="Edit">✎</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>2</td>
-                        <td>Alvino Bintang Adiatma</td>
-                        <td>Qris</td>
-                        <td>Regular</td>
-                        <td>Express</td>
-                        <td class="aksi">
-                            <button title="Detail">👁</button>
-                            <button title="Edit">✎</button>
-                        </td>
-                    </tr>
+                @forelse($pemesanans as $p)
+                <tr>
+                    <td>{{ $p->no_order }}</td>
+                    <td>{{ $p->customer->nama ?? '-' }}</td>
+                    <td>-</td>
+                    <td>{{ ucfirst($p->tipe_pemesanan) }}</td>
+                    <td>
+                        <span class="badge selesai">Selesai</span>
+                    </td>
+                    <td class="aksi">
+                    {{-- UNDUH --}}
+                    <a href="{{ route('riwayat.download', $p->id_pemesanan) }}"
+                    title="Unduh"
+                    class="icon-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3"/>
+                        </svg>
+                    </a>
+
+                    {{-- HAPUS --}}
+                    <form method="POST"
+                        action="{{ route('riwayat.destroy', $p->id_pemesanan) }}"
+                        class="inline"
+                        onsubmit="return confirm('Hapus riwayat ini?')">
+                        @csrf
+                        @method('DELETE')
+                        <button title="Hapus" class="icon-btn danger">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M9 7h6m2 0H7m3-3h4a1 1 0 011 1v1H9V5a1 1 0 011-1z"/>
+                            </svg>
+                        </button>
+                    </form>
+                </td>
+
+
+                </tr>
+                @empty
+                <tr>
+                    <td colspan="6">Tidak ada riwayat pemesanan</td>
+                </tr>
+                @endforelse
                 </tbody>
+
             </table>
         </div>
     </div>
@@ -102,6 +126,42 @@
 
         .aksi button:hover {
             opacity: 0.7;
+        }
+
+        .badge.selesai {
+            background: #16a39a;
+            color: #fff;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+
+        .aksi {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            padding: 4px;
+            color: #475569; /* slate-600 */
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .icon-btn:hover {
+            color: #16a39a;
+        }
+
+        .icon-btn.danger:hover {
+            color: #dc2626; /* red-600 */
+        }
+
+        .inline {
+            display: inline;
         }
     </style>
 @endsection

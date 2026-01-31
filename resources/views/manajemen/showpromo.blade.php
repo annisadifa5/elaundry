@@ -15,45 +15,33 @@
     </div>
 
     {{-- JUDUL --}}
-    <h4>Laundry 10 KG Gratis 1 KG</h4>
-    <p style="color:#64748b; margin-bottom:20px;">
-        Berlaku: 26 Januari - 30 Januari
+    <h4>{{ $promo->nama_promo }}</h4>
+
+    <p style="color:#64748b;">
+        Berlaku :
+        {{ $promo->tanggal_mulai }} -
+        {{ $promo->tanggal_selesai }}
     </p>
 
-    {{-- DESKRIPSI --}}
-    <div style="margin-bottom:24px;">
+    <div>
         <h4>Deskripsi Promo</h4>
-        <p>
-            Cuci minimal 10 kg akan mendapatkan bonus 1 kg gratis.
-            Promo berlaku kelipatan dan dihitung otomatis oleh sistem.
-        </p>
+        <p>{{ $promo->deskripsi_promo }}</p>
     </div>
 
-    {{-- CARA REDEEM --}}
-    <div style="margin-bottom:24px;">
-        <h4>Cara Redeem</h4>
-        <ol>
-            <li>Lakukan transaksi laundry minimal 10 kg</li>
-            <li>Sistem otomatis menghitung bonus</li>
-            <li>Bonus langsung masuk ke nota</li>
-        </ol>
+    <div>
+        <h4>Skema Promo</h4>
+        <p>{{ $promo->skema }}</p>
     </div>
 
-    {{-- SYARAT --}}
-    <div style="margin-bottom:24px;">
-        <h4>Syarat & Ketentuan</h4>
-        <ul>
-            <li>Promo tidak dapat digabung</li>
-            <li>Berlaku untuk semua outlet</li>
-            <li>Promo aktif selama periode berlaku</li>
-        </ul>
+    <div class="btn-row">
+        <a href="{{ route('manajemen.indexpromo') }}"
+        class="btn btn-secondary btn-sm">Kembali</a>
+
+        @if($promo->status === 'aktif')
+            <button class="btn">Nonaktifkan</button>
+        @endif
     </div>
 
-    {{-- AKSI --}}
-    <div class="btn-row" style="gap:10px;">
-        <a href="#" class="btn btn-secondary btn-sm">Edit Promo</a>
-        <button class="btn">Nonaktifkan</button>
-    </div>
 
 </div>
 @endsection
