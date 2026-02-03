@@ -28,6 +28,7 @@ class DatabaseSeeder extends Seeder
             AdminSeeder::class,
             CustomerSeeder::class,
             OutletSeeder::class,
+            KasirSeeder::class,
         ]);
     }
 

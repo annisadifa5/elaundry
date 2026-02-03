@@ -425,8 +425,9 @@
                 <a href="{{ route('outlet.index') }}">Outlet</a>
                 <a href="{{ route('karyawan.index') }}">Karyawan</a>
             </div>
+            @endif
         </div>
-        @endif
+        
 
         <form method="POST" action="{{ route('logout') }}"
             style="margin-top:auto; display:flex; justify-content:center;">
