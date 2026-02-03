@@ -258,80 +258,81 @@
             align-items: flex-end;
         }
 
-        /* ===== GLOBAL TABLE STYLE (RIWAYAT, USER, DLL) ===== */
-        .table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 14px;
-        }
+    /* ===== GLOBAL TABLE STYLE (RIWAYAT, USER, DLL) ===== */
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+    }
 
-        .table thead {
-            background: #16a39a;
-            color: white;
-        }
+    .table thead {
+        background: #16a39a;
+        color: white;
+    }
 
-        .table th,
-        .table td {
-            padding: 10px 12px;
-            text-align: left;
-        }
+    .table th,
+    .table td {
+        padding: 10px 12px;
+        text-align: left;
+    }
 
-        .table tbody tr {
-            border-bottom: 1px solid #e2e8f0;
-        }
+    .table tbody tr {
+        border-bottom: 1px solid #e2e8f0;
+    }
 
-        .table tbody tr:hover {
-            background: #f1f9f9;
-        }
+    .table tbody tr:hover {
+        background: #f1f9f9;
+    }
 
-        .aksi {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+    .aksi {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
 
-        .icon-btn {
-            background: none;
-            border: none;
-            padding: 4px;
-            color: #475569;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-        }
+    .icon-btn {
+        background: none;
+        border: none;
+        padding: 4px;
+        color: #475569;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+    }
 
-        .icon-btn:hover {
-            color: #16a39a;
-        }
+    .icon-btn:hover {
+        color: #16a39a;
+    }
 
-        .icon-btn.danger:hover {
-            color: #dc2626;
-        }
+    .icon-btn.danger:hover {
+        color: #dc2626;
+    }
 
-        .badge {
-            padding: 4px 10px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 600;
-        }
+    .badge {
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 600;
+    }
 
-        .badge.selesai {
-            background: #16a39a;
-            color: #fff;
-        }
+    .badge.selesai {
+        background: #16a39a;
+        color: #fff;
+    }
     </style>
     @stack('styles')
 </head>
 <body>
 
 <div class="wrapper">
-     <!-- SIDEBAR -->
     <div class="sidebar">
-        <h3>Super Admin</h3>
+        <h3>{{ auth()->user()->role === 'admin' ? 'Super Admin' : 'Kasir' }}</h3>
 
         <div class="menu">
             <!-- BERANDA -->
-            <a href="{{ route('admin.dashboard') }}">
+            <a href="{{ auth()->user()->role === 'admin'
+                ? route('admin.dashboard')
+                : route('kasir.dashboard') }}">
                 <div class="menu-left">
                     <svg fill="none" viewBox="0 0 24 24">
                         <path d="M3 9.75L12 4.5l9 5.25v9.75H3z"/>
@@ -424,8 +425,8 @@
                 <a href="{{ route('outlet.index') }}">Outlet</a>
                 <a href="{{ route('karyawan.index') }}">Karyawan</a>
             </div>
-            @endif
         </div>
+        @endif
 
         <form method="POST" action="{{ route('logout') }}"
             style="margin-top:auto; display:flex; justify-content:center;">
@@ -435,9 +436,10 @@
                 Log Out
             </button>
         </form>
+
+
     </div>
 
-    <!-- CONTENT -->
     <div class="content">
         @yield('content')
     </div>

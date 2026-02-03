@@ -10,6 +10,19 @@
 
 <h3 class="page-title">Daftar Outlet</h3>
 
+{{-- NOTIFIKASI --}}
+@if(session('success'))
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
+@endif
+
+@if(session('error'))
+    <div class="alert alert-danger">
+        {{ session('error') }}
+    </div>
+@endif
+
 <div class="card">
 
     {{-- HEADER DALAM CARD --}}
@@ -23,56 +36,32 @@
 
     {{-- LIST OUTLET --}}
     <div class="outlet-list">
-
+    @foreach($outlets as $outlet)
         <div class="outlet-card">
             <div class="outlet-info">
                 <div class="outlet-title">
-                    📍 Laundry C24 Puri Anjasmoro
+                    📍 {{ $outlet->nama_outlet }}
                 </div>
 
                 <div class="outlet-address">
-                    Jl. Anjasmoro Raya No.1a, Karangayu, Kec. Semarang Barat,<br>
-                    Kota Semarang, Jawa Tengah, Indonesia 50149
+                    {{ $outlet->jalan }}, {{ $outlet->kecamatan }},
+                    {{ $outlet->kota_kab }}, {{ $outlet->provinsi }}
                 </div>
 
                 <div class="outlet-phone">
-                    +628 xxx xxx
+                    {{ $outlet->no_telp }}
                 </div>
             </div>
+
             <div class="outlet-action">
-                <a href="{{ route('outlet.show', 1) }}" class="promo-btn">
+                <a href="{{ route('outlet.show', $outlet->id_outlet) }}" class="promo-btn">
                     Lihat Detail
                 </a>
             </div>
         </div>
-
-        {{-- DUPLIKASI CARD --}}
-        <div class="outlet-list">
-
-            <div class="outlet-card">
-                <div class="outlet-info">
-                    <div class="outlet-title">
-                        📍 Laundry C24 Puri Anjasmoro
-                    </div>
-
-                    <div class="outlet-address">
-                        Jl. Anjasmoro Raya No.1a, Karangayu, Kec. Semarang Barat,<br>
-                        Kota Semarang, Jawa Tengah, Indonesia 50149
-                    </div>
-
-                    <div class="outlet-phone">
-                        +628 xxx xxx
-                    </div>
-                </div>
-
-                <div class="outlet-action">
-                    <a href="{{ route('outlet.show', 1) }}" class="promo-btn">
-                        Lihat Detail
-                    </a>
-                </div>
-        </div>
-
+    @endforeach
     </div>
+
 </div>
 
 @endsection

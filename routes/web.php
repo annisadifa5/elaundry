@@ -12,6 +12,9 @@ use App\Http\Controllers\PembayaranController;
 use App\Http\Controllers\RiwayatController;
 use App\Http\Controllers\OutletController;
 use App\Http\Controllers\KaryawanController;
+use App\Http\Controllers\ManajemenUserController;
+use App\Http\Controllers\KasirController;
+
 
 
 //AUTH
@@ -21,11 +24,51 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
 Route::post('/register', [AuthController::class, 'register']);
 
-
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // DASHBOARD
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+// Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+Route::middleware(['auth', 'role:admin'])
+    ->prefix('admin')
+    ->name('admin.')
+    ->group(function () {
+
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+        // Lacak
+        Route::get('/lacak', [LacakController::class, 'index'])->name('lacak.index');
+        Route::post('/lacak/{id}/next', [LacakController::class, 'next'])->name('lacak.next');
+
+        // Riwayat
+        Route::get('/riwayat', [RiwayatController::class, 'index'])->name('riwayat.index');
+        Route::get('/riwayat/{id}/download', [RiwayatController::class, 'download'])->name('riwayat.download');
+        Route::delete('/riwayat/{id}', [RiwayatController::class, 'destroy'])->name('riwayat.destroy');
+    });
+
+Route::middleware(['auth', 'role:kasir'])
+    ->prefix('kasir')
+    ->name('kasir.')
+    ->group(function () {
+
+        Route::get('/dashboard', [KasirController::class, 'index'])
+            ->name('dashboard');
+
+        Route::get('/riwayat', [RiwayatController::class, 'index'])
+            ->name('riwayat.index');
+
+        Route::get('/lacak', [LacakController::class, 'index'])
+            ->name('lacak.index');
+    });
+
+
+
+
+Route::get('/admin/dashboard', [DashboardController::class, 'index'])
+    ->name('admin.dashboard');
+
+Route::get('/kasir/dashboard', function () {
+    return view('kasir.dashboard'); // atau controller sendiri
+})->name('kasir.dashboard');
 
 //RESERVASI
 Route::prefix('reservasi')->name('reservasi.')->group(function () {
@@ -71,6 +114,21 @@ Route::prefix('manajemen')->name('manajemen.')->group(function () {
     Route::get('/promo/{id}', [PromoController::class, 'show'])
         ->name('showpromo');
 });
+
+//MANAJEMEN USER 
+Route::middleware(['auth', 'role:admin'])
+    ->prefix('manajemen/user')
+    ->name('manajemen.user.')
+    ->group(function () {
+
+        Route::get('/', [ManajemenUserController::class, 'index'])->name('index');
+        Route::get('/create', [ManajemenUserController::class, 'create'])->name('create');
+        Route::post('/', [ManajemenUserController::class, 'store'])->name('store');
+        Route::get('/{user}/edit', [ManajemenUserController::class, 'edit'])->name('edit');
+        Route::put('/{user}', [ManajemenUserController::class, 'update'])->name('update');
+        Route::delete('/{user}', [ManajemenUserController::class, 'destroy'])->name('destroy');
+    });
+
 //PENGATURAN OUTLET
 Route::prefix('outlet')->group(function () {
     Route::get('/', [OutletController::class, 'index'])->name('outlet.index');
@@ -78,7 +136,11 @@ Route::prefix('outlet')->group(function () {
     Route::get('/create', [OutletController::class, 'create'])->name('outlet.create');
     Route::post('/', [OutletController::class, 'store'])->name('outlet.store');
 
+    Route::get('/{id}/edit', [OutletController::class, 'edit'])->name('outlet.edit');
+    Route::put('/{id}', [OutletController::class, 'update'])->name('outlet.update');
     Route::get('/{id}', [OutletController::class, 'show'])->name('outlet.show');
+    Route::delete('/{id}', [OutletController::class, 'destroy'])->name('outlet.destroy');
+
 });
 
 // PENGATURAN KARYAWAN
