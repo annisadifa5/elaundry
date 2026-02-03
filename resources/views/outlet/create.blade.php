@@ -5,14 +5,24 @@
 @section('content')
 <div class="page-title">Form Tambah Outlet</div>
 
-<div class="card" style="max-width: 100%; border: 2px solid #3b82f6;">
+<div class="card" style="max-width: 100%;">
     <h4>DATA OUTLET</h4>
+
+        @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul style="margin:0;">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
 
     <form method="POST" action="{{ route('outlet.store') }}">
         @csrf
 
         <div class="form-group">
-            <input type="text" name="nama" placeholder="Nama">
+            <input type="text" name="nama_outlet" placeholder="Nama">
         </div>
 
         <h4>ALAMAT</h4>
@@ -21,13 +31,13 @@
             <input type="text" name="jalan" placeholder="Jalan">
         </div>
         <div class="form-group">
-            <input type="text" name="desa" placeholder="Desa / Kelurahan">
+            <input type="text" name="kelurahan" placeholder="Desa / Kelurahan">
         </div>
         <div class="form-group">
             <input type="text" name="kecamatan" placeholder="Kecamatan">
         </div>
         <div class="form-group">
-            <input type="text" name="kota" placeholder="Kota / Kabupaten">
+           <input type="text" name="kota_kab" placeholder="Kota / Kabupaten">
         </div>
         <div class="form-group">
             <input type="text" name="provinsi" placeholder="Provinsi">
@@ -39,13 +49,13 @@
         <h4>KONTAK</h4>
 
         <div class="form-group">
-            <input type="text" name="telepon" placeholder="Telepon">
+            <input type="text" name="no_telp" placeholder="Telepon">
         </div>
         <div class="form-group">
             <input type="email" name="email" placeholder="Email">
         </div>
         <div class="form-group">
-        <input type="text" name="website" placeholder="Website">
+            <input type="text" name="website" placeholder="Website">
         </div>
 
         <div class="btn-row" style="gap:10px;">

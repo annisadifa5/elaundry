@@ -1,6 +1,6 @@
 @extends('layouts.dashboard')
 
-@section('title', 'Lacak Pemesanan')
+@section('title', 'Riwayat Pemesanan')
 
 @section('content')
     <h3 class="page-title">Riwayat Pemesanan Laundry</h3>

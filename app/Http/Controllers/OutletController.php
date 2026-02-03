@@ -2,45 +2,86 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Outlet;
 use Illuminate\Http\Request;
 
 class OutletController extends Controller
 {
     public function index()
     {
-        return view('outlet.index');
+        $outlets = Outlet::all();
+        return view('outlet.index', compact('outlets'));
     }
-    
+
     public function create()
     {
         return view('outlet.create');
     }
 
+    public function store(Request $request)
+    {
+            $validated = $request->validate([
+            'nama_outlet' => 'required',
+            'jalan' => 'required',
+            'kelurahan' => 'required',
+            'kecamatan' => 'required',
+            'kota_kab' => 'required',
+            'provinsi' => 'required',
+            'no_telp' => 'required',
+            'kode_pos' => 'required',
+            'email' => 'required|email',
+            'website' => 'nullable|url',
+            ]);
+
+            try {
+            Outlet::create($validated + $request->only([
+                'kode_pos','email','website'
+            ]));
+
+            return redirect()
+                ->route('outlet.index')
+                ->with('success', 'Outlet berhasil ditambahkan');
+        } catch (\Exception $e) {
+            return back()
+                ->withInput()
+                ->with('error', 'Outlet gagal ditambahkan');
+        }
+    }
+
     public function show($id)
     {
-        // dummy data contoh
-        $outlet = (object)[
-            'nama' => 'Outlet Laundio',
-            'jalan' => 'Jl. Merdeka',
-            'desa' => 'Sukamaju',
-            'kecamatan' => 'Ciputat',
-            'kota' => 'Tangerang Selatan',
-            'provinsi' => 'Banten',
-            'kode_pos' => '15412',
-            'telepon' => '08123456789',
-            'email' => 'outlet@laundio.com',
-            'website' => 'laundio.com',
-            'pj_nama' => 'Andi',
-            'pj_kontak' => '08129876543'
-        ];
-
+        $outlet = Outlet::findOrFail($id);
         return view('outlet.show', compact('outlet'));
     }
 
-    public function store(Request $request)
+    public function edit($id)
     {
-        // simpan data outlet
-        return redirect()->route('outlet.index');
+        $outlet = Outlet::findOrFail($id);
+        return view('outlet.edit', compact('outlet'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $outlet = Outlet::findOrFail($id);
+
+        $outlet->update($request->all());
+
+        return redirect()->route('outlet.show', $id)->with('success', 'Outlet berhasil diupdate');
+    }
+
+    public function destroy($id)
+    {
+        try {
+            $outlet = Outlet::findOrFail($id);
+            $outlet->delete();
+
+            return redirect()
+                ->route('outlet.index')
+                ->with('success', 'Outlet berhasil dihapus');
+        } catch (\Exception $e) {
+            return redirect()
+                ->route('outlet.index')
+                ->with('error', 'Outlet gagal dihapus');
+        }
     }
 }
-
