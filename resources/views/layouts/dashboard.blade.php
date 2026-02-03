@@ -268,7 +268,7 @@
 
         <div class="menu">
             <!-- BERANDA -->
-            <a href="{{ route('dashboard') }}">
+            <a href="{{ route('dashboard.index') }}">
                 <div class="menu-left">
                     <svg fill="none" viewBox="0 0 24 24">
                         <path d="M3 9.75L12 4.5l9 5.25v9.75H3z"/>
@@ -338,7 +338,10 @@
 
             <div class="submenu" id="manajemen-menu">
                 <a href="{{ route('manajemen.indexpromo') }}">Promo</a>
+                <a href="{{ route('manajemen.customer.index') }}">Customer</a>
+                <a href="{{ route('manajemen.harga.index') }}">Harga</a>
             </div>
+
 
             <!-- PENGATURAN -->
             <div class="dropdown-toggle" onclick="toggleMenu('pengaturan-menu')">

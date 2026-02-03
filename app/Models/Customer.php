@@ -11,12 +11,18 @@ class Customer extends Model
 
     protected $table = 'customer';
     protected $primaryKey = 'id_cust';
-    protected $fillable = ['id_user','email','password','nama_lengkap','alamat','no_telp'];
 
-    public function user()
-    {
-        return $this->belongsTo(User::class, 'id_user', 'id_user');
-    }
+    protected $fillable = [
+        'email',
+        'password',
+        'nama_lengkap',
+        'alamat',
+        'lokasi',
+        'no_telp'
+    ];
+
+    // ❌ relasi ke user DIHAPUS
+    // public function user() {}
 
     public function reservasi()
     {

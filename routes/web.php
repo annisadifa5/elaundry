@@ -12,6 +12,7 @@ use App\Http\Controllers\PembayaranController;
 use App\Http\Controllers\RiwayatController;
 use App\Http\Controllers\OutletController;
 use App\Http\Controllers\KaryawanController;
+use App\Http\Controllers\HargaController;
 
 
 //AUTH
@@ -25,17 +26,18 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // DASHBOARD
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
 
 //RESERVASI
 Route::prefix('reservasi')->name('reservasi.')->group(function () {
     Route::get('/', [ReservasiController::class, 'create'])->name('create');
     Route::post('/', [ReservasiController::class, 'store'])->name('store');
+    
 });
 
 //PEMESANAN
 Route::prefix('pemesanan')->name('pemesanan.')->group(function () {
-   Route::get('/', [PemesananController::class, 'create'])->name('create');
+    Route::get('/', fn () => view('pemesanan.create'))->name('create');
     Route::post('/', [PemesananController::class, 'store'])->name('store');
     Route::get('/{id}', [PemesananController::class, 'show'])->name('show');
     Route::patch('/{id}/status', [PemesananController::class, 'updateStatus'])
@@ -43,34 +45,40 @@ Route::prefix('pemesanan')->name('pemesanan.')->group(function () {
 });
 
 //LACAK PEMESANAN 
-Route::middleware(['auth', 'role:admin'])->group(function () {
-    Route::get('/admin/lacak', [LacakController::class, 'index'])->name('lacak.index');
-    Route::post('/admin/lacak/{id}/next', [LacakController::class, 'next'])->name('lacak.next');
-});
-
+Route::get('/lacak', [LacakController::class, 'index'])->name('lacak.index');
 
 //RIWAYAT PEMESANAN
-Route::middleware(['auth', 'role:admin'])->group(function () {
-    Route::get('/admin/riwayat', [RiwayatController::class, 'index'])->name('riwayat.index');
-    Route::get('/admin/riwayat/{id}/download', [RiwayatController::class, 'download'])->name('riwayat.download');
-    Route::delete('/admin/riwayat/{id}', [RiwayatController::class, 'destroy'])->name('riwayat.destroy');
-});
+Route::get('/riwayat', [RiwayatController::class, 'index'])->name('riwayat.index');
 
 //MANAJEMEN PROMO
 Route::prefix('manajemen')->name('manajemen.')->group(function () {
-
-    Route::get('/promo', [PromoController::class, 'index'])
-        ->name('indexpromo');
-
-    Route::get('/promo/create', [PromoController::class, 'create'])
-        ->name('createpromo');
-
-    Route::post('/promo', [PromoController::class, 'store'])
-        ->name('storepromo');
-
-    Route::get('/promo/{id}', [PromoController::class, 'show'])
-        ->name('showpromo');
+    Route::get('/', [PromoController::class, 'index'])->name('indexpromo');
+    Route::get('/create', [PromoController::class, 'create'])->name('createpromo');
 });
+
+// MANAJEMEN CUSTOMER
+Route::prefix('manajemen/customer')->name('manajemen.customer.')->group(function () {
+
+    Route::get('/', [CustomerController::class, 'index'])->name('index');
+    Route::get('/create', [CustomerController::class, 'create'])->name('create');
+    Route::post('/', [CustomerController::class, 'store'])->name('store');
+
+    Route::get('/{id}/edit', [CustomerController::class, 'edit'])->name('edit');
+    Route::put('/{id}', [CustomerController::class, 'update'])->name('update');
+
+    Route::delete('/{id}', [CustomerController::class, 'destroy'])->name('destroy');
+});
+
+Route::prefix('manajemen/harga')->name('manajemen.harga.')->group(function () {
+    Route::get('/', [HargaController::class, 'index'])->name('index');
+    Route::get('/create', [HargaController::class, 'create'])->name('create');
+    Route::post('/', [HargaController::class, 'store'])->name('store');
+
+    Route::get('/{id}/edit', [HargaController::class, 'edit'])->name('edit');
+    Route::put('/{id}', [HargaController::class, 'update'])->name('update');
+    Route::delete('/{id}', [HargaController::class, 'destroy'])->name('destroy');
+});
+
 //PENGATURAN OUTLET
 Route::prefix('outlet')->group(function () {
     Route::get('/', [OutletController::class, 'index'])->name('outlet.index');
@@ -85,13 +93,19 @@ Route::prefix('outlet')->group(function () {
 Route::prefix('pengaturan/karyawan')->name('karyawan.')->group(function () {
 
     Route::get('/', [KaryawanController::class, 'index'])->name('index');
-
     Route::get('/create', [KaryawanController::class, 'create'])->name('create');
     Route::post('/', [KaryawanController::class, 'store'])->name('store');
 
+    // 🔥 EXPORT (WAJIB DI ATAS /{id})
+    Route::get('/export/pdf', [KaryawanController::class, 'exportPdf'])->name('export.pdf');
+    Route::get('/export/csv', [KaryawanController::class, 'exportCsv'])->name('export.csv');
+
     Route::get('/{id}', [KaryawanController::class, 'show'])->name('show');
+    Route::get('/{id}/edit', [KaryawanController::class, 'edit'])->name('edit');
+
     Route::put('/{id}', [KaryawanController::class, 'update'])->name('update');
     Route::delete('/{id}', [KaryawanController::class, 'destroy'])->name('destroy');
 });
+
 
 

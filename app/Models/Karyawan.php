@@ -11,11 +11,26 @@ class Karyawan extends Model
 
     protected $table = 'karyawan';
     protected $primaryKey = 'id_karyawan';
-    protected $fillable = ['id_user','id_outlet','nama_karyawan','alamat','jabatan','jenis_kelamin','tempat_lahir','tanggal_lahir','agama','no_hp','email'];
+    protected $fillable = [
+    'id_user',
+    'id_outlet',
+    'nama_karyawan',
+    'alamat',
+    'jabatan',
+    'jenis_kelamin',
+    'tempat_lahir',
+    'tanggal_lahir',
+    'tanggal_masuk', // ✅ TAMBAH INI
+    'nik',
+    'agama',
+    'status',
+    'no_hp',
+    'email'
+];
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'id_user', 'id_users');
+        return $this->belongsTo(User::class, 'id_user', 'id');
     }
 
     public function outlet()

@@ -1,24 +1,19 @@
 @extends('layouts.dashboard')
 
-@section('title', 'Data Karyawan')
+@section('title', 'Data Customer')
 
 @section('content')
-    <h3 class="page-title">Data Karyawan</h3>
+    <h3 class="page-title">Data Customer</h3>
 
     <div class="card">
 
         {{-- TOP ACTION --}}
         <div class="top-action">
-            <div class="export-btn">
-                <a href="{{ route('karyawan.export.pdf') }}" class="btn pdf">
-                    Unduh PDF
-                </a>
-                <a href="{{ route('karyawan.export.csv') }}" class="btn csv">
-                    Unduh CSV
-                </a>
-            </div>
+            <div></div>
 
-            <a href="{{ route('karyawan.create') }}" class="btn tambah">Tambah Karyawan +</a>
+            <a href="{{ route('manajemen.customer.create') }}" class="btn tambah">
+                Tambah Customer +
+            </a>
         </div>
 
         {{-- TABLE --}}
@@ -27,42 +22,38 @@
                 <thead>
                     <tr>
                         <th>No.</th>
-                        <th>Nama Karyawan</th>
-                        <th>ID Karyawan</th>
-                        <th>JK</th>
-                        <th>Status</th>
+                        <th>Nama</th>
+                        <th>Alamat</th>
+                        <th>No. WhatsApp</th>
+                        <th>Titik Lokasi</th>
                         <th style="text-align:center">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse ($karyawans as $karyawan)
+                    @forelse ($customers as $customer)
                         <tr>
                             <td>{{ $loop->iteration }}</td>
-                            <td>{{ $karyawan->nama_karyawan }}</td>
-                            <td>{{ $karyawan->id_karyawan }}</td>
-                            <td>{{ $karyawan->jenis_kelamin }}</td>
+                            <td>{{ $customer->nama_lengkap }}</td>
+                            <td>{{ $customer->alamat }}</td>
+                            <td>{{ $customer->no_telp }}</td>
                             <td>
-                                @php
-                                    $status = strtolower(trim($karyawan->status));
-                                @endphp
-
-                                @if ($status == 'aktif')
-                                    <span class="badge aktif">Aktif</span>
-                                @elseif ($status == 'tidak_aktif')
-                                    <span class="badge nonaktif">Tidak Aktif</span>
+                                @if ($customer->lokasi)
+                                    <a href="{{ $customer->lokasi }}" target="_blank" class="link-lokasi">
+                                         Lihat
+                                    </a>
                                 @else
-                                    <span class="badge nonaktif">Tidak Diketahui</span>
+                                    -
                                 @endif
                             </td>
                             <td class="aksi">
-                                {{-- DETAIL --}}
-                                <a href="{{ route('karyawan.show', $karyawan->id_karyawan) }}" title="Detail">👁</a>
+                                {{-- EDIT --}}
+                                <a href="{{ route('manajemen.customer.edit', $customer->id_cust) }}" title="Edit">✎</a>
 
                                 {{-- HAPUS --}}
-                                <form action="{{ route('karyawan.destroy', $karyawan->id_karyawan) }}"
-                                    method="POST"
-                                    style="display:inline;"
-                                    onsubmit="return confirm('Yakin ingin menghapus karyawan ini?')">
+                                <form action="{{ route('manajemen.customer.destroy', $customer->id_cust) }}"
+                                      method="POST"
+                                      style="display:inline;"
+                                      onsubmit="return confirm('Yakin ingin menghapus customer ini?')">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" title="Hapus">🗑</button>
@@ -72,7 +63,7 @@
                     @empty
                         <tr>
                             <td colspan="6" style="text-align:center; color:#64748b;">
-                                Belum ada data karyawan
+                                Belum ada data customer
                             </td>
                         </tr>
                     @endforelse
@@ -81,7 +72,7 @@
         </div>
     </div>
 
-    {{-- STYLE KHUSUS DATA KARYAWAN --}}
+    {{-- STYLE (SAMA PERSIS DENGAN KARYAWAN) --}}
     <style>
         .page-title {
             font-weight: 600;
@@ -96,10 +87,6 @@
             gap: 10px;
         }
 
-        .export-btn .btn {
-            margin-right: 6px;
-        }
-
         .btn {
             padding: 8px 14px;
             border-radius: 6px;
@@ -108,7 +95,7 @@
             font-size: 13px;
         }
 
-                /* 🔥 BUTTON TAMBAH KARYAWAN - ORANGE */
+        /* 🔥 BUTTON TAMBAH CUSTOMER - ORANGE */
         .btn.tambah {
             background: #fb923c;
             color: white;
@@ -118,16 +105,6 @@
 
         .btn.tambah:hover {
             background: #f97316; /* orange lebih gelap dikit */
-        }
-
-        .btn.pdf {
-            background: #fb923c;
-            color: white;
-        }
-
-        .btn.csv {
-            background: #fb923c;
-            color: white;
         }
 
         .table {
@@ -159,6 +136,14 @@
             text-align: center;
         }
 
+        /* ✏️ EDIT POLLOSAN */
+        .aksi a {
+            text-decoration: none;
+            color: inherit; /* ikut warna teks default */
+            font-size: 16px;
+            margin: 0 4px;
+        }
+
         .aksi button {
             background: none;
             border: none;
@@ -167,25 +152,20 @@
             margin: 0 4px;
         }
 
+        .aksi a:hover,
         .aksi button:hover {
             opacity: 0.7;
         }
 
-        .badge {
-            padding: 4px 10px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 500;
+                /* 🔗 LINK TITIK LOKASI */
+        .link-lokasi {
+            color: #f97316; /* biru default */
+            text-decoration: underline;
         }
 
-        .badge.aktif {
-            background: #dcfce7;
-            color: #166534;
+        .link-lokasi:hover {
+            color: #f97316;
         }
 
-        .badge.nonaktif {
-            background: #fee2e2;
-            color: #991b1b;
-        }
     </style>
 @endsection

@@ -5,7 +5,7 @@
 @section('content')
 <div class="page-title">Form Tambah Karyawan</div>
 
-<div class="card" style="max-width: 760px; border: 2px solid #3b82f6;">
+<div class="card" style="max-width: 100%; border: 2px solid #3b82f6;">
     <form method="POST" action="{{ route('karyawan.store') }}">
         @csrf
 
@@ -18,6 +18,19 @@
             <option value="">Jenis Kelamin</option>
             <option value="L">Laki-laki</option>
             <option value="P">Perempuan</option>
+        </select>
+
+        <input type="text" name="tempat_lahir" placeholder="Tempat Lahir">
+
+        <select name="agama">
+            <option value="">Agama</option>
+            <option value="Islam">Islam</option>
+            <option value="Kristen">Kristen</option>
+            <option value="Katolik">Katolik</option>
+            <option value="Hindu">Hindu</option>
+            <option value="Buddha">Buddha</option>
+            <option value="Konghucu">Konghucu</option>
+            <option value="Konghucu">Kepercayaan Lain</option>
         </select>
 
         <input
