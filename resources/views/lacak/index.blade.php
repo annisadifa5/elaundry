@@ -5,6 +5,50 @@
 @section('content')
     <h3 class="page-title">Update Status Pemesanan Laundry</h3>
 
+    <div class="tracking-dashboard">
+
+    <div class="track-card diterima">
+        <div class="track-icon">⏳</div>
+        <div>
+            <p>Diterima</p>
+            <h3>{{ $trackingCount['diterima'] }}</h3>
+        </div>
+    </div>
+
+    <div class="track-card dicuci">
+        <div class="track-icon">🧼</div>
+        <div>
+            <p>Dicuci</p>
+            <h3>{{ $trackingCount['dicuci'] }}</h3>
+        </div>
+    </div>
+
+    <div class="track-card dikeringkan">
+        <div class="track-icon">🌬️</div>
+        <div>
+            <p>Dikeringkan</p>
+            <h3>{{ $trackingCount['dikeringkan'] }}</h3>
+        </div>
+    </div>
+
+    <div class="track-card disetrika">
+        <div class="track-icon">👕</div>
+        <div>
+            <p>Disetrika</p>
+            <h3>{{ $trackingCount['disetrika'] }}</h3>
+        </div>
+    </div>
+
+    <div class="track-card selesai">
+        <div class="track-icon">📦</div>
+        <div>
+            <p>Selesai</p>
+            <h3>{{ $trackingCount['selesai'] }}</h3>
+        </div>
+    </div>
+
+</div>
+
     <div class="card">
         {{-- FILTER --}}
         <form method="GET" action="{{ route('lacak.index') }}">
@@ -122,5 +166,66 @@
             color: #16a39a;
             font-weight: bold;
         }
+
+.tracking-dashboard {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr); /* paksa 1 baris 5 card */
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.track-card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 10px 14px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+
+    height: 70px;              /* 🔥 bikin pendek (persegi panjang) */
+    max-width: 180px;          /* jaga biar nggak melebar */
+    
+    display: flex;             /* 🔥 ini penting */
+    align-items: center;       /* vertikal tengah */
+    gap: 12px;
+    transiton: all .25s ease;
+}
+
+.track-card p {
+    margin: 0;
+    font-size: 13px;
+    color: #64748b;
+}
+
+.track-card h3 {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.track-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    background: #f1f9f9;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 22px;
+}
+
+/* warna lembut kayak contoh */
+.track-card.diterima { border-left: 5px solid #FFEE91; }
+.track-card.dicuci { border-left: 5px solid #EA7B7B; }
+.track-card.dikeringkan { border-left: 5px solid #9CCFFF; }
+.track-card.disetrika { border-left: 5px solid #A3D78A; }
+.track-card.selesai { border-left: 5px solid #E6CFA9; }
+
+.track-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.12);
+    cursor: pointer;
+}
+
     </style>
 @endsection

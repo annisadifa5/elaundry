@@ -58,7 +58,7 @@ class PemesananController extends Controller
             ]);
 
             DB::commit();
-            return response()->json($pemesanan, 201);
+            return redirect()->route('pemesanan.nota', $pemesanan->id_pemesanan);
 
         } catch (\Exception $e) {
             DB::rollBack();
@@ -90,6 +90,14 @@ class PemesananController extends Controller
             'historyPemesanan',
             'trackPemesanan'
         ])->findOrFail($id);
+    }
+
+    public function nota($id)
+    {
+        $pemesanan = Pemesanan::with('customer')
+            ->findOrFail($id);
+
+        return view('pemesanan.nota', compact('pemesanan'));
     }
 
     public function updateStatus(Request $request, $id)

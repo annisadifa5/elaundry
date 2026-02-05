@@ -402,13 +402,9 @@
 
             <div class="submenu" id="manajemen-menu">
                 <a href="{{ route('manajemen.indexpromo') }}">Promo</a>
-<<<<<<< HEAD
                 <a href="{{ route('manajemen.customer.index') }}">Customer</a>
                 <a href="{{ route('manajemen.harga.index') }}">Harga</a>
-=======
-                    <a href="{{ route('manajemen.user.index') }}">User</a>
-
->>>>>>> 50cdc8c764a9a22a6bf3d9f1202361bbb5798358
+                <a href="{{ route('manajemen.user.index') }}">User</a>
             </div>
 
 

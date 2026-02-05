@@ -38,7 +38,6 @@
                 readonly>
         </div>
 
-
         {{-- LAYANAN --}}
         <div class="row">
             <select name="jenis_layanan" required>

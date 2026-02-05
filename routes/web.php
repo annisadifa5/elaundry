@@ -81,8 +81,9 @@ Route::prefix('pemesanan')->name('pemesanan.')->group(function () {
     Route::get('/', fn () => view('pemesanan.create'))->name('create');
     Route::post('/', [PemesananController::class, 'store'])->name('store');
     Route::get('/{id}', [PemesananController::class, 'show'])->name('show');
-    Route::patch('/{id}/status', [PemesananController::class, 'updateStatus'])
-        ->name('updateStatus');
+    Route::patch('/{id}/status', [PemesananController::class, 'updateStatus'])->name('updateStatus');
+    Route::get('/pemesanan/{id}/nota', [PemesananController::class, 'nota'])->name('pemesanan.nota');
+
 });
 
 //LACAK PEMESANAN 
@@ -94,7 +95,11 @@ Route::get('/riwayat', [RiwayatController::class, 'index'])->name('riwayat.index
 //MANAJEMEN PROMO
 Route::prefix('manajemen')->name('manajemen.')->group(function () {
     Route::get('/', [PromoController::class, 'index'])->name('indexpromo');
-    Route::get('/create', [PromoController::class, 'create'])->name('createpromo');
+    Route::get('/promo/create', [PromoController::class, 'create'])->name('createpromo');
+    Route::post('/promo', [PromoController::class, 'store'])->name('storepromo');
+    Route::get('/promo/{id}', [PromoController::class, 'show'])->name('showpromo');
+    Route::post('/promo/{id}/nonaktifkan', [PromoController::class, 'nonaktifkan'])->name('promo.nonaktifkan');
+
 });
 
 // MANAJEMEN CUSTOMER
