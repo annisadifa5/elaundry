@@ -319,6 +319,84 @@
             background: #16a39a;
             color: #fff;
         }
+
+        .form-group select,
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 8px 10px;
+            font-size: 14px;
+        }
+
+        .layanan-flex {
+            display: flex;
+            flex-wrap: wrap;   /* 🔥 ini yang bikin ke samping lalu turun */
+            gap: 8px;
+        }
+
+        .layanan-chip {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .layanan-chip select {
+            width: 150px;      /* 🔥 ukuran kecil / compact */
+            padding: 6px;
+            font-size: 13px;
+        }
+
+        .layanan-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .layanan-row select {
+            width: 220px;
+            padding: 8px;
+        }
+
+        .chip-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .chip {
+            background: #eef2ff;
+            border-radius: 20px;
+            padding: 6px 12px;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .chip span {
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+
+        .btn-add,
+        .btn-remove {
+            height: 34px;
+            padding: 0 10px;
+            font-size: 14px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-add {
+            background: #2ecc71;
+            color: white;
+        }
+
+        .btn-remove {
+            background: #e74c3c;
+            color: white;
+        }
     </style>
     @stack('styles')
 </head>
@@ -402,13 +480,9 @@
 
             <div class="submenu" id="manajemen-menu">
                 <a href="{{ route('manajemen.indexpromo') }}">Promo</a>
-<<<<<<< HEAD
                 <a href="{{ route('manajemen.customer.index') }}">Customer</a>
                 <a href="{{ route('manajemen.harga.index') }}">Harga</a>
-=======
-                    <a href="{{ route('manajemen.user.index') }}">User</a>
-
->>>>>>> 50cdc8c764a9a22a6bf3d9f1202361bbb5798358
+                <a href="{{ route('manajemen.user.index') }}">User</a>
             </div>
 
 
@@ -457,6 +531,19 @@ function toggleMenu(id) {
     arrow.classList.toggle('rotate');
 }
 </script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+@if(session('success'))
+<script>
+    Swal.fire({
+        title: 'Berhasil 🎉',
+        text: "{{ session('success') }}",
+        icon: 'success',
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#22c55e',
+        backdrop: true,
+    });
+</script>
+@endif
 
 </body>
 </html>

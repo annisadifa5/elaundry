@@ -8,6 +8,7 @@ use App\Http\Controllers\PembayaranController;
 Route::post('/pemesanan', [PemesananController::class, 'store']);
 Route::get('/pemesanan/{id}', [PemesananController::class, 'show']);
 Route::patch('/pemesanan/{id}/status', [PemesananController::class, 'updateStatus']);
+// Route::post('/estimasi-harga', [PemesananController::class, 'estimasi']);
 
 Route::get('/customers', [CustomerController::class, 'index']);
 

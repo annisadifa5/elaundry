@@ -42,7 +42,7 @@
 
         {{-- ACTION --}}
         <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
-            <a href="{{ route('customer.index') }}" class="btn" style="background:#e2e8f0;">
+            <a href="{{ route('manajemen.customer.index') }}" class="btn" style="background:#e2e8f0;">
                 Batal
             </a>
             <button class="btn" style="background:#fb923c; color:white;">
