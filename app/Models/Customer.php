@@ -13,12 +13,18 @@ class Customer extends Model
     protected $primaryKey = 'id_cust';
 
     protected $fillable = [
-        'email',
-        'password',
+        // 'id_user',
+        // 'email',
+        // 'password',
+        // 'nama_lengkap',
+        // 'alamat',
+        // 'lokasi',
+        // 'no_telp'
+        'id_user',
         'nama_lengkap',
+        'email',
+        'no_telp',
         'alamat',
-        'lokasi',
-        'no_telp'
     ];
 
     // ❌ relasi ke user DIHAPUS

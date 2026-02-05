@@ -17,7 +17,7 @@ class Harga extends Model
         'nama_layanan',
         'satuan',
         'harga',
-        'jarak',        // 🔥 TAMBAHAN
+        'jarak',        
         'is_optional',
         'is_active',
         'keterangan',

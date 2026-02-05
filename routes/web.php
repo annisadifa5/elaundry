@@ -78,16 +78,23 @@ Route::prefix('reservasi')->name('reservasi.')->group(function () {
 
 //PEMESANAN
 Route::prefix('pemesanan')->name('pemesanan.')->group(function () {
-    Route::get('/', fn () => view('pemesanan.create'))->name('create');
+    Route::get('/', [PemesananController::class, 'create'])->name('create');
     Route::post('/', [PemesananController::class, 'store'])->name('store');
     Route::get('/{id}', [PemesananController::class, 'show'])->name('show');
     Route::patch('/{id}/status', [PemesananController::class, 'updateStatus'])->name('updateStatus');
-    Route::get('/pemesanan/{id}/nota', [PemesananController::class, 'nota'])->name('pemesanan.nota');
+    Route::post('/estimasi', [PemesananController::class, 'estimasi'])->name('estimasi');
+
+    Route::post('/pemesanan/estimasi', [PemesananController::class, 'estimasi']);
+
 
 });
 
 //LACAK PEMESANAN 
 Route::get('/lacak', [LacakController::class, 'index'])->name('lacak.index');
+Route::post('/lacak/{id}/next', [LacakController::class, 'next'])->name('lacak.next');
+Route::post('/lacak/{id}/update', [LacakController::class, 'updateStatus'])->name('lacak.update');
+
+
 
 //RIWAYAT PEMESANAN
 Route::get('/riwayat', [RiwayatController::class, 'index'])->name('riwayat.index');
