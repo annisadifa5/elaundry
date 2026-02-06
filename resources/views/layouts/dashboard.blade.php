@@ -31,13 +31,67 @@
             color: #ffffff;
             padding: 25px;
             display: flex;
+            z-index: 2000;
             flex-direction: column;
+            transition: all .3s ease;
+            position: relative;
         }
 
-        .sidebar h3 {
-            margin-bottom: 45px;
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 40px;
+        }
+
+        .hamburger-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 22px;
+            cursor: pointer;
+            padding: 4px;
+        }
+
+        .sidebar-title {
             font-size: 20px;
             font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .sidebar.collapsed .sidebar-title {
+            display: none;
+        }
+
+        .sidebar.collapsed .sidebar-header {
+            justify-content: center;
+        }
+
+        /* ICON ONLY MODE */
+        .sidebar.collapsed {
+            width: 72px;
+            padding: 20px 8px;
+        }
+
+        .sidebar.collapsed h3 {
+            display: none;
+        }
+
+        .sidebar.collapsed .menu-left span {
+            display: none;
+        }
+
+        .sidebar.collapsed .submenu {
+            display: none !important;
+        }
+
+        .sidebar.collapsed .menu a,
+        .sidebar.collapsed .dropdown-toggle {
+            justify-content: center;
+        }
+
+        .sidebar.collapsed .menu svg {
+            margin: 0 auto;
         }
 
         .divider {
@@ -56,12 +110,15 @@
             color: #fff;
             text-decoration: none;
             margin-bottom: 14px;
+            height: 25px;     
             cursor: pointer;
+            padding: 0 12px;
         }
 
         .menu-left {
             display: flex;
             align-items: center;
+            flex-direction: row;
             gap: 12px;
         }
 
@@ -74,7 +131,7 @@
 
         .menu a:hover,
         .dropdown-toggle:hover {
-            transform: translateX(3px);
+            transform: none;
         }
 
         /* SUBMENU */
@@ -122,6 +179,7 @@
         .content {
             flex: 1;
             padding: 30px;
+            transition: all .3s ease;
         }
 
         .page-title {
@@ -397,15 +455,31 @@
             background: #e74c3c;
             color: white;
         }
+
+        /* ===== DESKTOP ===== */
+        @media (min-width: 769px) {
+            .sidebar {
+                position: relative;
+                transform: none;
+                padding: 50px 22px;
+            }
+        }
+
     </style>
     @stack('styles')
 </head>
 <body>
-
+{{-- <button id="sidebarToggle" class="global-hamburger">☰</button> --}}
 <div class="wrapper">
      <!-- SIDEBAR -->
     <div class="sidebar">
-        <h3>Super Admin</h3>
+        <div class="sidebar-header">
+            <button id="sidebarToggle" class="hamburger-btn">
+                ☰
+            </button>
+            <span class="sidebar-title">Super Admin</span>
+        </div>
+
 
         <div class="menu">
             <!-- BERANDA -->
@@ -414,7 +488,8 @@
                     <svg fill="none" viewBox="0 0 24 24">
                         <path d="M3 9.75L12 4.5l9 5.25v9.75H3z"/>
                     </svg>
-                    Beranda
+                    <span>Beranda</span>
+
                 </div>
             </a>
 
@@ -425,7 +500,7 @@
                         <path d="M8 7h8M8 11h8M8 15h6"/>
                         <rect x="4" y="3" width="16" height="18" rx="2"/>
                     </svg>
-                    Input Reservasi
+                    <span>Reservasi</span>
                 </div>
             </a>
 
@@ -435,7 +510,7 @@
                         <rect x="3" y="4" width="18" height="16" rx="2"/>
                         <path d="M3 8h18"/>
                     </svg>
-                    Input Pemesanan
+                    <span>Pemesanan</span>
                 </div>
             </a>
 
@@ -448,7 +523,7 @@
                         <circle cx="12" cy="12" r="9"/>
                         <path d="M12 7v5l3 2"/>
                     </svg>
-                    Update Status
+                    <span>Update Status</span>
                 </div>
             </a>
 
@@ -458,7 +533,7 @@
                         <circle cx="12" cy="12" r="9"/>
                         <path d="M12 9v4l2 2"/>
                     </svg>
-                    Riwayat Pemesanan
+                    <span>Riwayat Pemesanan</span>
                 </div>
             </a>
 
@@ -471,7 +546,7 @@
                     <svg fill="none" viewBox="0 0 24 24">
                         <path d="M4 6h16M4 12h16M4 18h16"/>
                     </svg>
-                    Manajemen
+                    <span>Manajemen</span>
                 </div>
                 <svg class="arrow" fill="none" viewBox="0 0 24 24">
                     <path d="M6 9l6 6 6-6"/>
@@ -479,10 +554,10 @@
             </div>
 
             <div class="submenu" id="manajemen-menu">
-                <a href="{{ route('manajemen.indexpromo') }}">Promo</a>
-                <a href="{{ route('manajemen.customer.index') }}">Customer</a>
-                <a href="{{ route('manajemen.harga.index') }}">Harga</a>
-                <a href="{{ route('manajemen.user.index') }}">User</a>
+                <a href="{{ route('manajemen.indexpromo') }}"><span>Promo</span></a>
+                <a href="{{ route('manajemen.customer.index') }}"><span>Customer</span></a>
+                <a href="{{ route('manajemen.harga.index') }}"><span>Harga</span></a>
+                <a href="{{ route('manajemen.user.index') }}"><span>User</span></a>
             </div>
 
 
@@ -493,7 +568,7 @@
                         <circle cx="12" cy="8" r="4"/>
                         <path d="M4 20c1.5-4 14.5-4 16 0"/>
                     </svg>
-                    Pengaturan
+                    <span>Pengaturan</span>
                 </div>
                 <svg class="arrow" fill="none" viewBox="0 0 24 24">
                     <path d="M6 9l6 6 6-6"/>
@@ -501,8 +576,8 @@
             </div>
 
             <div class="submenu" id="pengaturan-menu">
-                <a href="{{ route('outlet.index') }}">Outlet</a>
-                <a href="{{ route('karyawan.index') }}">Karyawan</a>
+                <a href="{{ route('outlet.index') }}"><span>Outlet</span></a>
+                <a href="{{ route('karyawan.index') }}"><span>Karyawan</span></a>
             </div>
             @endif
         </div>
@@ -512,7 +587,7 @@
             @csrf
             <button class="logout"
                     style="width:80%; border-radius:30px; padding:12px 0;">
-                Log Out
+                <span>Logout</span>
             </button>
         </form>
     </div>
@@ -533,17 +608,43 @@ function toggleMenu(id) {
 </script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 @if(session('success'))
-<script>
-    Swal.fire({
-        title: 'Berhasil 🎉',
-        text: "{{ session('success') }}",
-        icon: 'success',
-        confirmButtonText: 'OK',
-        confirmButtonColor: '#22c55e',
-        backdrop: true,
-    });
-</script>
+    <script>
+        Swal.fire({
+            title: 'Berhasil 🎉',
+            text: "{{ session('success') }}",
+            icon: 'success',
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#22c55e',
+            backdrop: true,
+        });
+    </script>
 @endif
+
+{{-- sidebar menu minimize friendly --}}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const sidebar = document.querySelector('.sidebar');
+    const toggleBtn = document.getElementById('sidebarToggle');
+
+    // mobile default icon-only
+    if (window.innerWidth <= 768) {
+        sidebar.classList.add('collapsed');
+    }
+
+    toggleBtn.addEventListener('click', () => {
+        sidebar.classList.toggle('collapsed');
+    });
+
+    window.addEventListener('resize', () => {
+        if (window.innerWidth <= 768) {
+            sidebar.classList.add('collapsed');
+        } else {
+            sidebar.classList.remove('collapsed');
+        }
+    });
+});
+</script>
+
 
 </body>
 </html>

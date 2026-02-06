@@ -23,17 +23,35 @@
                     </select>
                 </div>
 
-                {{-- KODE LAYANAN --}}
-                <div class="form-group">
-                    <label>Kode Layanan</label>
-                    <input type="text" name="kode_layanan" placeholder="contoh: cuci_kg, express" required>
-                </div>
 
                 {{-- JENIS LAYANAN --}}
                 <div class="form-group">
                     <label>Jenis Layanan</label>
-                    <input type="text" name="nama_layanan" placeholder="contoh: Cuci + Setrika" required>
+
+                    <select id="layanan-select">
+                        <option value="">Pilih Jenis Layanan</option>
+                        <option value="cuci">Cuci</option>
+                        <option value="setrika">Setrika</option>
+                        <option value="cuci_kering">Cuci Kering</option>
+                        <option value="cuci_setrika">Cuci + Setrika</option>
+                        <option value="express">Express</option>
+                        <option value="sprei">Sprei</option>
+                        <option value="bed_cover">Bed Cover</option>
+                        <option value="boneka">Boneka</option>
+                        <option value="bantal">Bantal</option>
+                    </select>
+
+                    <input type="hidden" name="nama_layanan" id="nama_layanan_input">
                 </div>
+
+                {{-- KODE LAYANAN --}}
+                <div class="form-group">
+                    <label>Kode Layanan</label>
+                    <select name="kode_layanan" id="kode_layanan" required>
+                        <option value="">Pilih Kode Layanan</option>
+                    </select>
+                </div>
+
 
                 {{-- SATUAN --}}
                 <div class="form-group">
@@ -212,6 +230,74 @@
             isOptional.checked = false;
             isOptional.disabled = true;
         }
+    });
+</script>
+
+{{-- untuk kode layanan --}}
+<script>
+    const layananSelect = document.getElementById('layanan-select');
+    const kodeSelect    = document.getElementById('kode_layanan');
+    const hiddenNama    = document.getElementById('nama_layanan_input');
+
+    const layananMap = {
+        cuci: {
+            label: 'Cuci',
+            kode: 'cuci'
+        },
+        setrika: {
+            label: 'Setrika',
+            kode: 'setrika'
+        },
+        cuci_kering: {
+            label: 'Cuci Kering',
+            kode: 'cuci_kering'
+        },
+        cuci_setrika: {
+            label: 'Cuci + Setrika',
+            kode: 'cuci_setrika'
+        },
+        express: {
+            label: 'Express',
+            kode: 'express'
+        },
+        sprei: {
+            label: 'Sprei',
+            kode: 'sprei'
+        },
+        bed_cover: {
+            label: 'Bed Cover',
+            kode: 'bed_cover'
+        },
+        boneka: {
+            label: 'Boneka',
+            kode: 'boneka'
+        },
+        bantal: {
+            label: 'Bantal',
+            kode: 'bantal'
+        }
+    };
+
+    layananSelect.addEventListener('change', function () {
+        const value = this.value;
+
+        kodeSelect.innerHTML = '<option value="">Pilih Kode Layanan</option>';
+
+        if (!value || !layananMap[value]) {
+            hiddenNama.value = '';
+            return;
+        }
+
+        // isi nama layanan (ke controller)
+        hiddenNama.value = layananMap[value].label;
+
+        // isi kode layanan
+        const opt = document.createElement('option');
+        opt.value = layananMap[value].kode;
+        opt.text  = layananMap[value].kode;
+        opt.selected = true;
+
+        kodeSelect.appendChild(opt);
     });
 </script>
 
