@@ -23,6 +23,32 @@
         {{ $promo->tanggal_selesai }}
     </p>
 
+    {{-- STATUS --}}
+    <p>
+        <strong>Status :</strong>
+        {{ ucfirst($promo->status) }}
+    </p>
+
+    {{-- BASIS PROMO --}}
+    <div>
+        <h4>Jenis Promo</h4>
+        <p>
+            @if($promo->basis_promo === 'nominal')
+                Potongan Nominal (Rp{{ number_format($promo->nilai_promo, 0, ',', '.') }})
+            @else
+                Potongan Persentase ({{ $promo->nilai_promo }}%)
+            @endif
+        </p>
+    </div>
+
+    {{-- MINIMAL TRANSAKSI --}}
+    <div>
+        <h4>Minimal Transaksi</h4>
+        <p>
+            Rp{{ number_format($promo->minimal_transaksi, 0, ',', '.') }}
+        </p>
+    </div>
+
     <div>
         <h4>Deskripsi Promo</h4>
         <p>{{ $promo->deskripsi_promo }}</p>
@@ -35,13 +61,18 @@
 
     <div class="btn-row">
         <a href="{{ route('manajemen.indexpromo') }}"
-        class="btn btn-secondary btn-sm">Kembali</a>
+           class="btn btn-secondary btn-sm">Kembali</a>
 
         @if($promo->status === 'aktif')
-            <button class="btn">Nonaktifkan</button>
+        <form method="POST" action="{{ route('manajemen.promo.nonaktifkan', $promo->id_promo) }}">
+            @csrf
+            <button class="btn btn-danger btn-sm">
+                Nonaktifkan
+            </button>
+        </form>
         @endif
-    </div>
 
+    </div>
 
 </div>
 @endsection

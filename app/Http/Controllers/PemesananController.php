@@ -104,16 +104,16 @@ class PemesananController extends Controller
             ]);
 
             DB::commit();
-            return redirect()->route('pemesanan.create')
-                         ->with('success', 'Pemesanan berhasil dibuat');
+            return response()->json([
+                'success' => true,
+                'id' => $pemesanan->id_pemesanan
+            ]);
 
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->withErrors($e->getMessage())->withInput();
         }
     }
-
-    
 
     public function create()
     {
@@ -133,6 +133,14 @@ class PemesananController extends Controller
         ])->findOrFail($id);
 
         return view('pemesanan.show', compact('pemesanan'));
+    }
+
+    public function nota($id)
+    {
+        $pemesanan = Pemesanan::with('customer')
+            ->findOrFail($id);
+
+        return view('pemesanan.nota', compact('pemesanan'));
     }
 
     public function updateStatus(Request $request, $id)

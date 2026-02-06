@@ -59,9 +59,6 @@ Route::middleware(['auth', 'role:kasir'])
             ->name('lacak.index');
     });
 
-
-
-
 Route::get('/admin/dashboard', [DashboardController::class, 'index'])
     ->name('admin.dashboard');
 
@@ -73,7 +70,7 @@ Route::get('/kasir/dashboard', function () {
 Route::prefix('reservasi')->name('reservasi.')->group(function () {
     Route::get('/', [ReservasiController::class, 'create'])->name('create');
     Route::post('/', [ReservasiController::class, 'store'])->name('store');
-    
+    Route::get('/{id}/nota', [ReservasiController::class, 'nota'])->name('nota');
 });
 
 //PEMESANAN
@@ -85,7 +82,7 @@ Route::prefix('pemesanan')->name('pemesanan.')->group(function () {
     Route::post('/estimasi', [PemesananController::class, 'estimasi'])->name('estimasi');
 
     Route::post('/pemesanan/estimasi', [PemesananController::class, 'estimasi']);
-
+    Route::get('/{id}/nota', [PemesananController::class, 'nota'])->name('nota');
 
 });
 
@@ -94,15 +91,17 @@ Route::get('/lacak', [LacakController::class, 'index'])->name('lacak.index');
 Route::post('/lacak/{id}/next', [LacakController::class, 'next'])->name('lacak.next');
 Route::post('/lacak/{id}/update', [LacakController::class, 'updateStatus'])->name('lacak.update');
 
-
-
 //RIWAYAT PEMESANAN
 Route::get('/riwayat', [RiwayatController::class, 'index'])->name('riwayat.index');
 
 //MANAJEMEN PROMO
 Route::prefix('manajemen')->name('manajemen.')->group(function () {
     Route::get('/', [PromoController::class, 'index'])->name('indexpromo');
-    Route::get('/create', [PromoController::class, 'create'])->name('createpromo');
+    Route::get('/promo/create', [PromoController::class, 'create'])->name('createpromo');
+    Route::post('/promo', [PromoController::class, 'store'])->name('storepromo');
+    Route::get('/promo/{id}', [PromoController::class, 'show'])->name('showpromo');
+    Route::post('/promo/{id}/nonaktifkan', [PromoController::class, 'nonaktifkan'])->name('promo.nonaktifkan');
+
 });
 
 // MANAJEMEN CUSTOMER

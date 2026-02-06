@@ -11,5 +11,18 @@ class Promo extends Model
 
     protected $table = 'promo';
     protected $primaryKey = 'id_promo';
-    protected $fillable = ['nama_promo','deskripsi_promo','skema','status','tanggal_mulai','tanggal_selesai'];
+    protected $fillable = [
+        'nama_promo',
+        'skema',
+
+        // 🔥 PROMO BASIS
+        'basis_promo',
+        'nilai_promo',
+        'minimal_transaksi',
+
+        'deskripsi_promo',
+        'status',
+        'tanggal_mulai',
+        'tanggal_selesai',
+    ];
 }

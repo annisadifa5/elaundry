@@ -5,7 +5,7 @@
 @section('content')
 <div class="page-title">Form Tambah Customer</div>
 
-<div class="card" style="max-width: 100%; border: 2px solid #fb923c;">
+<div class="card" style="max-width: 100%; order: 1px solid #93c5fd;">
     <form method="POST" action="{{ route('manajemen.customer.store') }}">
         @csrf
 

@@ -10,7 +10,7 @@ class CustomerSeeder extends Seeder
     public function run(): void
     {
         Customer::create([
-            'id_user' => 1,
+            // 'id_user' => 1,
             'email' => 'customer@test.com',
             'password' => bcrypt('password'),
             'nama_lengkap' => 'Customer Test',
