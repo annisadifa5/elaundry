@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Nota Laundry</title>
+    <title>Nota Reservasi Laundry</title>
 
     <style>
         body{
@@ -56,25 +56,32 @@
 
     <!-- INFO -->
     <div class="small">
-        Order : {{ $pemesanan->no_order }}<br>
-        Tanggal : {{ $pemesanan->tanggal_masuk }}<br>
-        Pelanggan : {{ $pemesanan->customer->nama_lengkap }}
+        Reservasi : RSV-{{ $reservasi->id_reservasi }}<br>
+        Tanggal   : {{ $reservasi->tanggal_jemput }}<br>
+        Jam       : {{ $reservasi->jam_jemput }}<br>
+        Pelanggan : {{ $reservasi->customer->nama_lengkap }}
     </div>
 
     <div class="line"></div>
 
     <!-- ITEM -->
     <div class="row">
-        <span>{{ $pemesanan->jenis_layanan }}</span>
-        <span>Rp {{ number_format($pemesanan->total_harga,0,',','.') }}</span>
+        <span>{{ $reservasi->jenis_layanan }}</span>
+        <span>Rp {{ number_format($reservasi->total_harga,0,',','.') }}</span>
     </div>
+
+    @if($reservasi->jumlah_item)
+    <div class="small">
+        Qty : {{ $reservasi->jumlah_item }} pcs
+    </div>
+    @endif
 
     <div class="line"></div>
 
     <!-- TOTAL -->
     <div class="row">
         <strong>Total</strong>
-        <strong>Rp {{ number_format($pemesanan->total_harga,0,',','.') }}</strong>
+        <strong>Rp {{ number_format($reservasi->total_harga,0,',','.') }}</strong>
     </div>
 
     <div class="line"></div>
@@ -93,7 +100,7 @@
 <script>
 html2canvas(document.querySelector("#nota")).then(canvas => {
     let link = document.createElement('a');
-    link.download = 'nota-{{ $pemesanan->id_pemesanan }}.png';
+    link.download = 'nota-reservasi-{{ $reservasi->id_reservasi }}.png';
     link.href = canvas.toDataURL();
     link.click();
 

@@ -18,12 +18,12 @@
         </div>
     @endif
 
-    <form method="POST" action="{{ route('pemesanan.store') }}">
+    <form id="form-pemesanan" method="POST" action="{{ route('pemesanan.store') }}">
         @csrf
 
         {{-- CUSTOMER --}}
         <div class="row">
-            <input type="hidden" name="id_outlet" value="3">
+            <input type="hidden" name="id_outlet" value="2">
 
             <input type="text" name="nama_lengkap" placeholder="Nama Customer" required>
             <input type="text" name="no_telp" placeholder="No Telepon" required>
@@ -98,6 +98,19 @@
                 <button class="btn">Pesan</button>
             </div>
     </form>
+</div>
+
+<div id="successModal" class="modal-overlay" style="display:none">
+    <div class="modal-box">
+        <div class="check-icon">✔</div>
+        <h3>Berhasil 🎉</h3>
+        <p>Pemesanan berhasil dibuat</p>
+
+        <div style="display:flex;gap:10px;justify-content:center;margin-top:20px">
+            <button onclick="closeModal()" class="btn-secondary">Tutup</button>
+            <a id="btnNota" class="btn-primary" target="_blank">Unduh Nota</a>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -182,5 +195,76 @@
         });
     }
 </script>
+<!-- nota -->
+<script>
+document.getElementById('form-pemesanan').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const form = this;
+    const formData = new FormData(form);
+
+    fetch(form.action, {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        body: formData
+    })
+    .then(res => res.json())
+    .then(res => {
+        if (res.success) {
+            document.getElementById('successModal').style.display = 'flex';
+
+            // arahkan tombol nota
+            document.getElementById('btnNota')
+                .href = `/pemesanan/${res.id}/nota`;
+        }
+    })
+    .catch(err => {
+        alert('Terjadi kesalahan');
+    });
+});
+
+function closeModal() {
+    document.getElementById('successModal').style.display = 'none';
+}
+</script>
+
+<style>
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.4);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    z-index:9999;
+}
+.modal-box {
+    background: #fff;
+    padding: 32px;
+    border-radius: 16px;
+    width: 100%;
+    max-width: 480px;   /* desktop */
+    min-height: 260px;
+    text-align: center;
+}
+.check-icon {
+    font-size:48px;
+    color:#22c55e;
+}
+.btn-primary {
+    background:#22c55e;
+    color:white;
+    padding:10px 16px;
+    border-radius:8px;
+    text-decoration:none;
+}
+.btn-secondary {
+    background:#e5e7eb;
+    padding:10px 16px;
+    border-radius:8px;
+}
+</style>
 
 @endsection

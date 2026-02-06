@@ -8,12 +8,12 @@
 <div class="card">
     <h4>Form Reservasi Laundio</h4>
 
-    <form action="{{ route('reservasi.store') }}" method="POST">
+    <form id="form-reservasi" action="{{ route('reservasi.store') }}" method="POST">
         @csrf
 
         {{-- NAMA & TELP --}}
         <div class="row">
-            <input type="text" name="nama" placeholder="Nama" required>
+            <input type="text" name="nama_lengkap" placeholder="Nama" required>
             <input type="text" name="no_telp" placeholder="No. Telp" required>
         </div>
 
@@ -88,9 +88,22 @@
         </div>
 
         <div class="row btn-row">
-            <button type="submit" class="btn">Pickup Now</button>
+            <button type="submit" class="btn" id="pickupNow">Pickup Now</button>
         </div>
     </form>
+</div>
+
+<div id="successModal" class="modal-overlay" style="display:none">
+    <div class="modal-box">
+        <div class="check-icon">✔</div>
+        <h3>Berhasil 🎉</h3>
+        <p>Reservasi berhasil dibuat</p>
+
+        <div style="display:flex;gap:10px;justify-content:center;margin-top:20px">
+            <button onclick="closeModal()" class="btn-secondary">Tutup</button>
+            <a id="btnNota" class="btn-primary" target="_blank">Unduh Nota</a>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -177,5 +190,112 @@ const hargaList = @json($hargaList);
     select.addEventListener('change', cekLayananKg);
 </script>
 
+<!-- nota -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    const form = document.getElementById('form-reservasi');
+    const btn  = document.getElementById('pickupNow');
+
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        if (!document.getElementById('jenis_layanan_input').value) {
+            alert('Pilih minimal 1 jenis layanan');
+            return;
+        }
+
+        btn.disabled = true;
+        btn.innerText = 'Memproses...';
+
+        const formData = new FormData(form);
+
+        fetch(form.action, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: formData
+        })
+        .then(async res => {
+            const text = await res.text(); // 🔥 PENTING
+            try {
+                return JSON.parse(text);
+            } catch (e) {
+                console.error('Response bukan JSON:', text);
+                throw new Error('Invalid JSON');
+            }
+        })
+        .then(data => {
+            console.log('RESP:', data);
+
+            if (data.success === true) {
+                document.getElementById('successModal').style.display = 'flex';
+                document.getElementById('btnNota').href =
+                    `/reservasi/${data.id}/nota`;
+            } else {
+                alert('Reservasi gagal');
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            alert('Terjadi kesalahan server');
+        })
+        .finally(() => {
+            btn.disabled = false;
+            btn.innerText = 'Pickup Now';
+        });
+    });
+
+});
+</script>
+
+<script>
+function closeModal() {
+    document.getElementById('successModal').style.display = 'none';
+}
+</script>
+
+<style>
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.modal-box {
+    background: #fff;
+    padding: 32px;
+    border-radius: 16px;
+    width: 100%;
+    max-width: 480px;   /* desktop */
+    min-height: 260px;
+    text-align: center;
+}
+
+.check-icon {
+    font-size: 48px;
+    color: #22c55e;
+}
+
+.btn-primary {
+    background:#22c55e;
+    color:white;
+    padding:10px 16px;
+    border-radius:8px;
+    text-decoration:none;
+}
+.btn-secondary {
+    background:#e5e7eb;
+    padding:10px 16px;
+    border-radius:8px;
+}
+</style>
 
 @endsection

@@ -104,16 +104,16 @@ class PemesananController extends Controller
             ]);
 
             DB::commit();
-            return redirect()->route('pemesanan.create')
-                         ->with('success', 'Pemesanan berhasil dibuat');
+            return response()->json([
+                'success' => true,
+                'id' => $pemesanan->id_pemesanan
+            ]);
 
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->withErrors($e->getMessage())->withInput();
         }
     }
-
-    
 
     public function create()
     {
