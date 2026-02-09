@@ -9,6 +9,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('reservasi', function (Blueprint $table) {
+            $table->integer('jumlah_item')->default(1)->after('alamat_jemput');
             $table->bigInteger('total_harga')->nullable()->after('jumlah_item');
         });
     }
@@ -16,7 +17,7 @@ return new class extends Migration
     public function down()
     {
         Schema::table('reservasi', function (Blueprint $table) {
-            $table->dropColumn('total_harga');
+            $table->dropColumn(['jumlah_item', 'total_harga']);
         });
     }
 };

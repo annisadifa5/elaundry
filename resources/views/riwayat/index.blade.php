@@ -1,4 +1,12 @@
-@extends('layouts.dashboard')
+@php
+    $role = auth()->user()->role;
+@endphp
+
+@extends(
+    auth()->user()->role === 'admin'
+        ? 'layouts.dashboard'
+        : 'layouts.dashboard_kasir'
+)
 
 @section('title', 'Riwayat Pemesanan')
 
@@ -7,7 +15,10 @@
 
     <div class="card">
         {{-- FILTER --}}
-        <form method="GET" action="{{ route('riwayat.index') }}">
+        @php
+            $role = auth()->user()->role;
+        @endphp
+        <form method="GET" action="{{ route($role . '.riwayat.index') }}">
             <div class="row">
                 <select name="layanan">
                     <option value="">Jenis Layanan</option>
@@ -49,7 +60,8 @@
                     </td>
                     <td class="aksi">
                     {{-- UNDUH --}}
-                    <a href="{{ route('riwayat.download', $p->id_pemesanan) }}"
+                    @if(auth()->user()->role === 'admin')
+                    <a href="{{ route('admin.riwayat.download', $p->id_pemesanan) }}"
                     title="Unduh"
                     class="icon-btn">
                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none"
@@ -58,10 +70,12 @@
                                 d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3"/>
                         </svg>
                     </a>
+                    @endif
 
                     {{-- HAPUS --}}
+                    @if(auth()->user()->role === 'admin')
                     <form method="POST"
-                        action="{{ route('riwayat.destroy', $p->id_pemesanan) }}"
+                        action="{{ route('admin.riwayat.destroy', $p->id_pemesanan) }}"
                         class="inline"
                         onsubmit="return confirm('Hapus riwayat ini?')">
                         @csrf
@@ -74,6 +88,7 @@
                             </svg>
                         </button>
                     </form>
+                    @endif
                 </td>
 
 

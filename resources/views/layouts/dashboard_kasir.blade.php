@@ -2,42 +2,70 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>@yield('title', 'Dashboard')</title>
+    <title>@yield('title', 'Dashboard Kasir')</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 
     <style>
-        * {
-            box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
-        }
+        * { box-sizing: border-box; font-family: 'Inter', sans-serif; }
 
-        body {
-            margin: 0;
-            background: #f7fbfc;
-        }
+        body { margin: 0; background: #f7fbfc; }
 
-        .wrapper {
-            display: flex;
-            min-height: 100vh;
-            align-items: stretch;
-        }
+        .wrapper { display: flex; min-height: 100vh; }
 
-        /* SIDEBAR */
+        /* ================= SIDEBAR ================= */
         .sidebar {
             width: 250px;
             background: #16a39a;
-            color: #ffffff;
+            color: white;
             padding: 25px;
             display: flex;
             flex-direction: column;
+            transition: all .3s ease;
+            z-index: 2000;
         }
 
-        .sidebar h3 {
-            margin-bottom: 45px;
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 40px;
+        }
+
+        .hamburger-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 22px;
+            cursor: pointer;
+        }
+
+        .sidebar-title {
             font-size: 20px;
             font-weight: 700;
+            white-space: nowrap;
+        }
+
+        /* ===== COLLAPSED MODE ===== */
+        .sidebar.collapsed {
+            width: 72px;
+            padding: 20px 8px;
+        }
+
+        .sidebar.collapsed .sidebar-title,
+        .sidebar.collapsed span,
+        .sidebar.collapsed .submenu {
+            display: none !important;
+        }
+
+        .sidebar.collapsed .menu a,
+        .sidebar.collapsed .dropdown-toggle {
+            justify-content: center;
+        }
+
+        .sidebar.collapsed svg {
+            margin: 0 auto;
         }
 
         .divider {
@@ -51,11 +79,12 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            font-size: 15.5px;
+            font-size: 15px;
             font-weight: 600;
-            color: #fff;
+            color: white;
             text-decoration: none;
             margin-bottom: 14px;
+            padding: 0 12px;
             cursor: pointer;
         }
 
@@ -72,12 +101,6 @@
             stroke-width: 1.6;
         }
 
-        .menu a:hover,
-        .dropdown-toggle:hover {
-            transform: translateX(3px);
-        }
-
-        /* SUBMENU */
         .submenu {
             margin-left: 28px;
             margin-top: 6px;
@@ -85,52 +108,41 @@
             flex-direction: column;
         }
 
+        .submenu.show { display: flex; }
+
         .submenu a {
             font-size: 14px;
-            font-weight: 500;
             margin-bottom: 10px;
             opacity: .95;
         }
 
-        .submenu.show {
-            display: flex;
-        }
-
-        /* ARROW */
         .arrow {
             width: 14px;
             height: 14px;
-            transition: transform .2s ease;
+            transition: transform .2s;
         }
 
-        .arrow.rotate {
-            transform: rotate(180deg);
-        }
+        .arrow.rotate { transform: rotate(180deg); }
 
         .logout {
             margin-top: auto;
             background: #FE7F2D;
             border: none;
             color: white;
-            padding: 10px;
-            border-radius: 20px;
+            padding: 12px;
+            border-radius: 30px;
             cursor: pointer;
             font-weight: 600;
+            width: 80%;
         }
 
-        /* CONTENT */
+        /* ================= CONTENT ================= */
         .content {
             flex: 1;
             padding: 30px;
+            transition: all .3s ease;
         }
 
-        .page-title {
-            font-weight: 600;
-            color: #0b2c4d;
-            margin-bottom: 20px;
-        }
-
-        /* CARD */
         .card {
             background: #f9fdff;
             border: 1px solid #dbeafe;
@@ -144,12 +156,16 @@
             color: #0b2c4d;
         }
 
-        /* FORM */
         .row {
             display: flex;
             gap: 15px;
             margin-bottom: 15px;
-            
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
         }
 
         input, select, textarea {
@@ -173,11 +189,13 @@
             border-radius: 20px;
             cursor: pointer;
             font-weight: 600;
-            align-self: flex-end;
-            margin-top: 15px;
             text-decoration: none;
             display: inline-flex;
-            line-height: 1;
+            align-items: center;
+        }
+
+        .btn:hover {
+            background: #e67800;
         }
 
         .btn-secondary {
@@ -189,258 +207,119 @@
         }
 
         .btn-sm {
-            padding: 10px 16px;
+            padding: 8px 14px;
             font-size: 14px;
         }
 
-
-        .btn:hover {
-            background: #e67800;
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
         }
 
-        .btn-row {
-            display: flex;
-            justify-content: flex-end;
-            margin-top: 15px;
-        }
-
-        /* OUTLET LIST */
-        .outlet-list {
-            display: flex;
-            flex-direction: column;
-            gap: 18px;
-        }
-
-        /* OUTLET CARD */
-        .outlet-card {
-            background: linear-gradient(135deg, #1fc8b8 0%, #16a39a 100%);
+        .table thead {
+            background: #16a39a;
             color: white;
-            border-radius: 14px;
-            padding: 18px 20px;
-            box-shadow: 0 6px 14px rgba(0,0,0,.12);
+        }
 
+        .table th,
+        .table td {
+            padding: 10px 12px;
+            text-align: left;
+        }
+
+        .table tbody tr {
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .table tbody tr:hover {
+            background: #f1f9f9;
+        }
+
+        .aksi {
             display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
+            align-items: center;
+            gap: 10px;
         }
 
-        /* INFO */
-        .outlet-title {
-            font-weight: 700;
-            font-size: 15.5px;
-            margin-bottom: 6px;
+        .badge {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
         }
 
-        .form-group {
-            margin-bottom: 14px;
+        .badge.selesai {
+            background: #16a39a;
+            color: white;
         }
 
-        .card h4 {
-            margin-top: 24px;
-            margin-bottom: 14px;
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .sidebar { position: fixed; height: 100%; }
+            .content { margin-left: 72px; }
         }
-
-        .outlet-address {
-            font-size: 13.5px;
-            opacity: .95;
-            margin-bottom: 6px;
-            line-height: 1.5;
-        }
-
-        .outlet-phone {
-            font-size: 13px;
-            opacity: .9;
-        }
-
-        /* ACTION */
-        .outlet-action {
-            display: flex;
-            align-items: flex-end;
-        }
-
-    /* ===== GLOBAL TABLE STYLE (RIWAYAT, USER, DLL) ===== */
-    .table {
-        width: 100%;
-        border-collapse: collapse;
-        font-size: 14px;
-    }
-
-    .table thead {
-        background: #16a39a;
-        color: white;
-    }
-
-    .table th,
-    .table td {
-        padding: 10px 12px;
-        text-align: left;
-    }
-
-    .table tbody tr {
-        border-bottom: 1px solid #e2e8f0;
-    }
-
-    .table tbody tr:hover {
-        background: #f1f9f9;
-    }
-
-    .aksi {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-
-    .icon-btn {
-        background: none;
-        border: none;
-        padding: 4px;
-        color: #475569;
-        cursor: pointer;
-        display: inline-flex;
-        align-items: center;
-    }
-
-    .icon-btn:hover {
-        color: #16a39a;
-    }
-
-    .icon-btn.danger:hover {
-        color: #dc2626;
-    }
-
-    .badge {
-        padding: 4px 10px;
-        border-radius: 12px;
-        font-size: 12px;
-        font-weight: 600;
-    }
-
-    .badge.selesai {
-        background: #16a39a;
-        color: #fff;
-    }
     </style>
     @stack('styles')
 </head>
-<body>
 
+<body>
 <div class="wrapper">
+
+    <!-- SIDEBAR -->
     <div class="sidebar">
-        <h3>{{ auth()->user()->role === 'admin' ? 'Super Admin' : 'Kasir' }}</h3>
+        <div class="sidebar-header">
+            <button id="sidebarToggle" class="hamburger-btn">☰</button>
+            <span class="sidebar-title">Kasir</span>
+        </div>
 
         <div class="menu">
-            <!-- BERANDA -->
-            <a href="{{ auth()->user()->role === 'admin'
-                ? route('admin.dashboard')
-                : route('kasir.dashboard') }}">
+            <a href="{{ route('kasir.dashboard') }}">
                 <div class="menu-left">
-                    <svg fill="none" viewBox="0 0 24 24">
-                        <path d="M3 9.75L12 4.5l9 5.25v9.75H3z"/>
-                    </svg>
-                    Beranda
+                    <svg fill="none" viewBox="0 0 24 24"><path d="M3 9.75L12 4.5l9 5.25v9.75H3z"/></svg>
+                    <span>Beranda</span>
                 </div>
             </a>
 
-            <!-- INPUT -->
             <a href="{{ route('reservasi.create') }}">
                 <div class="menu-left">
-                    <svg fill="none" viewBox="0 0 24 24">
-                        <path d="M8 7h8M8 11h8M8 15h6"/>
-                        <rect x="4" y="3" width="16" height="18" rx="2"/>
-                    </svg>
-                    Input Reservasi
+                    <svg fill="none" viewBox="0 0 24 24"><path d="M8 7h8M8 11h8M8 15h6"/><rect x="4" y="3" width="16" height="18" rx="2"/></svg>
+                    <span>Reservasi</span>
                 </div>
             </a>
 
             <a href="{{ route('pemesanan.create') }}">
                 <div class="menu-left">
-                    <svg fill="none" viewBox="0 0 24 24">
-                        <rect x="3" y="4" width="18" height="16" rx="2"/>
-                        <path d="M3 8h18"/>
-                    </svg>
-                    Input Pemesanan
+                    <svg fill="none" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 8h18"/></svg>
+                    <span>Pemesanan</span>
                 </div>
             </a>
 
             <div class="divider"></div>
 
-            <!-- TRACKING -->
-            <a href="{{ route('lacak.index') }}">
+            <a href="{{ route('kasir.lacak.index') }}">
                 <div class="menu-left">
-                    <svg fill="none" viewBox="0 0 24 24">
-                        <circle cx="12" cy="12" r="9"/>
-                        <path d="M12 7v5l3 2"/>
-                    </svg>
-                    Update Status
+                    <svg fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+                    <span>Update Status</span>
                 </div>
             </a>
 
-            <a href="{{ route('riwayat.index') }}">
+            <a href="{{ route('kasir.riwayat.index') }}">
                 <div class="menu-left">
-                    <svg fill="none" viewBox="0 0 24 24">
-                        <circle cx="12" cy="12" r="9"/>
-                        <path d="M12 9v4l2 2"/>
-                    </svg>
-                    Riwayat Pemesanan
+                    <svg fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 9v4l2 2"/></svg>
+                    <span>Riwayat</span>
                 </div>
             </a>
-
-            <div class="divider"></div>
-
-            @if(auth()->user()->role === 'admin')
-            <!-- MANAJEMEN -->
-            <div class="dropdown-toggle" onclick="toggleMenu('manajemen-menu')">
-                <div class="menu-left">
-                    <svg fill="none" viewBox="0 0 24 24">
-                        <path d="M4 6h16M4 12h16M4 18h16"/>
-                    </svg>
-                    Manajemen
-                </div>
-                <svg class="arrow" fill="none" viewBox="0 0 24 24">
-                    <path d="M6 9l6 6 6-6"/>
-                </svg>
-            </div>
-
-            <div class="submenu" id="manajemen-menu">
-                <a href="{{ route('manajemen.indexpromo') }}">Promo</a>
-                    <a href="{{ route('manajemen.user.index') }}">User</a>
-
-            </div>
-
-            <!-- PENGATURAN -->
-            <div class="dropdown-toggle" onclick="toggleMenu('pengaturan-menu')">
-                <div class="menu-left">
-                    <svg fill="none" viewBox="0 0 24 24">
-                        <circle cx="12" cy="8" r="4"/>
-                        <path d="M4 20c1.5-4 14.5-4 16 0"/>
-                    </svg>
-                    Pengaturan
-                </div>
-                <svg class="arrow" fill="none" viewBox="0 0 24 24">
-                    <path d="M6 9l6 6 6-6"/>
-                </svg>
-            </div>
-
-            <div class="submenu" id="pengaturan-menu">
-                <a href="{{ route('outlet.index') }}">Outlet</a>
-                <a href="{{ route('karyawan.index') }}">Karyawan</a>
-            </div>
-            @endif
         </div>
-        
 
-        <form method="POST" action="{{ route('logout') }}"
-            style="margin-top:auto; display:flex; justify-content:center;">
+        <form method="POST" action="{{ route('logout') }}" style="display:flex; justify-content:center;">
             @csrf
-            <button class="logout"
-                    style="width:80%; border-radius:30px; padding:12px 0;">
-                Log Out
-            </button>
+            <button class="logout"><span>Logout</span></button>
         </form>
-
-
     </div>
 
+    <!-- CONTENT -->
     <div class="content">
         @yield('content')
     </div>
@@ -453,7 +332,21 @@ function toggleMenu(id) {
     submenu.classList.toggle('show');
     arrow.classList.toggle('rotate');
 }
-</script>
 
+document.addEventListener('DOMContentLoaded', () => {
+    const sidebar = document.querySelector('.sidebar');
+    const toggleBtn = document.getElementById('sidebarToggle');
+
+    if (window.innerWidth <= 768) sidebar.classList.add('collapsed');
+
+    toggleBtn.addEventListener('click', () => sidebar.classList.toggle('collapsed'));
+
+    window.addEventListener('resize', () => {
+        window.innerWidth <= 768
+            ? sidebar.classList.add('collapsed')
+            : sidebar.classList.remove('collapsed');
+    });
+});
+</script>
 </body>
 </html>

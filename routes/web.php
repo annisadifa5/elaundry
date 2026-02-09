@@ -55,8 +55,14 @@ Route::middleware(['auth', 'role:kasir'])
         Route::get('/riwayat', [RiwayatController::class, 'index'])
             ->name('riwayat.index');
 
+        Route::get('/riwayat/{id}/download',[RiwayatController::class, 'download'])
+            ->name('riwayat.download');
+
         Route::get('/lacak', [LacakController::class, 'index'])
             ->name('lacak.index');
+
+        Route::post('/lacak/{id}/next', [LacakController::class, 'next'])
+            ->name('lacak.next');
     });
 
 Route::get('/admin/dashboard', [DashboardController::class, 'index'])
@@ -87,12 +93,12 @@ Route::prefix('pemesanan')->name('pemesanan.')->group(function () {
 });
 
 //LACAK PEMESANAN 
-Route::get('/lacak', [LacakController::class, 'index'])->name('lacak.index');
-Route::post('/lacak/{id}/next', [LacakController::class, 'next'])->name('lacak.next');
-Route::post('/lacak/{id}/update', [LacakController::class, 'updateStatus'])->name('lacak.update');
+// Route::get('/lacak', [LacakController::class, 'index'])->name('lacak.index');
+// Route::post('/lacak/{id}/next', [LacakController::class, 'next'])->name('lacak.next');
+// Route::post('/lacak/{id}/update', [LacakController::class, 'updateStatus'])->name('lacak.update');
 
 //RIWAYAT PEMESANAN
-Route::get('/riwayat', [RiwayatController::class, 'index'])->name('riwayat.index');
+// Route::get('/riwayat', [RiwayatController::class, 'index'])->name('riwayat.index');
 
 //MANAJEMEN PROMO
 Route::prefix('manajemen')->name('manajemen.')->group(function () {
