@@ -1,4 +1,8 @@
-@extends('layouts.dashboard')
+@extends(
+    auth()->user()->role === 'admin'
+        ? 'layouts.dashboard'
+        : 'layouts.dashboard_kasir'
+)
 
 @section('title', 'Lacak Pemesanan')
 
@@ -51,7 +55,10 @@
 
     <div class="card">
         {{-- FILTER --}}
-        <form method="GET" action="{{ route('lacak.index') }}">
+        @php
+            $role = auth()->user()->role;
+        @endphp
+        <form method="GET" action="{{ route($role . '.lacak.index') }}">
             <div class="row">
                 <select name="status">
                     <option value="">Proses</option>
@@ -99,7 +106,10 @@
                     <td>{{ $p->tipe_pemesanan }}</td>
                     <td>{{ $p->jenis_layanan }}</td>
                     <td class="aksi">
-                    <form method="POST" action="{{ route('lacak.next', $p->id_pemesanan) }}">
+                        @php
+                            $role = auth()->user()->role;
+                        @endphp
+                    <form method="POST" action="{{ route($role . '.lacak.next', $p->id_pemesanan) }}">
                         @csrf
 
                         @if ($p->status_proses === 'disetrika')

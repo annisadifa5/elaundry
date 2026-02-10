@@ -480,10 +480,13 @@
             <span class="sidebar-title">Super Admin</span>
         </div>
 
+        @php
+            $role = auth()->user()->role;
+        @endphp
 
         <div class="menu">
             <!-- BERANDA -->
-            <a href="{{ route('admin.dashboard') }}">
+            <a href="{{ route($role . '.dashboard') }}">
                 <div class="menu-left">
                     <svg fill="none" viewBox="0 0 24 24">
                         <path d="M3 9.75L12 4.5l9 5.25v9.75H3z"/>
@@ -517,7 +520,7 @@
             <div class="divider"></div>
 
             <!-- TRACKING -->
-            <a href="{{ route('lacak.index') }}">
+            <a href="{{ route($role . '.lacak.index') }}">
                 <div class="menu-left">
                     <svg fill="none" viewBox="0 0 24 24">
                         <circle cx="12" cy="12" r="9"/>
@@ -527,7 +530,7 @@
                 </div>
             </a>
 
-            <a href="{{ route('riwayat.index') }}">
+            <a href="{{ route($role . '.riwayat.index') }}">
                 <div class="menu-left">
                     <svg fill="none" viewBox="0 0 24 24">
                         <circle cx="12" cy="12" r="9"/>

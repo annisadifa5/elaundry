@@ -1,4 +1,8 @@
-@extends('layouts.dashboard')
+@extends(
+    auth()->user()->role === 'admin'
+        ? 'layouts.dashboard'
+        : 'layouts.dashboard_kasir'
+)
 
 @section('title', 'Reservasi Laundio')
 
