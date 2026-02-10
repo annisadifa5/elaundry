@@ -15,6 +15,7 @@ use App\Http\Controllers\KaryawanController;
 use App\Http\Controllers\HargaController;
 use App\Http\Controllers\ManajemenUserController;
 use App\Http\Controllers\KasirController;
+use App\Http\Controllers\KasirDashboardController;
 
 //AUTH
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
@@ -49,7 +50,7 @@ Route::middleware(['auth', 'role:kasir'])
     ->name('kasir.')
     ->group(function () {
 
-        Route::get('/dashboard', [KasirController::class, 'index'])
+        Route::get('/dashboard', [KasirDashboardController::class, 'index'])
             ->name('dashboard');
 
         Route::get('/riwayat', [RiwayatController::class, 'index'])
@@ -62,9 +63,9 @@ Route::middleware(['auth', 'role:kasir'])
 Route::get('/admin/dashboard', [DashboardController::class, 'index'])
     ->name('admin.dashboard');
 
-Route::get('/kasir/dashboard', function () {
-    return view('kasir.dashboard'); // atau controller sendiri
-})->name('kasir.dashboard');
+// Route::get('/kasir/dashboard', function () {
+//     return view('kasir.dashboard'); // atau controller sendiri
+// })->name('kasir.dashboard');
 
 //RESERVASI
 Route::prefix('reservasi')->name('reservasi.')->group(function () {
