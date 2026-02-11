@@ -86,6 +86,9 @@ class PemesananController extends Controller
                 'jumlah_item'     => $request->jumlah_item,
                 'total_harga'     => $totalHarga,
                 'catatan_khusus'  => $request->catatan_khusus,
+                // ⭐⭐⭐ TAMBAHKAN INI
+                'status_proses'   => 'menunggu',
+                'status_bayar'    => 'belum',
             ]);
 
             HistoryPemesanan::create([

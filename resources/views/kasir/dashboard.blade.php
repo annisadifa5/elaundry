@@ -45,19 +45,21 @@
         </thead>
         <tbody>
             @foreach ($antrianPesanan as $item)
+            
             <tr>
                 <td>{{ $loop->iteration }}</td>
                 <td>{{ $item->customer->nama_lengkap }}</td>
-                <td>{{ $item->layanan }}</td>
-                <td>Rp {{ number_format($item->total,0,',','.') }}</td>
+                <td>{{ $item->jenis_layanan }}</td>
+                <td>Rp {{ number_format($item->total_harga,0,',','.') }}</td>
+
                 <td>
-                    <span class="badge {{ $item->status == 'selesai' ? 'selesai' : '' }}">
-                        {{ ucfirst($item->status) }}
+                    <span class="badge">
+                        {{ ucfirst($item->status_proses) }}
                     </span>
                 </td>
                 <td class="aksi">
-                    <a href="{{ route('lacak.show', $item->id) }}" class="icon-btn">Detail</a>
-                    <a href="{{ route('nota.cetak', $item->id) }}" class="icon-btn">Nota</a>
+                    <a href="{{ route('kasir.lacak.index') }}" class="icon-btn">Detail</a>
+                    <a href="{{ route('pemesanan.nota', $item->id_pemesanan) }}" class="icon-btn">Nota</a>
                 </td>
             </tr>
             @endforeach
