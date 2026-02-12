@@ -44,25 +44,53 @@
             </tr>
         </thead>
         <tbody>
-            @foreach ($antrianPesanan as $item)
+            @forelse ($antrianPesanan as $item)
             
             <tr>
                 <td>{{ $loop->iteration }}</td>
-                <td>{{ $item->customer->nama_lengkap }}</td>
-                <td>{{ $item->jenis_layanan }}</td>
-                <td>Rp {{ number_format($item->total_harga,0,',','.') }}</td>
-
+            <td>{{ $item->customer->nama_lengkap ?? '-' }}</td>
+            <td>{{ $item->jenis_layanan ?? '-' }}</td>
+            <td>Rp {{ number_format($item->total_harga,0,',','.') }}</td>
                 <td>
                     <span class="badge">
-                        {{ ucfirst($item->status_proses) }}
+                        {{ ucfirst($item->status_proses ?? 'menunggu') }}
                     </span>
                 </td>
                 <td class="aksi">
-                    <a href="{{ route('kasir.lacak.index') }}" class="icon-btn">Detail</a>
-                    <a href="{{ route('pemesanan.nota', $item->id_pemesanan) }}" class="icon-btn">Nota</a>
+                    <!-- NOTA DAN DETAIL -->
+                     <div style="display:flex;gap:6px;">
+                        @if(isset($item->id_pemesanan))
+                            <a href="{{ route('kasir.pemesanan.show', $item->id_pemesanan) }}" 
+                            class="icon-btn" title="Detail">
+                                <i class="fa-solid fa-eye"></i>
+                            </a>
+
+                            <a href="{{ route('pemesanan.nota', $item->id_pemesanan) }}" 
+                            class="icon-btn" title="Nota" target="_blank">
+                                <i class="fa-solid fa-book"></i>
+                            </a>
+
+                        @elseif(isset($item->id_reservasi))
+                            <a href="{{ route('kasir.reservasi.show', $item->id_reservasi) }}" 
+                            class="icon-btn" title="Detail">
+                                <i class="fa-solid fa-eye"></i>
+                            </a>
+
+                            <a href="{{ route('reservasi.nota', $item->id_reservasi) }}" 
+                            class="icon-btn" title="Nota" target="_blank">
+                                <i class="fa-solid fa-book"></i>
+                            </a>
+                        @endif
+                    </div>
                 </td>
             </tr>
-            @endforeach
+            @empty
+            <tr>
+                <td colspan="6" style="text-align:center; color:#64748b;">
+                    Tidak ada antrian hari ini
+                </td>
+            </tr>
+            @endforelse
         </tbody>
     </table>
 </div>
@@ -94,5 +122,24 @@
     font-size: 22px;
     font-weight: 700;
 }
+
+.icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: #f3f4f6;
+    color: #374151;
+    text-decoration: none;
+    transition: 0.2s;
+}
+
+.icon-btn:hover {
+    background: #e67800;
+    color: white;
+}
+
 </style>
 @endsection
