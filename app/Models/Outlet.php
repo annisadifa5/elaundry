@@ -11,7 +11,7 @@ class Outlet extends Model
 
     protected $table = 'outlet';
     protected $primaryKey = 'id_outlet';
-    protected $fillable = ['nama_outlet','jalan','kelurahan','kecamatan','kota_kab','provinsi','kode_pos','email','no_telp','website'];
+    protected $fillable = ['nama_outlet','jalan','kelurahan','kecamatan','kota_kab','provinsi','kode_pos','email','no_telp','website','latitude','longitude',];
 
     public function karyawan()
     {

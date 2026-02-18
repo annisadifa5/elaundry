@@ -60,6 +60,15 @@
         @endphp
         <form method="GET" action="{{ route($role . '.lacak.index') }}">
             <div class="row">
+                <select name="tipe_pemesanan">
+                    <option value="">Tipe Pemesanan</option>
+                    <option value="pemesanan" {{ request('tipe_pemesanan') == 'pemesanan' ? 'selected' : '' }}>
+                        Pemesanan
+                    </option>
+                    <option value="reservasi" {{ request('tipe_pemesanan') == 'reservasi' ? 'selected' : '' }}>
+                        Reservasi
+                    </option>
+                </select>
                 <select name="status">
                     <option value="">Proses</option>
                     <option value="diterima" {{ request('status') == 'diterima' ? 'selected' : '' }}>
@@ -101,25 +110,33 @@
                 @forelse($pemesanans as $p)
                 <tr>
                     <td>{{ $p->no_order }}</td>
-                    <td>{{ $p->customer->nama ?? '-' }}</td>
-                    <td>-</td>
-                    <td>{{ $p->tipe_pemesanan }}</td>
+                    <td>{{ $p->customer->nama_lengkap ?? '-' }}</td>
+                    <td>
+                        @if($p->source === 'pemesanan')
+                            {{ optional(optional($p->historyPemesanan)->last())->pembayaran ?? 'belum_bayar' }}
+                        @else
+                            belum_bayar
+                        @endif
+                    </td>
+                    <td>{{ $p->tipe }}</td>
                     <td>{{ $p->jenis_layanan }}</td>
                     <td class="aksi">
                         @php
                             $role = auth()->user()->role;
+                            $id = $p->source === 'pemesanan'
+                                ? $p->id_pemesanan
+                                : $p->id_reservasi;
                         @endphp
-                    <form method="POST" action="{{ route($role . '.lacak.next', $p->id_pemesanan) }}">
-                        @csrf
 
-                        @if ($p->status_proses === 'disetrika')
-                            <button title="Selesaikan Pesanan" class="selesai">Selesai</button>
-                        @else
-                            <button title="Next Proses">Next</button>
-                        @endif
+                        <form method="POST" action="{{ route($role . '.lacak.next', $id) }}">
+                            @csrf
+                            <input type="hidden" name="source" value="{{ $p->source ?? '' }}">
+                            <button type="submit">
+                                {{ $p->status_proses === 'disetrika' ? 'Selesai' : 'Next' }}
+                            </button>
+                        </form>
+                    </td>
 
-                    </form>
-                </td>
 
                 </tr>
                 @empty

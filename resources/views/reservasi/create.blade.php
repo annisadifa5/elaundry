@@ -14,6 +14,8 @@
 
     <form id="form-reservasi" action="{{ route('reservasi.store') }}" method="POST">
         @csrf
+        
+        <input type="hidden" name="id_outlet" value="3">
 
         {{-- NAMA & TELP --}}
         <div class="row">
@@ -26,6 +28,12 @@
             <textarea name="alamat_jemput" placeholder="Alamat Jemput" required></textarea>
         </div>
 
+        {{-- HIDDEN KOORDINAT CUSTOMER
+        <input type="hidden" name="latitude" id="latitude">
+        <input type="hidden" name="longitude" id="longitude">
+        <input type="hidden" name="id_outlet" value="3">
+ --}}
+
         {{-- JENIS LAYANAN --}}
         <div class="form-group">
             <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
@@ -34,7 +42,7 @@
                     <option value="cuci">Cuci</option>
                     <option value="setrika">Setrika</option>
                     <option value="cuci_kering">Cuci Kering</option>
-                    <option value="cuci_setrika">Cuci + Setrika</option>
+                    <option value="cuci_setrika">Cuci Setrika</option>
                     <option value="express">Express</option>
                     <option value="sprei">Sprei</option>
                     <option value="bed_cover">Bed Cover</option>
@@ -257,49 +265,81 @@ document.addEventListener('DOMContentLoaded', function () {
 </script>
 
 <script>
-function closeModal() {
-    document.getElementById('successModal').style.display = 'none';
-}
+    function closeModal() {
+        document.getElementById('successModal').style.display = 'none';
+    }
 </script>
 
+
+{{-- Menentukan Ongkir Berdasarkan Jarak --}}
+{{-- <script>
+    function closeModal() {
+        document.getElementById('successModal').style.display = 'none';
+    }
+    </script>
+
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY"></script>
+
+    <script>
+    const alamatInput = document.querySelector('[name="alamat_jemput"]');
+
+    alamatInput.addEventListener('blur', function () {
+        if (!this.value) return;
+
+        const geocoder = new google.maps.Geocoder();
+
+        geocoder.geocode({ address: this.value }, function (results, status) {
+            if (status === 'OK') {
+                const location = results[0].geometry.location;
+
+                document.getElementById('latitude').value = location.lat();
+                document.getElementById('longitude').value = location.lng();
+            } else {
+                alert('Alamat tidak ditemukan');
+            }
+        });
+    });
+</script> --}}
+
+
 <style>
-.modal-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 9999;
-}
+    .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+    }
 
-.modal-box {
-    background: #fff;
-    padding: 32px;
-    border-radius: 16px;
-    width: 100%;
-    max-width: 480px;   /* desktop */
-    min-height: 260px;
-    text-align: center;
-}
+    .modal-box {
+        background: #fff;
+        padding: 32px;
+        border-radius: 16px;
+        width: 100%;
+        max-width: 480px;   /* desktop */
+        min-height: 260px;
+        text-align: center;
+    }
 
-.check-icon {
-    font-size: 48px;
-    color: #22c55e;
-}
+    .check-icon {
+        font-size: 48px;
+        color: #22c55e;
+    }
 
-.btn-primary {
-    background:#22c55e;
-    color:white;
-    padding:10px 16px;
-    border-radius:8px;
-    text-decoration:none;
-}
-.btn-secondary {
-    background:#e5e7eb;
-    padding:10px 16px;
-    border-radius:8px;
-}
+    .btn-primary {
+        background:#22c55e;
+        color:white;
+        padding:10px 16px;
+        border-radius:8px;
+        text-decoration:none;
+    }
+    .btn-secondary {
+        background:#e5e7eb;
+        padding:10px 16px;
+        border-radius:8px;
+    }
 </style>
 
 @endsection

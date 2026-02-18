@@ -35,6 +35,8 @@ Route::middleware(['auth', 'role:admin'])
 
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
+        Route::post('/reservasi/{id}/next', [ReservasiController::class, 'next'])->name('reservasi.next');
+
         // Lacak
         Route::get('/lacak', [LacakController::class, 'index'])->name('lacak.index');
         Route::post('/lacak/{id}/next', [LacakController::class, 'next'])->name('lacak.next');
@@ -78,6 +80,8 @@ Route::prefix('reservasi')->name('reservasi.')->group(function () {
     Route::get('/', [ReservasiController::class, 'create'])->name('create');
     Route::post('/', [ReservasiController::class, 'store'])->name('store');
     Route::get('/{id}/nota', [ReservasiController::class, 'nota'])->name('nota');
+    Route::post('/{id}/next', [ReservasiController::class, 'next'])->name('next');
+
 });
 
 //PEMESANAN

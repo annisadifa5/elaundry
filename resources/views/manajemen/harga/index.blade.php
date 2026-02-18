@@ -6,13 +6,13 @@
     <h3 class="page-title">Manajemen Harga</h3>
 
     <div class="card">
-
+        <h4 class="page-title">Daftar Harga</h4>
         {{-- TOP ACTION --}}
         <div class="top-action">
             <div></div>
 
-            <a href="{{ route('manajemen.harga.create') }}" class="btn tambah">
-                Tambah Harga +
+            <a href="{{ route('manajemen.harga.create') }}" class="btn btn-sm">
+                + Tambah Harga 
             </a>
         </div>
 
@@ -105,21 +105,27 @@
         }
 
         .btn {
-            padding: 8px 14px;
-            border-radius: 6px;
-            border: none;
-            cursor: pointer;
-            font-size: 13px;
-        }
-
-        .btn.tambah {
-            background: #fb923c;
+            background: #ff8a00;
             color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            align-self: flex-end;
+            margin-top: 15px;
             text-decoration: none;
+            display: inline-flex;
+            line-height: 1;
         }
 
-        .btn.tambah:hover {
-            background: #f97316;
+        .btn-sm {
+            padding: 10px 16px;
+            font-size: 14px;
+        }
+
+        .btn-sm:hover {
+            background: #e67800;
         }
 
         .table {
@@ -148,7 +154,10 @@
         }
 
         .aksi {
-            text-align: center;
+            display: flex;
+            justify-content: center; 
+            align-items: center;   
+            gap: 8px;
         }
 
         .aksi a,

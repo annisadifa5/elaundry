@@ -149,6 +149,12 @@
             opacity: .95;
         }
 
+        .submenu a.active {
+            font-weight: 700;
+            opacity: 1;
+        }
+
+
         .submenu.show {
             display: flex;
         }
@@ -344,8 +350,21 @@
 
         .aksi {
             display: flex;
+            justify-content: center;
             align-items: center;
             gap: 10px;
+        }
+
+        .aksi form {
+            margin: 0;
+        }
+
+        .aksi a,
+        .aksi button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
         }
 
         .icon-btn {
@@ -536,7 +555,7 @@
                         <circle cx="12" cy="12" r="9"/>
                         <path d="M12 9v4l2 2"/>
                     </svg>
-                    <span>Riwayat Pemesanan</span>
+                    <span>Riwayat</span>
                 </div>
             </a>
 
@@ -551,16 +570,16 @@
                     </svg>
                     <span>Manajemen</span>
                 </div>
-                <svg class="arrow" fill="none" viewBox="0 0 24 24">
+                <svg class="arrow {{ request()->routeIs('manajemen.*') ? 'rotate' : '' }}" fill="none" viewBox="0 0 24 24">
                     <path d="M6 9l6 6 6-6"/>
                 </svg>
             </div>
 
             <div class="submenu" id="manajemen-menu">
-                <a href="{{ route('manajemen.indexpromo') }}"><span>Promo</span></a>
-                <a href="{{ route('manajemen.customer.index') }}"><span>Customer</span></a>
-                <a href="{{ route('manajemen.harga.index') }}"><span>Harga</span></a>
-                <a href="{{ route('manajemen.user.index') }}"><span>User</span></a>
+                <a href="{{ route('manajemen.indexpromo') }}" class="{{ request()->routeIs('manajemen.indexpromo') ? 'active' : '' }}"><span>Promo</span></a>
+                <a href="{{ route('manajemen.customer.index') }}" class="{{ request()->routeIs('manajemen.customer.index') ? 'active' : '' }}"><span>Customer</span></a>
+                <a href="{{ route('manajemen.harga.index') }}" class="{{ request()->routeIs('manajemen.harga.index') ? 'active' : '' }}"><span>Harga</span></a>
+                <a href="{{ route('manajemen.user.index') }}" class="{{ request()->routeIs('manajemen.user.index') ? 'active' : '' }}"><span>User</span></a>
             </div>
 
 
@@ -573,14 +592,14 @@
                     </svg>
                     <span>Pengaturan</span>
                 </div>
-                <svg class="arrow" fill="none" viewBox="0 0 24 24">
+                <svg class="arrow {{ request()->routeIs('pengaturan.*') ? 'rotate' : '' }}" fill="none" viewBox="0 0 24 24">
                     <path d="M6 9l6 6 6-6"/>
                 </svg>
             </div>
 
-            <div class="submenu" id="pengaturan-menu">
-                <a href="{{ route('outlet.index') }}"><span>Outlet</span></a>
-                <a href="{{ route('karyawan.index') }}"><span>Karyawan</span></a>
+            <div class="submenu {{ request()->routeIs('outlet.*', 'karyawan.*') ? 'show' : '' }}" id="pengaturan-menu">
+                <a href="{{ route('outlet.index') }}" class="{{ request()->routeIs('outlet.*') ? 'active' : '' }}"><span>Outlet</span></a>
+                <a href="{{ route('karyawan.index') }}" class="{{ request()->routeIs('karyawan.*') ? 'active' : '' }}"><span>Karyawan</span></a>
             </div>
             @endif
         </div>
@@ -609,6 +628,7 @@ function toggleMenu(id) {
     arrow.classList.toggle('rotate');
 }
 </script>
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 @if(session('success'))
     <script>
@@ -645,6 +665,17 @@ document.addEventListener('DOMContentLoaded', () => {
             sidebar.classList.remove('collapsed');
         }
     });
+});
+</script>
+{{-- untuk dropdown menu --}}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const isManajemen = @json(request()->routeIs('manajemen.*'));
+    const menu = document.getElementById('manajemen-menu');
+
+    if (isManajemen) {
+        menu.classList.add('show');
+    }
 });
 </script>
 

@@ -85,6 +85,7 @@
             text-decoration: none;
             margin-bottom: 14px;
             padding: 0 12px;
+            height: 25px;
             cursor: pointer;
         }
 
@@ -143,6 +144,12 @@
             transition: all .3s ease;
         }
 
+        .page-title {
+            font-weight: 600;
+            color: #0b2c4d;
+            margin-bottom: 20px;
+        }
+
         .card {
             background: #f9fdff;
             border: 1px solid #dbeafe;
@@ -165,6 +172,7 @@
         .form-group {
             display: flex;
             flex-direction: column;
+             margin-bottom: 8px;
             gap: 6px;
         }
 
@@ -179,6 +187,56 @@
         textarea {
             resize: none;
             height: 90px;
+        }
+
+        .layanan-flex {
+            display: flex;
+            flex-wrap: wrap;   /* 🔥 ini yang bikin ke samping lalu turun */
+            gap: 8px;
+        }
+
+        .layanan-chip {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .layanan-chip select {
+            width: 150px;      /* 🔥 ukuran kecil / compact */
+            padding: 6px;
+            font-size: 13px;
+        }
+
+        .layanan-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .layanan-row select {
+            width: 220px;
+            padding: 8px;
+        }
+
+        .chip-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .chip {
+            background: #eef2ff;
+            border-radius: 20px;
+            padding: 6px 12px;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .chip span {
+            cursor: pointer;
+            font-weight: bold;
         }
 
         .btn {

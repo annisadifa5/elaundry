@@ -11,7 +11,22 @@ class Pemesanan extends Model
 
     protected $table = 'pemesanan';
     protected $primaryKey = 'id_pemesanan';
-    protected $fillable = ['id_track','id_cust','id_outlet','jenis_layanan','tipe_pemesanan','no_order','tanggal_masuk','tanggal_selesai','berat_cucian','jumlah_item','total_harga', 'catatan_khusus', 'status_proses'];
+    protected $fillable = [
+        'id_track',
+        'id_cust',
+        'id_outlet',
+        'jenis_layanan',
+        'tipe_pemesanan',
+        'no_order',
+        'tanggal_masuk',
+        'tanggal_selesai',
+        'berat_cucian',
+        'jumlah_item',
+        'total_harga',
+        'catatan_khusus',
+        'status_proses',
+        'status_bayar'
+        ];
 
     public function customer()
     {
@@ -37,4 +52,10 @@ class Pemesanan extends Model
     {
         return $this->hasOne(TrackPemesanan::class, 'id_pemesanan', 'id_pemesanan');
     }
+
+    public function getTipeAttribute()
+    {
+        return 'pemesanan';
+    }
+
 }

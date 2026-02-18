@@ -4,7 +4,7 @@
         : 'layouts.dashboard_kasir'
 )
 
-@section('title', 'Reservasi Laundio')
+@section('title', 'Pemesanan Laundio')
 
 @section('content')
 <div class="page-title">Pemesanan Laundio</div>
@@ -27,7 +27,7 @@
 
         {{-- CUSTOMER --}}
         <div class="row">
-            <input type="hidden" name="id_outlet" value="2">
+            <input type="hidden" name="id_outlet" value="3">
 
             <input type="text" name="nama_lengkap" placeholder="Nama Customer" required>
             <input type="text" name="no_telp" placeholder="No Telepon" required>
@@ -48,7 +48,7 @@
                     <option value="cuci">Cuci</option>
                     <option value="setrika">Setrika</option>
                     <option value="cuci_kering">Cuci Kering</option>
-                    <option value="cuci_setrika">Cuci + Setrika</option>
+                    <option value="cuci_setrika">Cuci Setrika</option>
                     <option value="express">Express</option>
                     <option value="sprei">Sprei</option>
                     <option value="bed_cover">Bed Cover</option>
@@ -120,6 +120,47 @@
 <script>
     const hargaList = @json($hargaList);
 </script>
+
+<script>
+    function toggleInputBySatuan() {
+        const beratInput  = document.getElementById('berat_cucian');
+        const jumlahInput = document.getElementById('jumlah_item');
+
+        let adaKg  = false;
+        let adaPcs = false;
+
+        layananDipilih.forEach(kode => {
+            const data = hargaList.find(h => h.kode_layanan === kode);
+            if (!data) return;
+
+            if (data.satuan === 'kg') adaKg = true;
+            if (data.satuan === 'pcs') adaPcs = true;
+        });
+
+        // Jika ada kg → nonaktifkan jumlah_item
+        if (adaKg && !adaPcs) {
+            jumlahInput.value = '';
+            jumlahInput.disabled = true;
+            beratInput.disabled = false;
+        }
+
+        // Jika ada pcs → nonaktifkan berat
+        else if (adaPcs && !adaKg) {
+            beratInput.value = '';
+            beratInput.disabled = true;
+            jumlahInput.disabled = false;
+        }
+
+        // Jika campur → aktifkan semua
+        else {
+            beratInput.disabled = false;
+            jumlahInput.disabled = false;
+        }
+    }
+</script>
+
+
+
 {{-- chip jenis layanan --}}
 <script>
     const select = document.getElementById('layanan-select');
@@ -146,6 +187,8 @@
         chipWrapper.appendChild(chip);
 
         this.value = '';
+
+        toggleInputBySatuan(); // ✅ TAMBAHKAN DI SINI
         estimasiHarga();
     });
 
@@ -153,8 +196,11 @@
         layananDipilih = layananDipilih.filter(v => v !== value);
         hiddenInput.value = layananDipilih.join(',');
         el.parentElement.remove();
+
+        toggleInputBySatuan(); // ✅ TAMBAHKAN DI SINI
         estimasiHarga();
     }
+
 </script>
 
 

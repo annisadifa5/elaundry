@@ -23,7 +23,7 @@ class ReservasiController extends Controller
     {
 
         $validated = validator($request->all(), [
-            'nama_lengkap'            => 'required|string|max:100',
+            'nama_lengkap'    => 'required|string|max:100',
             'no_telp'         => 'required|string|max:20',
             'alamat_jemput'   => 'required|string',
             'jenis_layanan'   => 'required|string',
@@ -71,6 +71,7 @@ class ReservasiController extends Controller
         // ==============================
         $reservasi = Reservasi::create([
             'id_cust'        => $customer->id_cust,
+            'id_outlet'      => 3,
             'jenis_layanan'  => $validated['jenis_layanan'],
             'tipe_pemesanan' => 'reservasi',
             'tanggal_jemput' => $validated['tanggal_jemput'],
@@ -80,6 +81,7 @@ class ReservasiController extends Controller
             // 'berat_cucian'   => $berat ?: null,
             'total_harga'    => $totalHarga,
             'catatan_khusus' => $validated['catatan_khusus'] ?? null,
+            'status_proses'  => 'diterima',
         ]);
 
      
@@ -93,9 +95,44 @@ class ReservasiController extends Controller
 
     public function nota($id)
     {
-        $reservasi = Reservasi::with('customer')->findOrFail($id);
+        $reservasi = Reservasi::with(['customer','outlet'])->findOrFail($id);
 
         return view('reservasi.nota', compact('reservasi'));
     }
+
+    // public function next(Request $request, $id)
+    // {
+    //     $source = $request->source;
+
+    //     if ($source === 'pemesanan') {
+
+    //         $data = Pemesanan::findOrFail($id);
+
+    //     } else {
+
+    //         $data = Reservasi::findOrFail($id);
+
+    //     }
+
+    //     $next = match ($data->status_proses) {
+    //         'diterima'    => 'dicuci',
+    //         'dicuci'      => 'dikeringkan',
+    //         'dikeringkan' => 'disetrika',
+    //         'disetrika'   => 'selesai',
+    //         default       => null,
+    //     };
+
+    //     if (!$next) {
+    //         return back();
+    //     }
+
+    //     $data->update([
+    //         'status_proses' => $next,
+    //     ]);
+
+    //     return back();
+    // }
+
+
 
 }

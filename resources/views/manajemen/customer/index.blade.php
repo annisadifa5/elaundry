@@ -3,16 +3,16 @@
 @section('title', 'Data Customer')
 
 @section('content')
-    <h3 class="page-title">Data Customer</h3>
-
+{{-- <h3 class="page-title">Data Customer</h3> --}}
     <div class="card">
+    <h3 class="page-title">Daftar Customer</h3>
 
         {{-- TOP ACTION --}}
         <div class="top-action">
             <div></div>
 
-            <a href="{{ route('manajemen.customer.create') }}" class="btn tambah">
-                Tambah Customer +
+            <a href="{{ route('manajemen.customer.create') }}" class="btn btn-sm">
+                + Tambah Customer 
             </a>
         </div>
 
@@ -88,23 +88,28 @@
         }
 
         .btn {
-            padding: 8px 14px;
-            border-radius: 6px;
+            background: #ff8a00;
+            color: white;
             border: none;
+            padding: 10px 18px;
+            border-radius: 20px;
             cursor: pointer;
-            font-size: 13px;
+            font-weight: 600;
+            align-self: flex-end;
+            margin-top: 15px;
+            text-decoration: none;
+            display: inline-flex;
+            line-height: 1;
         }
 
         /* 🔥 BUTTON TAMBAH CUSTOMER - ORANGE */
-        .btn.tambah {
-            background: #fb923c;
-            color: white;
-            text-decoration: none;
-            border: none;
+        .btn-sm {
+            padding: 10px 16px;
+            font-size: 14px;
         }
 
-        .btn.tambah:hover {
-            background: #f97316; /* orange lebih gelap dikit */
+        .btn-sm:hover {
+            background: #e67800; /* orange lebih gelap dikit */
         }
 
         .table {
@@ -137,11 +142,26 @@
         }
 
         /* ✏️ EDIT POLLOSAN */
+        .aksi {
+            display: flex;
+            justify-content: center;
+            align-items: center;     
+            gap: 8px;
+        }
+
+        .aksi form {
+            margin: 0;
+        }
+
         .aksi a {
             text-decoration: none;
             color: inherit; /* ikut warna teks default */
             font-size: 16px;
             margin: 0 4px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
         }
 
         .aksi button {

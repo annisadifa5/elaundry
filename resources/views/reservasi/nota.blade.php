@@ -46,11 +46,18 @@
 
     <!-- HEADER -->
     <div class="center">
-        <strong>LAUNDIO</strong><br>
-        Jl. Contoh Alamat No.12<br>
-        Semarang<br>
-        0812-xxxx-xxxx
+        <strong>{{ $reservasi->outlet->nama_outlet ?? 'LAUNDIO' }}</strong><br>
+
+        {{ $reservasi->outlet->jalan ?? '' }}<br>
+        {{ $reservasi->outlet->kelurahan ?? '' }},
+        {{ $reservasi->outlet->kecamatan ?? '' }}<br>
+        {{ $reservasi->outlet->kota_kab ?? '' }},
+        {{ $reservasi->outlet->provinsi ?? '' }}
+        {{ $reservasi->outlet->kode_pos ?? '' }}<br>
+
+        {{ $reservasi->outlet->no_telp ?? '' }}
     </div>
+
 
     <div class="line"></div>
 

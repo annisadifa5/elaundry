@@ -20,7 +20,7 @@
                     <th>Nama</th>
                     <th>Email</th>
                     <th>Role</th>
-                    <th>Aksi</th>
+                    <th style="text-align:center">Aksi</th>
                 </tr>
             </thead>
             <tbody>
@@ -36,7 +36,7 @@
                     <td class="aksi">
                         <a href="{{ route('manajemen.user.edit', $user) }}"
                            class="icon-btn" title="Edit">
-                            ✏️
+                            ✎
                         </a>
 
                         <form method="POST"
@@ -46,7 +46,7 @@
                             @csrf
                             @method('DELETE')
                             <button class="icon-btn danger" title="Hapus">
-                                🗑️
+                                🗑
                             </button>
                         </form>
                     </td>

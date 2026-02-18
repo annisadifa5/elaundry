@@ -3,13 +3,18 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use App\Models\Pemesanan;
+use App\Models\Reservasi;
+
+
 
 class LacakController extends Controller
 {
     public function index(Request $request)
     {
-        // QUERY UTAMA (TABLE)
+        // Query Pemesanan
         $query = Pemesanan::with('customer');
 
         if ($request->status) {
@@ -23,25 +28,78 @@ class LacakController extends Controller
             ]);
         }
 
-        $pemesanans = $query
-            ->orderBy('tanggal_masuk')
-            ->get();
+        $pemesanans = $query->get()
+            ->map(function ($p) {
+                $p->source = 'pemesanan';
+                return $p;
+            });
 
-        // =========================
-        // DATA MINI DASHBOARD
-        // =========================
+        // Query Reservasi
+        $reservasis = Reservasi::with('customer')
+            ->when($request->status, fn($q) =>
+                $q->where('status_proses', $request->status)
+            )
+            ->get()
+            ->map(function ($r) {
+                $r->tanggal_masuk = $r->tanggal_jemput;
+                $r->no_order = 'RES-' . $r->id_reservasi;
+                $r->tipe = 'Reservasi';
+                $r->source = 'reservasi';
+                return $r;
+            });
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | 3️⃣ GABUNGKAN
+        |--------------------------------------------------------------------------
+        */
+        $pemesanans = $pemesanans
+            ->merge($reservasis)
+            ->sortBy('tanggal_masuk')
+            ->values();
+
+
+        $tipe = $request->tipe_pemesanan;
+
+        if ($tipe) {
+            $pemesanans = $pemesanans->filter(function ($item) use ($tipe) {
+                return $item->source === $tipe;
+            });
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | 4️⃣ DASHBOARD COUNT (GABUNG)
+        |--------------------------------------------------------------------------
+        */
+        // Ambil semua untuk dashboard
+        $allPemesanan = Pemesanan::all()->map(function ($p) {
+            $p->source = 'pemesanan';
+            return $p;
+        });
+
+        $allReservasi = Reservasi::all()->map(function ($r) {
+            $r->tanggal_masuk = $r->tanggal_jemput;
+            $r->no_order = 'RES-' . now()->format('Ymd') . '-' . strtoupper(Str::random(6));
+            $r->source = 'reservasi';
+            return $r;
+        });
+
+        $allData = $allPemesanan->merge($allReservasi);
+
         $trackingCount = [
-            'diterima'     => Pemesanan::where('status_proses', 'diterima')->count(),
-            'dicuci'       => Pemesanan::where('status_proses', 'dicuci')->count(),
-            'dikeringkan'  => Pemesanan::where('status_proses', 'dikeringkan')->count(),
-            'disetrika'    => Pemesanan::where('status_proses', 'disetrika')->count(),
-            'selesai'      => Pemesanan::where('status_proses', 'selesai')->count(),
+            'diterima'     => $allData->where('status_proses', 'diterima')->count(),
+            'dicuci'       => $allData->where('status_proses', 'dicuci')->count(),
+            'dikeringkan'  => $allData->where('status_proses', 'dikeringkan')->count(),
+            'disetrika'    => $allData->where('status_proses', 'disetrika')->count(),
+            'selesai'      => $allData->where('status_proses', 'selesai')->count(),
         ];
 
-        // 🔥 TOTAL SEMUA PESANAN
-        $total = array_sum($trackingCount);
+        $total = $trackingCount
+            ? array_sum($trackingCount)
+            : 0;
 
-        // 🔥 HITUNG PERSENTASE
         $persen = [
             'diterima'     => $total ? round($trackingCount['diterima'] / $total * 100) : 0,
             'dicuci'       => $total ? round($trackingCount['dicuci'] / $total * 100) : 0,
@@ -53,11 +111,20 @@ class LacakController extends Controller
         return view('lacak.index', compact('pemesanans', 'trackingCount', 'persen'));
     }
 
-    public function next($id)
-    {
-        $pemesanan = Pemesanan::findOrFail($id);
 
-        $next = match ($pemesanan->status_proses) {
+    public function next(Request $request, $id)
+    {
+        if ($request->source === 'pemesanan') {
+            $data = Pemesanan::find($id);
+        } else {
+            $data = Reservasi::find($id);
+        }
+
+        if (!$data) {
+            abort(404);
+        }
+
+        $next = match ($data->status_proses) {
             'diterima'    => 'dicuci',
             'dicuci'      => 'dikeringkan',
             'dikeringkan' => 'disetrika',
@@ -69,8 +136,8 @@ class LacakController extends Controller
             return back();
         }
 
-        $pemesanan->update([
-            'status_proses' => $next,
+        $data->update([
+            'status_proses' => $next
         ]);
 
         return back();

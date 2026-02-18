@@ -52,8 +52,8 @@
                 @forelse($pemesanans as $p)
                 <tr>
                     <td>{{ $p->no_order }}</td>
-                    <td>{{ $p->customer->nama ?? '-' }}</td>
-                    <td>-</td>
+                    <td>{{ $p->customer->nama_lengkap ?? '-' }}</td>
+                    <td>{{ $p->historyPemesanan->last()->pembayaran ?? 'belum_bayar' }}</td>
                     <td>{{ ucfirst($p->tipe_pemesanan) }}</td>
                     <td>
                         <span class="badge selesai">Selesai</span>

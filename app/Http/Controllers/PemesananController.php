@@ -23,8 +23,8 @@ class PemesananController extends Controller
         'id_outlet'      => 'required|exists:outlet,id_outlet',
         'jenis_layanan'  => 'required|string',
         // 'tipe_pemesanan' => 'required|string',
-        'berat_cucian'   => 'required|numeric|min:0.1',
-        'jumlah_item'    => 'required|integer|min:1',
+        'berat_cucian'   => 'nullable|numeric|min:0.1',
+        'jumlah_item'    => 'nullable|integer|min:1',
         'catatan_khusus' => 'nullable|string',
     ]);
 
@@ -87,7 +87,7 @@ class PemesananController extends Controller
                 'total_harga'     => $totalHarga,
                 'catatan_khusus'  => $request->catatan_khusus,
                 // ⭐⭐⭐ TAMBAHKAN INI
-                'status_proses'   => 'menunggu',
+                'status_proses'   => 'diterima',
                 'status_bayar'    => 'belum',
             ]);
 
@@ -140,7 +140,7 @@ class PemesananController extends Controller
 
     public function nota($id)
     {
-        $pemesanan = Pemesanan::with('customer')
+        $pemesanan = Pemesanan::with(['customer','outlet'])
             ->findOrFail($id);
 
         return view('pemesanan.nota', compact('pemesanan'));
@@ -154,7 +154,7 @@ class PemesananController extends Controller
             'id_pemesanan' => $id,
             'status' => $request->status,
             'jenis_layanan' => $pemesanan->jenis_layanan,
-            // 'tipe_pemesanan' => $pemesanan->tipe_pemesanan,
+            'tipe_pemesanan' => $pemesanan->tipe_pemesanan,
         ]);
 
         $pemesanan->trackPemesanan()->update([
