@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('reservasi', function (Blueprint $table) {
-            $table->string('status_proses')->default('diterima');
+            $table->text('lokasi')->nullable()->after('alamat_jemput');
         });
     }
 
@@ -22,7 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('reservasi', function (Blueprint $table) {
-            //
+            $table->dropColumn('lokasi');
         });
     }
 };

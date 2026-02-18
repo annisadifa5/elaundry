@@ -15,7 +15,7 @@
     <form id="form-reservasi" action="{{ route('reservasi.store') }}" method="POST">
         @csrf
         
-        <input type="hidden" name="id_outlet" value="3">
+        <input type="hidden" name="id_outlet" value="2">
 
         {{-- NAMA & TELP --}}
         <div class="row">
@@ -28,11 +28,21 @@
             <textarea name="alamat_jemput" placeholder="Alamat Jemput" required></textarea>
         </div>
 
-        {{-- HIDDEN KOORDINAT CUSTOMER
+        <!-- LOKASI -->
+        <div class="row">
+            <input
+                type="url"
+                name="lokasi"
+                placeholder="Titik Lokasi (URL Google Maps)"
+                value="{{ old('lokasi') }}"
+            >
+        </div>
+
+        <!-- {{-- HIDDEN KOORDINAT CUSTOMER
         <input type="hidden" name="latitude" id="latitude">
         <input type="hidden" name="longitude" id="longitude">
         <input type="hidden" name="id_outlet" value="3">
- --}}
+ --}} -->
 
         {{-- JENIS LAYANAN --}}
         <div class="form-group">
@@ -271,7 +281,7 @@ document.addEventListener('DOMContentLoaded', function () {
 </script>
 
 
-{{-- Menentukan Ongkir Berdasarkan Jarak --}}
+<!-- {{-- Menentukan Ongkir Berdasarkan Jarak --}}
 {{-- <script>
     function closeModal() {
         document.getElementById('successModal').style.display = 'none';
@@ -299,7 +309,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
     });
-</script> --}}
+</script> --}} -->
 
 
 <style>

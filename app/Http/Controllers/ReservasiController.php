@@ -26,6 +26,7 @@ class ReservasiController extends Controller
             'nama_lengkap'    => 'required|string|max:100',
             'no_telp'         => 'required|string|max:20',
             'alamat_jemput'   => 'required|string',
+            'lokasi'          => 'nullable|url',
             'jenis_layanan'   => 'required|string',
             // 'tipe_pemesanan'  => 'required|string',
             'tanggal_jemput'  => 'required|date',
@@ -33,6 +34,9 @@ class ReservasiController extends Controller
             'jumlah_item'     => 'nullable|integer|min:1',
             'berat_cucian'    => 'nullable|numeric|min:0.1',
             'catatan_khusus'  => 'nullable|string',
+            'status_proses'   => 'in:diterima,dicuci,dikeringkan,disetrika',
+            'status_bayar'    => 'in:belum,lunas',
+
         ])->validate();
 
         $customer = Customer::firstOrCreate(
@@ -71,17 +75,19 @@ class ReservasiController extends Controller
         // ==============================
         $reservasi = Reservasi::create([
             'id_cust'        => $customer->id_cust,
-            'id_outlet'      => 3,
+            'id_outlet'      => 2,
             'jenis_layanan'  => $validated['jenis_layanan'],
             'tipe_pemesanan' => 'reservasi',
             'tanggal_jemput' => $validated['tanggal_jemput'],
             'jam_jemput'     => $validated['jam_jemput'],
             'alamat_jemput'  => $validated['alamat_jemput'],
+            'lokasi'         => $validated['lokasi'] ?? null,
             'jumlah_item'    => $jumlah ?: null,
             // 'berat_cucian'   => $berat ?: null,
             'total_harga'    => $totalHarga,
             'catatan_khusus' => $validated['catatan_khusus'] ?? null,
-            'status_proses'  => 'diterima',
+            'status_proses'  => 'diterima', // default
+            'status_bayar'   => 'belum',    // default
         ]);
 
      
