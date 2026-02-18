@@ -25,7 +25,8 @@ class Reservasi extends Model
         'total_harga',
         'catatan_khusus',
         'status_proses',   // 🔥 tambahkan
-        'status_bayar'     // 🔥 tambahkan
+        'status_bayar',     // 🔥 tambahkan
+        'lokasi'
 ];
     public function customer()
     {

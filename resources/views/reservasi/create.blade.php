@@ -15,7 +15,7 @@
     <form id="form-reservasi" action="{{ route('reservasi.store') }}" method="POST">
         @csrf
         
-        <input type="hidden" name="id_outlet" value="3">
+        <input type="hidden" name="id_outlet" value="2">
 
         {{-- NAMA & TELP --}}
         <div class="row">
@@ -30,6 +30,22 @@
 
         <input type="hidden" name="latitude" id="latitude">
         <input type="hidden" name="longitude" id="longitude">
+
+        <!-- LOKASI -->
+        <div class="row">
+            <input
+                type="url"
+                name="lokasi"
+                placeholder="Titik Lokasi (URL Google Maps)"
+                value="{{ old('lokasi') }}"
+            >
+        </div>
+
+        <!-- {{-- HIDDEN KOORDINAT CUSTOMER
+        <input type="hidden" name="latitude" id="latitude">
+        <input type="hidden" name="longitude" id="longitude">
+        <input type="hidden" name="id_outlet" value="3">
+ --}} -->
 
         {{-- JENIS LAYANAN --}}
         <div class="form-group">

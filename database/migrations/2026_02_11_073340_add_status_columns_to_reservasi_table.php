@@ -13,10 +13,11 @@ return new class extends Migration
     {
         Schema::table('reservasi', function (Blueprint $table) {
     $table->enum('status_proses', [
-        'menunggu',
-        'diproses',
-        'selesai'
-    ])->default('menunggu');
+        'diterima',
+        'dicuci',
+        'dikeringkan',
+        'disetrika'
+    ])->default('diterima');
 
     $table->enum('status_bayar', [
         'belum',

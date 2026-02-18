@@ -19,11 +19,11 @@ return new class extends Migration
 
         // isi data lama dengan outlet default 3
         DB::table('reservasi')
-            ->update(['id_outlet' => 3]);
+            ->update(['id_outlet' => 2]);
 
         Schema::table('reservasi', function (Blueprint $table) {
             $table->unsignedBigInteger('id_outlet')
-                ->nullable(false)
+                ->nullable()
                 ->change();
 
             $table->foreign('id_outlet')
