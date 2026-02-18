@@ -28,11 +28,8 @@
             <textarea name="alamat_jemput" placeholder="Alamat Jemput" required></textarea>
         </div>
 
-        {{-- HIDDEN KOORDINAT CUSTOMER
         <input type="hidden" name="latitude" id="latitude">
         <input type="hidden" name="longitude" id="longitude">
-        <input type="hidden" name="id_outlet" value="3">
- --}}
 
         {{-- JENIS LAYANAN --}}
         <div class="form-group">
@@ -272,34 +269,28 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 {{-- Menentukan Ongkir Berdasarkan Jarak --}}
-{{-- <script>
-    function closeModal() {
-        document.getElementById('successModal').style.display = 'none';
-    }
-    </script>
+<script src="https://maps.googleapis.com/maps/api/js?key=API_KEY_KAMU&libraries=places"></script>
 
-    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY"></script>
+<script>
+    function initAutocomplete() {
+        const input = document.getElementById('alamat');
+        const autocomplete = new google.maps.places.Autocomplete(input);
 
-    <script>
-    const alamatInput = document.querySelector('[name="alamat_jemput"]');
+        autocomplete.addListener('place_changed', function() {
+            const place = autocomplete.getPlace();
+            if (!place.geometry) return;
 
-    alamatInput.addEventListener('blur', function () {
-        if (!this.value) return;
+            document.getElementById('latitude').value =
+                place.geometry.location.lat();
 
-        const geocoder = new google.maps.Geocoder();
-
-        geocoder.geocode({ address: this.value }, function (results, status) {
-            if (status === 'OK') {
-                const location = results[0].geometry.location;
-
-                document.getElementById('latitude').value = location.lat();
-                document.getElementById('longitude').value = location.lng();
-            } else {
-                alert('Alamat tidak ditemukan');
-            }
+            document.getElementById('longitude').value =
+                place.geometry.location.lng();
         });
-    });
-</script> --}}
+    }
+
+    google.maps.event.addDomListener(window, 'load', initAutocomplete);
+</script>
+
 
 
 <style>

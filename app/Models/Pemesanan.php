@@ -53,13 +53,9 @@ class Pemesanan extends Model
         return $this->hasOne(TrackPemesanan::class, 'id_pemesanan', 'id_pemesanan');
     }
 
-<<<<<<< HEAD
     public function getTipeAttribute()
     {
         return 'pemesanan';
     }
-=======
-
->>>>>>> f3705fd4b08a668101ac424051a4752a7691da7b
 
 }
