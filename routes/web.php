@@ -55,6 +55,13 @@ Route::middleware(['auth', 'role:kasir'])
         Route::get('/dashboard', [KasirDashboardController::class, 'index'])
             ->name('dashboard');
 
+        // ✅ TAMBAHKAN DI SINI
+        Route::get('/pemesanan/{id}', [KasirDashboardController::class, 'showPemesanan'])
+            ->name('pemesanan.show');
+
+        Route::get('/reservasi/{id}', [KasirDashboardController::class, 'showReservasi'])
+            ->name('reservasi.show');
+
         Route::get('/riwayat', [RiwayatController::class, 'index'])
             ->name('riwayat.index');
 

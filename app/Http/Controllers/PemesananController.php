@@ -205,7 +205,4 @@ class PemesananController extends Controller
             'formatted' => 'Rp ' . number_format($total, 0, ',', '.'),
         ]);
     }
-
-
-
 }
