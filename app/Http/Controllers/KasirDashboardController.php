@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Pemesanan;
 use App\Models\Reservasi;
+use App\Models\HistoryPemesanan;
 use Carbon\Carbon;
 
 class KasirDashboardController extends Controller
@@ -42,20 +43,25 @@ class KasirDashboardController extends Controller
 
         // ================= PESANAN SELESAI =================
         $pesananSelesai =
-            Pemesanan::whereDate('created_at', $hariIni)
-                ->where('status_proses', 'selesai')
-                ->count()
-            +
-            Reservasi::whereDate('created_at', $hariIni)
-                ->where('status_proses', 'selesai')
+            HistoryPemesanan::whereDate('created_at', $hariIni)
                 ->count();
 
         // ================= ANTRIAN =================
-        $antrianPemesanan = Pemesanan::whereIn('status_proses', ['menunggu', 'diproses'])
+        $antrianPemesanan = Pemesanan::whereIn('status_proses', [
+                'diterima',
+                'dicuci',
+                'dikeringkan',
+                'disetrika'
+            ])
             ->orderBy('created_at', 'asc')
             ->get();
 
-        $antrianReservasi = Reservasi::whereIn('status_proses', ['menunggu', 'diproses'])
+        $antrianReservasi = Reservasi::whereIn('status_proses', [
+                'diterima',
+                'dicuci',
+                'dikeringkan',
+                'disetrika'
+            ])
             ->orderBy('created_at', 'asc')
             ->get();
 
