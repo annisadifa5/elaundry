@@ -116,21 +116,23 @@ class ReservasiController extends Controller
         // ==============================
         $reservasi = Reservasi::create([
             'id_cust'        => $customer->id_cust,
-            'id_outlet'      => 2,
+            'id_outlet'      => 3,
             'jenis_layanan'  => $validated['jenis_layanan'],
             'tipe_pemesanan' => 'reservasi',
             'tanggal_jemput' => $validated['tanggal_jemput'],
             'jam_jemput'     => $validated['jam_jemput'],
             'alamat_jemput'  => $validated['alamat_jemput'],
-            'lokasi'         => $validated['lokasi'] ?? null,
+            'latitude'       => $validated['latitude'],
+            'longitude'      => $validated['longitude'],
+            'jarak_km'       => $jarak ?? null,
             'jumlah_item'    => $jumlah ?: null,
-            // 'berat_cucian'=> $berat ?: null,
             'total_harga'    => $totalFinal,
             'ongkir'         => $ongkir,
             'catatan_khusus' => $validated['catatan_khusus'] ?? null,
-            'status_proses'  => 'diterima', // default
-            'status_bayar'   => 'belum',    // default
+            'status_proses'  => 'diterima',
+            'status_bayar'   => 'belum',
         ]);
+
 
         return response()->json([
             'success' => true,

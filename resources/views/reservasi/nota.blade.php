@@ -69,28 +69,48 @@
         Pelanggan : {{ $reservasi->customer->nama_lengkap }}
     </div>
 
-    <div class="line"></div>
-
-    <!-- ITEM -->
-    <div class="row">
-        <span>{{ $reservasi->jenis_layanan }}</span>
-        <span>Rp {{ number_format($reservasi->total_harga,0,',','.') }}</span>
-    </div>
-
-    @if($reservasi->jumlah_item)
+    @if($reservasi->latitude && $reservasi->longitude)
     <div class="small">
-        Qty : {{ $reservasi->jumlah_item }} pcs
+        Lokasi :
+        <a href="https://www.google.com/maps?q={{ $reservasi->latitude }},{{ $reservasi->longitude }}"
+        target="_blank">
+            Buka Maps
+        </a>
     </div>
     @endif
 
     <div class="line"></div>
 
-    <!-- TOTAL -->
+    <!-- ITEM -->
     <div class="row">
-        <strong>Total</strong>
-        <strong>Rp {{ number_format($reservasi->total_harga,0,',','.') }}</strong>
-    </div>
+    <span>{{ $reservasi->jenis_layanan }}</span>
+    <span>Rp {{ number_format($reservasi->total_harga - $reservasi->ongkir,0,',','.') }}</span>
+        </div>
 
+        @if($reservasi->jumlah_item)
+        <div class="small">
+            Qty : {{ $reservasi->jumlah_item }} pcs
+        </div>
+        @endif
+
+        <div class="line"></div>
+
+        <div class="row">
+            <span>Jarak</span>
+            <span>{{ number_format($reservasi->jarak_km,2) }} km</span>
+        </div>
+
+        <div class="row">
+            <span>Ongkir</span>
+            <span>Rp {{ number_format($reservasi->ongkir,0,',','.') }}</span>
+        </div>
+
+        <div class="line"></div>
+
+        <div class="row">
+            <strong>Total</strong>
+            <strong>Rp {{ number_format($reservasi->total_harga,0,',','.') }}</strong>
+        </div>  
     <div class="line"></div>
 
     <!-- FOOTER -->

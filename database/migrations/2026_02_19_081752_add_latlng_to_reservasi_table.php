@@ -6,22 +6,24 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    public function up()
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
     {
         Schema::table('reservasi', function (Blueprint $table) {
-            $table->integer('ongkir')->default(0)->after('total_harga');
-
-            // HAPUS BARIS INI:
-            // $table->text('lokasi')->nullable()->after('alamat_jemput');
+            $table->decimal('latitude', 10, 7)->nullable()->after('alamat_jemput');
+            $table->decimal('longitude', 10, 7)->nullable()->after('latitude');
         });
     }
 
+    /**
+     * Reverse the migrations.
+     */
     public function down(): void
     {
         Schema::table('reservasi', function (Blueprint $table) {
-            $table->dropColumn('ongkir');
-
-            // Tidak perlu drop lokasi karena tidak pernah dibuat
+            $table->dropColumn(['latitude', 'longitude']);
         });
     }
 };

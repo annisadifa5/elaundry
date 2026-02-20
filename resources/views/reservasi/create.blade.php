@@ -25,13 +25,28 @@
 
         {{-- ALAMAT --}}
         <div class="row">
-            <textarea name="alamat_jemput" placeholder="Alamat Jemput" required></textarea>
+            <textarea id="alamat" name="alamat_jemput" placeholder="Alamat Jemput" required></textarea>
         </div>
+
+        <div class="row" style="margin-bottom:10px;">
+            <input type="text" id="searchLokasi" placeholder="Cari alamat..."
+                style="flex:1;padding:8px;border-radius:6px;border:1px solid #ccc;">
+            <button type="button" onclick="cariLokasi()"
+                    style="padding:8px 12px;border:none;background:#22c55e;color:white;border-radius:6px;">
+                Cari
+            </button>
+        </div>
+
+        <div class="row">
+            <label><strong>Pilih Lokasi di Map</strong></label>
+            <div id="map" style="height:300px;width:100%;border-radius:10px;"></div>
+        </div>
+
 
         <input type="hidden" name="latitude" id="latitude">
         <input type="hidden" name="longitude" id="longitude">
 
-        <!-- LOKASI -->
+        {{-- <!-- LOKASI -->
         <div class="row">
             <input
                 type="url"
@@ -39,7 +54,7 @@
                 placeholder="Titik Lokasi (URL Google Maps)"
                 value="{{ old('lokasi') }}"
             >
-        </div>
+        </div> --}}
 
         <!-- {{-- HIDDEN KOORDINAT CUSTOMER
         <input type="hidden" name="latitude" id="latitude">
@@ -99,6 +114,18 @@
             <input type="number" name="jumlah_item" placeholder="Kuantitas">
         </div>
 
+        <!-- JARAK -->
+        <div class="row">
+            <span>Jarak:</span>
+            <span id="jarak-text">0 km</span>
+        </div>
+
+        <!-- ONGKIR -->
+        <div class="row">
+            <span>Ongkir:</span>
+            <span id="ongkir-text">Rp 0</span>
+        </div>
+
         <div class="row">
             <strong>Total Harga:</strong>
             <span id="total-harga">Rp 0</span>
@@ -132,41 +159,41 @@
 </div>
 
 <script>
-const select = document.getElementById('layanan-select');
-const chipWrapper = document.getElementById('layanan-chip-wrapper');
-const hiddenInput = document.getElementById('jenis_layanan_input');
+    const select = document.getElementById('layanan-select');
+    const chipWrapper = document.getElementById('layanan-chip-wrapper');
+    const hiddenInput = document.getElementById('jenis_layanan_input');
 
-let layananDipilih = [];
+    let layananDipilih = [];
 
-select.addEventListener('change', function () {
-    const value = this.value;
-    const text = this.options[this.selectedIndex].text;
+    select.addEventListener('change', function () {
+        const value = this.value;
+        const text = this.options[this.selectedIndex].text;
 
-    if (!value || layananDipilih.includes(value)) {
+        if (!value || layananDipilih.includes(value)) {
+            this.value = '';
+            return;
+        }
+
+        layananDipilih.push(value);
+        hiddenInput.value = layananDipilih.join(',');
+
+        const chip = document.createElement('div');
+        chip.className = 'chip';
+        chip.innerHTML = `${text} <span onclick="removeLayanan('${value}', this)">×</span>`;
+        chipWrapper.appendChild(chip);
+
         this.value = '';
-        return;
+    });
+
+    function removeLayanan(value, el) {
+        layananDipilih = layananDipilih.filter(v => v !== value);
+        hiddenInput.value = layananDipilih.join(',');
+        el.parentElement.remove();
     }
-
-    layananDipilih.push(value);
-    hiddenInput.value = layananDipilih.join(',');
-
-    const chip = document.createElement('div');
-    chip.className = 'chip';
-    chip.innerHTML = `${text} <span onclick="removeLayanan('${value}', this)">×</span>`;
-    chipWrapper.appendChild(chip);
-
-    this.value = '';
-});
-
-function removeLayanan(value, el) {
-    layananDipilih = layananDipilih.filter(v => v !== value);
-    hiddenInput.value = layananDipilih.join(',');
-    el.parentElement.remove();
-}
 </script>
 
 <script>
-const hargaList = @json($hargaList);
+    const hargaList = @json($hargaList);
 </script>
 
 <script>
@@ -217,64 +244,64 @@ const hargaList = @json($hargaList);
 
 <!-- nota -->
 <script>
-document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function () {
 
-    const form = document.getElementById('form-reservasi');
-    const btn  = document.getElementById('pickupNow');
+        const form = document.getElementById('form-reservasi');
+        const btn  = document.getElementById('pickupNow');
 
-    form.addEventListener('submit', function(e) {
-        e.preventDefault();
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
 
-        if (!document.getElementById('jenis_layanan_input').value) {
-            alert('Pilih minimal 1 jenis layanan');
-            return;
-        }
-
-        btn.disabled = true;
-        btn.innerText = 'Memproses...';
-
-        const formData = new FormData(form);
-
-        fetch(form.action, {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'X-Requested-With': 'XMLHttpRequest',
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            },
-            body: formData
-        })
-        .then(async res => {
-            const text = await res.text(); // 🔥 PENTING
-            try {
-                return JSON.parse(text);
-            } catch (e) {
-                console.error('Response bukan JSON:', text);
-                throw new Error('Invalid JSON');
+            if (!document.getElementById('jenis_layanan_input').value) {
+                alert('Pilih minimal 1 jenis layanan');
+                return;
             }
-        })
-        .then(data => {
-            console.log('RESP:', data);
 
-            if (data.success === true) {
-                document.getElementById('successModal').style.display = 'flex';
-                document.getElementById('btnNota').href =
-                    `/reservasi/${data.id}/nota`;
-            } else {
-                alert('Reservasi gagal');
-            }
-        })
-        .catch(err => {
-            console.error(err);
-            alert('Terjadi kesalahan server');
-        })
-        .finally(() => {
-            btn.disabled = false;
-            btn.innerText = 'Pickup Now';
+            btn.disabled = true;
+            btn.innerText = 'Memproses...';
+
+            const formData = new FormData(form);
+
+            fetch(form.action, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: formData
+            })
+            .then(async res => {
+                const text = await res.text(); // 🔥 PENTING
+                try {
+                    return JSON.parse(text);
+                } catch (e) {
+                    console.error('Response bukan JSON:', text);
+                    throw new Error('Invalid JSON');
+                }
+            })
+            .then(data => {
+                console.log('RESP:', data);
+
+                if (data.success === true) {
+                    document.getElementById('successModal').style.display = 'flex';
+                    document.getElementById('btnNota').href =
+                        `/reservasi/${data.id}/nota`;
+                } else {
+                    alert('Reservasi gagal');
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                alert('Terjadi kesalahan server');
+            })
+            .finally(() => {
+                btn.disabled = false;
+                btn.innerText = 'Pickup Now';
+            });
         });
-    });
 
-});
+    });
 </script>
 
 <script>
@@ -285,29 +312,116 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 {{-- Menentukan Ongkir Berdasarkan Jarak --}}
-<script src="https://maps.googleapis.com/maps/api/js?key=API_KEY_KAMU&libraries=places"></script>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
 <script>
-    function initAutocomplete() {
-        const input = document.getElementById('alamat');
-        const autocomplete = new google.maps.places.Autocomplete(input);
+    let map;
+    let marker;
 
-        autocomplete.addListener('place_changed', function() {
-            const place = autocomplete.getPlace();
-            if (!place.geometry) return;
+    window.onload = function() {
 
-            document.getElementById('latitude').value =
-                place.geometry.location.lat();
+        map = L.map('map').setView([-6.200000, 106.816666], 13);
 
-            document.getElementById('longitude').value =
-                place.geometry.location.lng();
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        map.on('click', function(e) {
+            setMarker(e.latlng.lat, e.latlng.lng);
         });
+
+        setTimeout(function(){
+            map.invalidateSize();
+        }, 500);
+    };
+
+    function setMarker(lat, lng) {
+
+        if (marker) {
+            map.removeLayer(marker);
+        }
+
+        marker = L.marker([lat, lng]).addTo(map);
+        map.setView([lat, lng], 16);
+
+        document.getElementById('latitude').value = lat;
+        document.getElementById('longitude').value = lng;
     }
 
-    google.maps.event.addDomListener(window, 'load', initAutocomplete);
+    function cariLokasi() {
+
+        const keyword = document.getElementById('searchLokasi').value;
+
+        if (!keyword) return alert("Masukkan alamat dulu");
+
+        fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${keyword}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.length > 0) {
+                    const lat = data[0].lat;
+                    const lon = data[0].lon;
+                    setMarker(lat, lon);
+                } else {
+                    alert("Alamat tidak ditemukan");
+                }
+            });
+    }
 </script>
 
+{{-- Menampilkan Ongkir dan Jarak --}}
+<script>
+    const outletLat = -6.9815723; // 🔥 GANTI sesuai outlet
+    const outletLng = 110.3913043;
 
+    function hitungJarakJS(lat1, lon1, lat2, lon2) {
+        const R = 6371;
+        const dLat = (lat2 - lat1) * Math.PI / 180;
+        const dLon = (lon2 - lon1) * Math.PI / 180;
+
+        const a =
+            Math.sin(dLat/2) * Math.sin(dLat/2) +
+            Math.cos(lat1 * Math.PI/180) *
+            Math.cos(lat2 * Math.PI/180) *
+            Math.sin(dLon/2) * Math.sin(dLon/2);
+
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        return R * c;
+    }
+
+    function hitungOngkirDanTotal() {
+
+        const lat = parseFloat(document.getElementById('latitude').value);
+        const lng = parseFloat(document.getElementById('longitude').value);
+
+        if (!lat || !lng) return;
+
+        const jarak = hitungJarakJS(outletLat, outletLng, lat, lng);
+        const tarifPerKm = 3000;
+
+        const ongkir = Math.ceil(jarak) * tarifPerKm;
+
+        document.getElementById('jarak-text').innerText =
+            jarak.toFixed(2) + ' km';
+
+        document.getElementById('ongkir-text').innerText =
+            'Rp ' + ongkir.toLocaleString('id-ID');
+
+        // ambil total layanan
+        const totalLayanan = parseInt(document.getElementById('total_harga_input').value || 0);
+
+        const totalFinal = totalLayanan + ongkir;
+
+        document.getElementById('total-harga').innerText =
+            'Rp ' + totalFinal.toLocaleString('id-ID');
+
+        document.getElementById('total_harga_input').value = totalFinal;
+    }
+
+    document.addEventListener('change', hitungOngkirDanTotal);
+    document.addEventListener('keyup', hitungOngkirDanTotal);
+</script>
 
 <style>
     .modal-overlay {
