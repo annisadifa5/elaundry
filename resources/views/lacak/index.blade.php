@@ -196,8 +196,8 @@
 
 .tracking-dashboard {
     display: grid;
-    grid-template-columns: repeat(5, 1fr); /* paksa 1 baris 5 card */
-    gap: 12px;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 16px;
     margin-bottom: 24px;
 }
 
@@ -206,9 +206,6 @@
     border-radius: 10px;
     padding: 10px 14px;
     box-shadow: 0 4px 10px rgba(0,0,0,0.04);
-
-    height: 70px;              /* 🔥 bikin pendek (persegi panjang) */
-    max-width: 180px;          /* jaga biar nggak melebar */
     
     display: flex;             /* 🔥 ini penting */
     align-items: center;       /* vertikal tengah */

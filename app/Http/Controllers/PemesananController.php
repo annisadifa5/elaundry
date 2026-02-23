@@ -14,6 +14,25 @@ use Illuminate\Support\Facades\DB;
 
 class PemesananController extends Controller
 {
+    public function index(Request $request)
+    {
+        $status = $request->status;
+
+        $query = Pemesanan::with('customer');
+
+        if ($status === 'selesai') {
+            $query->where('status_proses', 'selesai');
+        }
+
+        if ($status === 'proses') {
+            $query->where('status_proses', '!=', 'selesai');
+        }
+
+        $pemesanans = $query->latest()->get();
+
+        return view('pemesanan.index', compact('pemesanans', 'status'));
+    }
+
     public function store(Request $request)
     {
         $request->validate([
@@ -21,10 +40,11 @@ class PemesananController extends Controller
         'no_telp'        => 'required|string|max:20',
         'alamat'         => 'required|string',
         'id_outlet'      => 'required|exists:outlet,id_outlet',
-        'jenis_layanan'  => 'required|string',
+        // 'jenis_layanan'  => 'required|string',
         // 'tipe_pemesanan' => 'required|string',
-        'berat_cucian'   => 'nullable|numeric|min:0.1',
-        'jumlah_item'    => 'nullable|integer|min:1',
+        // 'berat_cucian'   => 'nullable|numeric|min:0.1',
+        // 'jumlah_item'    => 'nullable|integer|min:1',
+        'detail_layanan' => 'required',
         'catatan_khusus' => 'nullable|string',
     ]);
 
@@ -39,56 +59,59 @@ class PemesananController extends Controller
                     ]
                 );
 
-                // ambil layanan jadi array
-                $layananDipilih = explode(',', $request->jenis_layanan);
+                $detail = json_decode($request->detail_layanan, true);
 
-                $berat  = (float) $request->berat_cucian;
-                $jumlah = (int) $request->jumlah_item;
+                $totalHarga = 0;
 
-                $hargaKg  = 0;
-                $hargaPcs = 0;
+                foreach ($detail as $item) {
 
-                foreach ($layananDipilih as $kode) {
-                    $harga = Harga::where('kode_layanan', $kode)
+                    $harga = Harga::where('kode_layanan', $item['kode_layanan'])
                         ->where('is_active', true)
                         ->first();
 
                     if (!$harga) continue;
 
-                    if ($harga->satuan === 'kg') {
-                        $hargaKg += $harga->harga;
+                    $totalHarga += $harga->harga * $item['qty'];
+                }
+
+                $ongkir = 0;
+                $jarak = null;
+
+                if ($request->latitude && $request->longitude) {
+
+                    $outlet = \App\Models\Outlet::find($request->id_outlet);
+
+                    if ($outlet && $outlet->latitude && $outlet->longitude) {
+
+                        $jarak = $this->hitungJarak(
+                            $outlet->latitude,
+                            $outlet->longitude,
+                            $request->latitude,
+                            $request->longitude
+                        );
+
+                        $tarifPerKm = 3000;
+                        $ongkir = ceil($jarak) * $tarifPerKm;
                     }
-
-                    if ($harga->satuan === 'pcs') {
-                        $hargaPcs += $harga->harga;
-                    }
                 }
 
-                $totalHarga = 0;
-
-                if ($berat > 0) {
-                    $totalHarga += $hargaKg * $berat;
-                }
-
-                if ($jumlah > 0) {
-                    $totalHarga += $hargaPcs * $jumlah;
-                }
-
+                $totalFinal = $totalHarga + $ongkir;
 
                 $pemesanan = Pemesanan::create([
                 'no_order'        => 'ORD-' . now()->format('Ymd') . '-' . strtoupper(Str::random(6)),
                 'id_cust'         => $customer->id_cust,
                 'id_outlet'       => $request->id_outlet,
-                'jenis_layanan'   => $request->jenis_layanan,
-                // 'tipe_pemesanan'  => $request->tipe_pemesanan,
+                'jenis_layanan'   => 'multiple',
                 'tanggal_masuk'   => now(),
-                'berat_cucian'    => $request->berat_cucian,
-                'jumlah_item'     => $request->jumlah_item,
-                'total_harga'     => $totalHarga,
+                'total_harga'     => $totalFinal,
+                'latitude'        => $request->latitude,
+                'longitude'       => $request->longitude,
+                'jarak_km'        => $jarak,
+                'ongkir'          => $ongkir,
                 'catatan_khusus'  => $request->catatan_khusus,
-                // ⭐⭐⭐ TAMBAHKAN INI
                 'status_proses'   => 'diterima',
                 'status_bayar'    => 'belum',
+                'detail_layanan'  => json_encode($detail),
             ]);
 
             HistoryPemesanan::create([
@@ -204,5 +227,23 @@ class PemesananController extends Controller
             'total' => $total,
             'formatted' => 'Rp ' . number_format($total, 0, ',', '.'),
         ]);
+    }
+
+    private function hitungJarak($lat1, $lon1, $lat2, $lon2)
+    {
+        $earthRadius = 6371;
+
+        $dLat = deg2rad($lat2 - $lat1);
+        $dLon = deg2rad($lon2 - $lon1);
+
+        $a = sin($dLat/2) * sin($dLat/2) +
+            cos(deg2rad($lat1)) *
+            cos(deg2rad($lat2)) *
+            sin($dLon/2) *
+            sin($dLon/2);
+
+        $c = 2 * atan2(sqrt($a), sqrt(1-$a));
+
+        return $earthRadius * $c;
     }
 }

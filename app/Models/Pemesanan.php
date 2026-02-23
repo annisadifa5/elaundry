@@ -24,6 +24,11 @@ class Pemesanan extends Model
         'jumlah_item',
         'total_harga',
         'catatan_khusus',
+        'detail_layanan',
+        'latitude',
+        'longitude',
+        'jarak_km',
+        'ongkir',
         'status_proses',
         'status_bayar'
         ];

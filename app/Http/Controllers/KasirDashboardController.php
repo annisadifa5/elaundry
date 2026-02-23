@@ -10,85 +10,160 @@ use Carbon\Carbon;
 
 class KasirDashboardController extends Controller
 {
-    public function index()
-    {
-        $hariIni = Carbon::today();
+public function index(Request $request)
+{
+    $hariIni = Carbon::today();
 
-        // ================= TOTAL PESANAN HARI INI =================
-        $totalPemesanan = Pemesanan::whereDate('created_at', $hariIni)->count();
-        $totalReservasi = Reservasi::whereDate('created_at', $hariIni)->count();
+    // 🔥 Ambil outlet sesuai user login
+    $outletId = 2;
 
-        $totalPesanan = $totalPemesanan + $totalReservasi;
+    // ================= TOTAL PESANAN HARI INI =================
+    $totalPemesanan = Pemesanan::where('id_outlet', $outletId)
+        ->whereDate('created_at', $hariIni)
+        ->count();
 
-        // ================= TOTAL TRANSAKSI HARI INI =================
-        $totalTransaksiPemesanan = Pemesanan::whereDate('created_at', $hariIni)
-            ->where('status_bayar', 'lunas')
-            ->sum('total_harga');
+    $totalReservasi = Reservasi::where('id_outlet', $outletId)
+        ->whereDate('created_at', $hariIni)
+        ->count();
 
-        $totalTransaksiReservasi = Reservasi::whereDate('created_at', $hariIni)
-            ->where('status_bayar', 'lunas')
-            ->sum('total_harga');
+    $totalPesanan = $totalPemesanan + $totalReservasi;
 
-        $totalTransaksi = $totalTransaksiPemesanan + $totalTransaksiReservasi;
+    // ================= TOTAL TRANSAKSI HARI INI =================
+    $totalTransaksiPemesanan = Pemesanan::where('id_outlet', $outletId)
+        ->whereDate('created_at', $hariIni)
+        ->where('status_bayar', 'lunas')
+        ->sum('total_harga');
 
-        // ================= BELUM DIBAYAR =================
-        $belumDibayar = 
-            Pemesanan::whereDate('created_at', $hariIni)
-                ->where('status_bayar', 'belum')
-                ->count()
-            +
-            Reservasi::whereDate('created_at', $hariIni)
-                ->where('status_bayar', 'belum')
-                ->count();
+    $totalTransaksiReservasi = Reservasi::where('id_outlet', $outletId)
+        ->whereDate('created_at', $hariIni)
+        ->where('status_bayar', 'lunas')
+        ->sum('total_harga');
 
-        // ================= PESANAN SELESAI =================
-        $pesananSelesai =
-            HistoryPemesanan::whereDate('created_at', $hariIni)
-                ->count();
+    $totalTransaksi = $totalTransaksiPemesanan + $totalTransaksiReservasi;
 
-        // ================= ANTRIAN =================
-        $antrianPemesanan = Pemesanan::whereIn('status_proses', [
-                'diterima',
-                'dicuci',
-                'dikeringkan',
-                'disetrika'
-            ])
-            ->orderBy('created_at', 'asc')
-            ->get();
+    // ================= BELUM DIBAYAR =================
+    $belumDibayar =
+        Pemesanan::where('id_outlet', $outletId)
+            ->whereDate('created_at', $hariIni)
+            ->where('status_bayar', 'belum')
+            ->count()
+        +
+        Reservasi::where('id_outlet', $outletId)
+            ->whereDate('created_at', $hariIni)
+            ->where('status_bayar', 'belum')
+            ->count();
 
-        $antrianReservasi = Reservasi::whereIn('status_proses', [
-                'diterima',
-                'dicuci',
-                'dikeringkan',
-                'disetrika'
-            ])
-            ->orderBy('created_at', 'asc')
-            ->get();
+    // ================= PESANAN SELESAI =================
+    $pesananSelesai =
+        HistoryPemesanan::whereDate('created_at', $hariIni)
+            ->count();
 
-        // Tambahkan label tipe
-        $antrianPemesanan->map(function ($item) {
-            $item->tipe = 'Pemesanan';
-            return $item;
-        });
+    // ================= FILTER STATUS =================
+    $status = $request->status;
 
-        $antrianReservasi->map(function ($item) {
-            $item->tipe = 'Reservasi';
-            return $item;
-        });
+    $statusDefault = [
+        'diterima',
+        'dicuci',
+        'dikeringkan',
+        'disetrika'
+    ];
+    if ($status == 'selesai') {
 
-        // Gabungkan
-        $antrianPesanan = $antrianPemesanan
-            ->merge($antrianReservasi)
-            ->sortBy('created_at');
+    // 🔥 Ambil dari HISTORY
+    $antrianPesanan = HistoryPemesanan::with('pemesanan.customer')
+        ->whereDate('created_at', $hariIni)
+        ->get();
 
-        return view('kasir.dashboard', compact(
-            'totalPesanan',
-            'totalTransaksi',
-            'belumDibayar',
-            'pesananSelesai',
-            'antrianPesanan'
-        ));
+    } else {
+
+    // ================= ANTRIAN PEMESANAN =================
+    $queryPemesanan = Pemesanan::with('customer')
+        ->where('id_outlet', $outletId);
+
+    if ($status) {
+        $queryPemesanan->where('status_proses', $status);
+    } else {
+        $queryPemesanan->whereIn('status_proses', $statusDefault);
     }
+
+    $antrianPemesanan = $queryPemesanan
+        ->orderBy('created_at', 'asc')
+        ->get();
+
+    // ================= ANTRIAN RESERVASI =================
+    $queryReservasi = Reservasi::with('customer')
+        ->where('id_outlet', $outletId);
+
+    if ($status) {
+        $queryReservasi->where('status_proses', $status);
+    } else {
+        $queryReservasi->whereIn('status_proses', $statusDefault);
+    }
+
+    $antrianReservasi = $queryReservasi
+        ->orderBy('created_at', 'asc')
+        ->get();
+
+    $antrianPesanan = $antrianPemesanan
+        ->merge($antrianReservasi)
+        ->sortBy('created_at');
+    }
+
+    // Label tipe
+if ($status == 'selesai') {
+
+    $antrianPesanan = HistoryPemesanan::with('pemesanan.customer')
+        ->whereDate('created_at', $hariIni)
+        ->get();
+
+} else {
+
+    // ================= PEMESANAN =================
+    $antrianPemesanan->map(function ($item) {
+        $item->tipe = 'Pemesanan';
+        return $item;
+    });
+
+    // ================= RESERVASI =================
+    $antrianReservasi->map(function ($item) {
+        $item->tipe = 'Reservasi';
+        return $item;
+    });
+
+    $antrianPesanan = $antrianPemesanan
+        ->merge($antrianReservasi)
+        ->sortBy('created_at');
+}
+
+    // ================= STATUS COUNTS =================
+    $statusCounts = [];
+    $allStatuses = ['diterima','dicuci','dikeringkan','disetrika','selesai'];
+
+    foreach ($allStatuses as $s) {
+
+        if ($s == 'selesai') {
+            $statusCounts[$s] =
+                HistoryPemesanan::whereDate('created_at', $hariIni)
+                    ->count();
+        } else {
+            $statusCounts[$s] =
+                Pemesanan::where('id_outlet', $outletId)
+                    ->where('status_proses', $s)->count()
+                +
+                Reservasi::where('id_outlet', $outletId)
+                    ->where('status_proses', $s)->count();
+        }
+    }
+
+    return view('kasir.dashboard', compact(
+        'totalPesanan',
+        'totalTransaksi',
+        'belumDibayar',
+        'pesananSelesai',
+        'antrianPesanan',
+        'statusCounts'
+    ));
+}
 
     public function showPemesanan($id)
     {

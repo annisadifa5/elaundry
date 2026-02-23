@@ -7,6 +7,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use App\Models\Pemesanan;
 use App\Models\Reservasi;
+use App\Models\Harga;
 
 
 
@@ -29,10 +30,27 @@ class LacakController extends Controller
         }
 
         $pemesanans = $query->get()
-            ->map(function ($p) {
-                $p->source = 'pemesanan';
-                return $p;
-            });
+        ->map(function ($p) {
+
+            $p->source = 'pemesanan';
+
+            if ($p->detail_layanan) {
+
+                $detail = json_decode($p->detail_layanan, true);
+
+                if (is_array($detail)) {
+
+                    $namaLayanan = collect($detail)->map(function ($item) {
+                        $layanan = Harga::where('kode_layanan', $item['kode_layanan'])->first();
+                        return $layanan->nama_layanan ?? null;
+                    })->filter()->implode(', ');
+
+                    $p->jenis_layanan = $namaLayanan ?: '-';
+                }
+            }
+
+            return $p;
+        });
 
         // Query Reservasi
         $reservasis = Reservasi::with('customer')
@@ -56,7 +74,7 @@ class LacakController extends Controller
         */
         $pemesanans = $pemesanans
             ->merge($reservasis)
-            ->sortBy('tanggal_masuk')
+            ->sortByDesc('tanggal_masuk')
             ->values();
 
 
