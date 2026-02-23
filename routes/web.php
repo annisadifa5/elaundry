@@ -93,7 +93,8 @@ Route::prefix('reservasi')->name('reservasi.')->group(function () {
 
 //PEMESANAN
 Route::prefix('pemesanan')->name('pemesanan.')->group(function () {
-    Route::get('/', [PemesananController::class, 'create'])->name('create');
+    Route::get('/', [PemesananController::class, 'index'])->name('index');
+    Route::get('/create', [PemesananController::class, 'create'])->name('create');
     Route::post('/', [PemesananController::class, 'store'])->name('store');
     Route::get('/{id}', [PemesananController::class, 'show'])->name('show');
     Route::patch('/{id}/status', [PemesananController::class, 'updateStatus'])->name('updateStatus');
