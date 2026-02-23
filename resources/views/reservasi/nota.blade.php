@@ -111,6 +111,16 @@
     </div>
     @endif
 
+@if($reservasi->latitude && $reservasi->longitude)
+<div class="small">
+    Lokasi :
+    <a href="https://www.google.com/maps?q={{ $reservasi->latitude }},{{ $reservasi->longitude }}"
+       target="_blank">
+        Buka Maps
+    </a>
+</div>
+@endif
+
     <div class="line"></div>
 
     <!-- SUBTOTAL -->
@@ -123,9 +133,9 @@
 
     <!-- TOTAL -->
     <div class="row">
-        <strong>Total</strong>
-        <strong>Rp {{ number_format($grandTotal,0,',','.') }}</strong>
-    </div>
+    <span>{{ $reservasi->jenis_layanan }}</span>
+    <span>Rp {{ number_format($reservasi->total_harga - $reservasi->ongkir,0,',','.') }}</span>
+        </div>
 
     <div class="line"></div>
 
@@ -134,6 +144,30 @@
         Status : Menunggu Pickup
     </div>
 
+        @if($reservasi->jumlah_item)
+        <div class="small">
+            Qty : {{ $reservasi->jumlah_item }} pcs
+        </div>
+        @endif
+
+        <div class="line"></div>
+
+        <div class="row">
+            <span>Jarak</span>
+            <span>{{ number_format($reservasi->jarak_km,2) }} km</span>
+        </div>
+
+        <div class="row">
+            <span>Ongkir</span>
+            <span>Rp {{ number_format($reservasi->ongkir,0,',','.') }}</span>
+        </div>
+
+        <div class="line"></div>
+
+        <div class="row">
+            <strong>Total</strong>
+            <strong>Rp {{ number_format($reservasi->total_harga,0,',','.') }}</strong>
+        </div>  
     <div class="line"></div>
 
     <!-- FOOTER -->

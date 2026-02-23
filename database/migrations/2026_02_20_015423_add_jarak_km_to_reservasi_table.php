@@ -6,23 +6,23 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::table('reservasi', function (Blueprint $table) {
-            $table->text('lokasi')->nullable()->after('alamat_jemput');
+
+            $table->decimal('jarak_km', 8, 2)
+                  ->nullable()
+                  ->after('longitude');
+
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::table('reservasi', function (Blueprint $table) {
-            $table->dropColumn('lokasi');
+
+            $table->dropColumn('jarak_km');
+
         });
     }
 };

@@ -19,6 +19,25 @@ class ReservasiController extends Controller
         ]);
     }
 
+    private function hitungJarak($lat1, $lon1, $lat2, $lon2)
+    {
+        $earthRadius = 6371; // km
+
+        $dLat = deg2rad($lat2 - $lat1);
+        $dLon = deg2rad($lon2 - $lon1);
+
+        $a = sin($dLat/2) * sin($dLat/2) +
+            cos(deg2rad($lat1)) *
+            cos(deg2rad($lat2)) *
+            sin($dLon/2) *
+            sin($dLon/2);
+
+        $c = 2 * atan2(sqrt($a), sqrt(1-$a));
+
+        return $earthRadius * $c;
+    }
+
+
    public function store(Request $request)
     {
 
@@ -36,6 +55,8 @@ class ReservasiController extends Controller
             'catatan_khusus'  => 'nullable|string',
             'status_proses'   => 'in:diterima,dicuci,dikeringkan,disetrika',
             'status_bayar'    => 'in:belum,lunas',
+            'latitude'        => 'required|numeric',
+            'longitude'       => 'required|numeric',
 
         ])->validate();
 
@@ -71,31 +92,52 @@ class ReservasiController extends Controller
         }
 
         // ==============================
+        // HITUNG ONGKIR BERDASARKAN JARAK
+        // ==============================
+
+        $outlet = \App\Models\Outlet::find(3); // sementara outlet 3
+
+        $jarak = $this->hitungJarak(
+            $outlet->latitude,
+            $outlet->longitude,
+            $request->latitude,
+            $request->longitude
+        );
+
+        $tarifPerKm = 3000; // misal 3000 per km
+        $ongkir = ceil($jarak) * $tarifPerKm;
+
+        // total akhir
+        $totalFinal = $totalHarga + $ongkir;
+
+
+        // ==============================
         // SIMPAN RESERVASI
         // ==============================
         $reservasi = Reservasi::create([
             'id_cust'        => $customer->id_cust,
-            'id_outlet'      => 2,
+            'id_outlet'      => 3,
             'jenis_layanan'  => $validated['jenis_layanan'],
             'tipe_pemesanan' => 'reservasi',
             'tanggal_jemput' => $validated['tanggal_jemput'],
             'jam_jemput'     => $validated['jam_jemput'],
             'alamat_jemput'  => $validated['alamat_jemput'],
-            'lokasi'         => $validated['lokasi'] ?? null,
+            'latitude'       => $validated['latitude'],
+            'longitude'      => $validated['longitude'],
+            'jarak_km'       => $jarak ?? null,
             'jumlah_item'    => $jumlah ?: null,
-            // 'berat_cucian'   => $berat ?: null,
-            'total_harga'    => $totalHarga,
+            'total_harga'    => $totalFinal,
+            'ongkir'         => $ongkir,
             'catatan_khusus' => $validated['catatan_khusus'] ?? null,
-            'status_proses'  => 'diterima', // default
-            'status_bayar'   => 'belum',    // default
+            'status_proses'  => 'diterima',
+            'status_bayar'   => 'belum',
         ]);
 
-     
 
         return response()->json([
-    'success' => true,
-    'id' => $reservasi->id_reservasi
-], 200);
+            'success' => true,
+            'id' => $reservasi->id_reservasi
+        ], 200);
 
     }
 

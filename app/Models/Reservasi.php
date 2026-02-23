@@ -13,7 +13,7 @@ class Reservasi extends Model
     protected $primaryKey = 'id_reservasi';
     public $timestamps = true;
 
-    protected $fillable = [
+        protected $fillable = [
         'id_cust',
         'id_outlet',
         'jenis_layanan',
@@ -21,13 +21,17 @@ class Reservasi extends Model
         'tanggal_jemput',
         'jam_jemput',
         'alamat_jemput',
+        'latitude',
+        'longitude',
         'jumlah_item',
         'total_harga',
+        'ongkir',
+        'jarak_km',
         'catatan_khusus',
-        'status_proses',   // 🔥 tambahkan
-        'status_bayar',     // 🔥 tambahkan
-        'lokasi'
-];
+        'status_proses',
+        'status_bayar',
+    ];
+
     public function customer()
     {
         return $this->belongsTo(Customer::class, 'id_cust', 'id_cust');
