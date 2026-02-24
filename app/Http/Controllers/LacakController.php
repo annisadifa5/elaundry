@@ -8,6 +8,7 @@ use Illuminate\Support\Str;
 use App\Models\Pemesanan;
 use App\Models\Reservasi;
 use App\Models\Harga;
+use App\Models\Outlet;
 
 
 
@@ -17,6 +18,10 @@ class LacakController extends Controller
     {
         // Query Pemesanan
         $query = Pemesanan::with('customer');
+
+        if ($request->outlet_id) {
+            $query->where('outlet_id', $request->outlet_id);
+        }
 
         if ($request->status) {
             $query->where('status_proses', $request->status);
@@ -54,6 +59,9 @@ class LacakController extends Controller
 
         // Query Reservasi
         $reservasis = Reservasi::with('customer')
+            ->when($request->outlet_id, fn($q) =>
+                $q->where('outlet_id', $request->outlet_id)
+            )
             ->when($request->status, fn($q) =>
                 $q->where('status_proses', $request->status)
             )
@@ -92,17 +100,25 @@ class LacakController extends Controller
         |--------------------------------------------------------------------------
         */
         // Ambil semua untuk dashboard
-        $allPemesanan = Pemesanan::all()->map(function ($p) {
-            $p->source = 'pemesanan';
-            return $p;
-        });
+        $allPemesanan = Pemesanan::when($request->outlet_id, fn($q) =>
+                $q->where('outlet_id', $request->outlet_id)
+            )
+            ->get()
+            ->map(function ($p) {
+                $p->source = 'pemesanan';
+                return $p;
+            });
 
-        $allReservasi = Reservasi::all()->map(function ($r) {
-            $r->tanggal_masuk = $r->tanggal_jemput;
-            $r->no_order = 'RES-' . now()->format('Ymd') . '-' . strtoupper(Str::random(6));
-            $r->source = 'reservasi';
-            return $r;
-        });
+        $allReservasi = Reservasi::when($request->outlet_id, fn($q) =>
+                $q->where('outlet_id', $request->outlet_id)
+            )
+            ->get()
+            ->map(function ($r) {
+                $r->tanggal_masuk = $r->tanggal_jemput;
+                $r->no_order = 'RES-' . now()->format('Ymd') . '-' . strtoupper(Str::random(6));
+                $r->source = 'reservasi';
+                return $r;
+            });
 
         $allData = $allPemesanan->merge($allReservasi);
 
@@ -126,7 +142,13 @@ class LacakController extends Controller
             'selesai'      => $total ? round($trackingCount['selesai'] / $total * 100) : 0,
         ];
 
-        return view('lacak.index', compact('pemesanans', 'trackingCount', 'persen'));
+        if (auth()->user()->role === 'admin') {
+            $outlets = Outlet::all();
+        } else {
+            $outlets = Outlet::where('id', auth()->user()->outlet_id)->get();
+        }
+
+        return view('lacak.index', compact('pemesanans', 'trackingCount', 'persen', 'outlets'));
     }
 
 

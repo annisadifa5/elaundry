@@ -28,18 +28,45 @@
             <div class="form-group">
                 <label>Jenis Layanan</label>
 
-                <select id="layanan-select">
+                <select id="layanan-select" name="jenis_layanan" required>
                     <option value="">Pilih Jenis Layanan</option>
-                    <option value="cuci">Cuci</option>
-                    <option value="setrika">Setrika</option>
-                    <option value="cuci_kering">Cuci Kering</option>
-                    <option value="cuci_setrika">Cuci Setrika</option>
-                    <option value="express">Express</option>
-                    <option value="sprei">Sprei</option>
-                    <option value="bed_cover">Bed Cover</option>
-                    <option value="boneka">Boneka</option>
-                    <option value="bantal">Bantal</option>
-                </select>
+
+                    <!-- CUCI SETRIKA -->
+                        <optgroup label="Cuci Setrika" data-kategori="laundry">
+                            <option value="Cuci Setrika Reguler">Cuci Setrika Reguler</option>
+                            <option value="Cuci Setrika Express">Cuci Setrika Express</option>
+                            <option value="Cuci Kering Lipat Reguler">Cuci Kering Lipat Reguler</option>
+                            <option value="Cuci Kering Lipat Express">Cuci Kering Lipat Express</option>
+                            <option value="Cuci Satuan Reguler">Cuci Satuan Reguler</option>
+                            <option value="Cuci Satuan Express">Cuci Satuan Express</option>
+                        </optgroup>
+
+                        <!-- SETRIKA -->
+                        <optgroup label="Setrika" data-kategori="laundry">
+                            <option value="Setrika Reguler">Setrika Reguler</option>
+                            <option value="Setrika Express">Setrika Express</option>
+                        </optgroup>
+
+                        <!-- LAINNYA -->
+                        <optgroup label="Lainnya" data-kategori="laundry">
+                            <option value="Sprei Selimut Reguler">Sprei Selimut Reguler</option>
+                            <option value="Sprei Selimut Express">Sprei Selimut Express</option>
+                            <option value="Bedcover Reguler">Bedcover Reguler</option>
+                            <option value="Bedcover Express">Bedcover Express</option>
+                            <option value="Ransel/Sepatu/Helm">Ransel/Sepatu/Helm</option>
+                            <option value="Boneka/Bantal/Korden">Boneka/Bantal/Korden</option>
+                            <option value="Karpet">Karpet</option>
+                            <option value="Spotting Noda">Spotting Noda</option>
+                            <option value="Packing Hanger">Packing Hanger</option>
+                        </optgroup>
+
+                        <!-- JASA -->
+                        <optgroup label="Jasa" data-kategori="jasa">
+                            <option value="Antar">Antar</option>
+                            <option value="Jemput">Jemput</option>
+                            <option value="Antar Jemput">Antar Jemput</option>
+                        </optgroup>
+                    </select>
 
                 <input type="hidden" name="nama_layanan" id="nama_layanan_input">
             </div>
@@ -113,125 +140,155 @@
 
 {{-- STYLE (SAMA PERSIS CREATE) --}}
 <style>
-.page-title {
-    font-weight: 600;
-    margin-bottom: 16px;
-}
+    .page-title {
+        font-weight: 600;
+        margin-bottom: 16px;
+    }
 
-.form-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
-}
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+    }
 
-.form-group {
-    display: flex;
-    flex-direction: column;
-    font-size: 14px;
-}
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        font-size: 14px;
+    }
 
-.form-group.full {
-    grid-column: span 2;
-}
+    .form-group.full {
+        grid-column: span 2;
+    }
 
-.form-group label {
-    margin-bottom: 6px;
-    font-weight: 500;
-}
+    .form-group label {
+        margin-bottom: 6px;
+        font-weight: 500;
+    }
 
-.form-group input,
-.form-group select,
-.form-group textarea {
-    padding: 8px 10px;
-    border-radius: 6px;
-    border: 1px solid #cbd5e1;
-    font-size: 14px;
-}
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        padding: 8px 10px;
+        border-radius: 6px;
+        border: 1px solid #cbd5e1;
+        font-size: 14px;
+    }
 
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus {
-    outline: none;
-    border-color: #16a39a;
-}
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+        outline: none;
+        border-color: #16a39a;
+    }
 
-.checkbox-group {
-    justify-content: flex-start;
-}
+    .checkbox-group {
+        justify-content: flex-start;
+    }
 
-.checkbox-label {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-weight: normal;
-}
+    .checkbox-label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: normal;
+    }
 
-.checkbox-label input {
-    margin: 0;
-}
+    .checkbox-label input {
+        margin: 0;
+    }
 
-.form-action {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    margin-top: 20px;
-}
+    .form-action {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 20px;
+    }
 
-.btn {
-    padding: 8px 16px;
-    border-radius: 6px;
-    border: none;
-    cursor: pointer;
-    font-size: 13px;
-    text-decoration: none;
-}
+    .btn {
+        padding: 8px 16px;
+        border-radius: 6px;
+        border: none;
+        cursor: pointer;
+        font-size: 13px;
+        text-decoration: none;
+    }
 
-.btn.kembali {
-    background: #e2e8f0;
-    color: #334155;
-}
+    .btn.kembali {
+        background: #e2e8f0;
+        color: #334155;
+    }
 
-.btn.simpan {
-    background: #fb923c;
-    color: white;
-}
+    .btn.simpan {
+        background: #fb923c;
+        color: white;
+    }
 
-.btn.simpan:hover {
-    background: #f97316;
-}
+    .btn.simpan:hover {
+        background: #f97316;
+    }
 </style>
 
 {{-- SCRIPT (SAMA PERSIS CREATE + AUTO INIT) --}}
 <script>
-const kategori = document.getElementById('kategori');
-const satuan = document.getElementById('satuan');
-const jarak = document.getElementById('jarak');
-const isOptional = document.getElementById('is_optional');
+    const kategori = document.getElementById('kategori');
+    const satuan = document.getElementById('satuan');
+    const jarak = document.getElementById('jarak');
+    const isOptional = document.getElementById('is_optional');
 
-function handleKategori() {
-    if (kategori.value === 'jasa') {
-        satuan.value = 'km';
-        satuan.querySelectorAll('option').forEach(opt => {
-            opt.disabled = opt.value !== 'km' && opt.value !== '';
-        });
+    function handleKategori() {
+        if (kategori.value === 'jasa') {
+            satuan.value = 'km';
+            satuan.querySelectorAll('option').forEach(opt => {
+                opt.disabled = opt.value !== 'km' && opt.value !== '';
+            });
 
-        jarak.disabled = false;
-        isOptional.disabled = false;
-    } else {
-        satuan.querySelectorAll('option').forEach(opt => {
-            opt.disabled = opt.value === 'km';
-        });
+            jarak.disabled = false;
+            isOptional.disabled = false;
+        } else {
+            satuan.querySelectorAll('option').forEach(opt => {
+                opt.disabled = opt.value === 'km';
+            });
 
-        jarak.value = '';
-        jarak.disabled = true;
+            jarak.value = '';
+            jarak.disabled = true;
 
-        isOptional.checked = false;
-        isOptional.disabled = true;
+            isOptional.checked = false;
+            isOptional.disabled = true;
+        }
     }
-}
 
-kategori.addEventListener('change', handleKategori);
-document.addEventListener('DOMContentLoaded', handleKategori);
+    kategori.addEventListener('change', handleKategori);
+    document.addEventListener('DOMContentLoaded', handleKategori);
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+
+        const kategoriSelect = document.getElementById('kategori');
+        const layananSelect  = document.getElementById('layanan-select');
+
+        function filterLayanan() {
+            const kategori = kategoriSelect.value;
+
+            layananSelect.querySelectorAll('optgroup').forEach(group => {
+
+                if (!kategori) {
+                    group.style.display = 'none';
+                } else if (group.dataset.kategori === kategori) {
+                    group.style.display = 'block';
+                } else {
+                    group.style.display = 'none';
+                }
+
+            });
+
+            layananSelect.value = '';
+        }
+
+        kategoriSelect.addEventListener('change', filterLayanan);
+
+        filterLayanan(); // auto jalan saat load
+    });
 </script>
 
 <script>
@@ -242,97 +299,75 @@ document.addEventListener('DOMContentLoaded', handleKategori);
 
 {{-- untuk kode layanan --}}
 <script>
-    const layananSelect = document.getElementById('layanan-select');
-    const kodeSelect    = document.getElementById('kode_layanan');
-    const hiddenNama    = document.getElementById('nama_layanan_input');
+    document.addEventListener('DOMContentLoaded', function () {
 
-    const layananMap = {
-        cuci: {
-            label: 'Cuci',
-            kode: 'cuci'
-        },
-        setrika: {
-            label: 'Setrika',
-            kode: 'setrika'
-        },
-        cuci_kering: {
-            label: 'Cuci Kering',
-            kode: 'cuci_kering'
-        },
-        cuci_setrika: {
-            label: 'Cuci + Setrika',
-            kode: 'cuci_setrika'
-        },
-        express: {
-            label: 'Express',
-            kode: 'express'
-        },
-        sprei: {
-            label: 'Sprei',
-            kode: 'sprei'
-        },
-        bed_cover: {
-            label: 'Bed Cover',
-            kode: 'bed_cover'
-        },
-        boneka: {
-            label: 'Boneka',
-            kode: 'boneka'
-        },
-        bantal: {
-            label: 'Bantal',
-            kode: 'bantal'
-        }
-    };
+        const layananSelect = document.getElementById('layanan-select');
+        const kodeSelect    = document.getElementById('kode_layanan');
+        const hiddenNama    = document.getElementById('nama_layanan_input');
 
-    layananSelect.addEventListener('change', function () {
-        const value = this.value;
+        const OLD_NAMA_LAYANAN = @json(isset($harga) ? $harga->nama_layanan : null);
 
-        kodeSelect.innerHTML = '<option value="">Pilih Kode Layanan</option>';
-
-        if (!value || !layananMap[value]) {
-            hiddenNama.value = '';
-            return;
+        function generateKode(nama) {
+            return nama
+                .toLowerCase()
+                .replace(/[^a-z0-9\s]/g, '')
+                .replace(/\s+/g, '_');
         }
 
-        // isi nama layanan (ke controller)
-        hiddenNama.value = layananMap[value].label;
+        function updateKode(namaLayanan) {
+            kodeSelect.innerHTML = '<option value="">Pilih Kode Layanan</option>';
 
-        // isi kode layanan
-        const opt = document.createElement('option');
-        opt.value = layananMap[value].kode;
-        opt.text  = layananMap[value].kode;
-        opt.selected = true;
+            if (!namaLayanan) {
+                hiddenNama.value = '';
+                return;
+            }
 
-        kodeSelect.appendChild(opt);
+            hiddenNama.value = namaLayanan;
+
+            const kode = generateKode(namaLayanan);
+
+            const opt = document.createElement('option');
+            opt.value = kode;
+            opt.text  = kode;
+            opt.selected = true;
+
+            kodeSelect.appendChild(opt);
+        }
+
+        // EVENT CHANGE
+        layananSelect.addEventListener('change', function () {
+            updateKode(this.value);
+        });
+
+        // INIT EDIT MODE
+        if (OLD_NAMA_LAYANAN) {
+            layananSelect.value = OLD_NAMA_LAYANAN;
+            updateKode(OLD_NAMA_LAYANAN);
+        }
+
     });
 </script>
 
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    if (!OLD_KODE_LAYANAN) return;
+    document.addEventListener('DOMContentLoaded', function () {
+        if (!OLD_NAMA_LAYANAN) return;
 
-    // cari key layananMap berdasarkan kode
-    const layananKey = Object.keys(layananMap)
-        .find(key => layananMap[key].kode === OLD_KODE_LAYANAN);
+        layananSelect.value = OLD_NAMA_LAYANAN;
 
-    if (!layananKey) return;
+        const kode = OLD_NAMA_LAYANAN
+            .toLowerCase()
+            .replace(/[^a-z0-9\s]/g, '')
+            .replace(/\s+/g, '_');
 
-    // set select jenis layanan
-    layananSelect.value = layananKey;
+        kodeSelect.innerHTML = '<option value="">Pilih Kode Layanan</option>';
 
-    // trigger logic yang sama seperti change
-    kodeSelect.innerHTML = '<option value="">Pilih Kode Layanan</option>';
+        const opt = document.createElement('option');
+        opt.value = kode;
+        opt.text  = kode;
+        opt.selected = true;
 
-    hiddenNama.value = layananMap[layananKey].label;
-
-    const opt = document.createElement('option');
-    opt.value = layananMap[layananKey].kode;
-    opt.text  = layananMap[layananKey].kode;
-    opt.selected = true;
-
-    kodeSelect.appendChild(opt);
-});
+        kodeSelect.appendChild(opt);
+    });
 </script>
 
 @endsection

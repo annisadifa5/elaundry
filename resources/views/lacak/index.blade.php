@@ -60,6 +60,15 @@
         @endphp
         <form method="GET" action="{{ route($role . '.lacak.index') }}">
             <div class="row">
+                <select name="outlet_id">
+                    <option value="">Semua Outlet</option>
+                    @foreach($outlets as $outlet)
+                        <option value="{{ $outlet->id }}"
+                            {{ request('outlet_id') == $outlet->id ? 'selected' : '' }}>
+                            {{ $outlet->nama_outlet }}
+                        </option>
+                    @endforeach
+                </select>
                 <select name="tipe_pemesanan">
                     <option value="">Tipe Pemesanan</option>
                     <option value="pemesanan" {{ request('tipe_pemesanan') == 'pemesanan' ? 'selected' : '' }}>

@@ -8,7 +8,13 @@
 
 @section('content')
 
-<h2 class="page-title">Order History</h2>
+<h3 class="page-title">Data Pemesanan</h3>
+
+<div class="btn-row">
+    <a href="{{ route('pemesanan.create') }}" class="btn">
+        + Tambah
+    </a>   
+</div>
 
 {{-- FILTER TABS --}}
 <div class="order-tabs">

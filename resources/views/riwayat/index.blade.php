@@ -42,8 +42,8 @@
                     <tr>
                         <th>No. Order</th>
                         <th>Nama</th>
-                        <th>Payment</th>
-                        <th>Tipe</th>
+                        <th>Total</th>
+                        <th>Pembayaran</th>
                         <th>Status</th>
                         <th>Aksi</th>
                     </tr>
@@ -51,13 +51,32 @@
                 <tbody>
                 @forelse($pemesanans as $p)
                 <tr>
+                    @php
+                        $history = $p->historyPemesanan->last();
+                        $pembayaran = $history->pembayaran ?? 'belum_bayar';
+                    @endphp
                     <td>{{ $p->no_order }}</td>
+
                     <td>{{ $p->customer->nama_lengkap ?? '-' }}</td>
-                    <td>{{ $p->historyPemesanan->last()->pembayaran ?? 'belum_bayar' }}</td>
-                    <td>{{ ucfirst($p->tipe_pemesanan) }}</td>
+
                     <td>
-                        <span class="badge selesai">Selesai</span>
+                        Rp {{ number_format($p->total_harga ?? 0,0,',','.') }}
                     </td>
+
+                    <td>
+                        @if($pembayaran === 'lunas')
+                            <span class="badge bayar-lunas">Lunas</span>
+                        @else
+                            <span class="badge bayar-belum">Belum Bayar</span>
+                        @endif
+                    </td>
+
+                    <td>
+                        <span class="badge selesai">
+                            {{ ucfirst($p->status_proses) }}
+                        </span>
+                    </td>
+
                     <td class="aksi">
                     {{-- UNDUH --}}
                     @if(auth()->user()->role === 'admin')
@@ -145,6 +164,22 @@
 
         .badge.selesai {
             background: #16a39a;
+            color: #fff;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+
+        .badge.bayar-lunas {
+            background: #16a34a;
+            color: #fff;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+
+        .badge.bayar-belum {
+            background: #dc2626;
             color: #fff;
             padding: 4px 10px;
             border-radius: 12px;

@@ -137,10 +137,47 @@
     }
 </script>
 
+
+
 {{-- Jenis layanan --}}
 <script>
     const hargaList = @json($hargaList);
     let rowIndex = 0;
+
+    function generateOptgroup() {
+
+        let grouped = {};
+
+        hargaList.forEach(h => {
+            if (!grouped[h.kategori]) {
+                grouped[h.kategori] = [];
+            }
+            grouped[h.kategori].push(h);
+        });
+
+        let html = '';
+
+        Object.keys(grouped).forEach(kategori => {
+
+            html += `<optgroup label="${capitalize(kategori)}">`;
+
+            grouped[kategori].forEach(h => {
+                html += `
+                    <option value="${h.kode_layanan}" data-harga="${h.harga}">
+                        ${h.nama_layanan}
+                    </option>
+                `;
+            });
+
+            html += `</optgroup>`;
+        });
+
+        return html;
+    }
+
+    function capitalize(text) {
+        return text.charAt(0).toUpperCase() + text.slice(1);
+    }
 
     function tambahRow() {
 
@@ -152,11 +189,7 @@
         row.innerHTML = `
             <select onchange="updateHarga(${rowIndex})" id="layanan_${rowIndex}">
                 <option value="">Pilih Layanan</option>
-                ${hargaList.map(h =>
-                    `<option value="${h.kode_layanan}" data-harga="${h.harga}">
-                        ${h.nama_layanan}
-                    </option>`
-                ).join('')}
+                ${generateOptgroup()}
             </select>
 
             <input type="text" id="harga_${rowIndex}" readonly>

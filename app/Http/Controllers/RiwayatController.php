@@ -9,7 +9,10 @@ class RiwayatController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Pemesanan::with('customer')
+        $query = Pemesanan::with([
+                'customer',
+                'historyPemesanan' // 🔥 tambahkan ini
+            ])
             ->where('status_proses', 'selesai');
 
         if ($request->filled('layanan')) {
