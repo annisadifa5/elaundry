@@ -31,7 +31,7 @@
         <div class="section-title">Data Customer</div>
 
         <div class="row">
-            <input type="hidden" name="id_outlet" value="2">
+            <input type="hidden" name="id_outlet" value="3">
 
             <input type="text" name="nama_lengkap" placeholder="Nama Customer" required>
             <input type="text" name="no_telp" placeholder="No Telepon" required>
@@ -480,7 +480,7 @@
 
     .btn-add {
         margin-top: 10px;
-        background: #22c55e;
+        background: #16a39a;
         color: white;
         padding: 8px 14px;
         border-radius: 8px;
@@ -505,7 +505,7 @@
     #grand-total {
         font-size: 18px;
         font-weight: 700;
-        color: #16a34a;
+        color: #16a39a;
     }
 
     /* BUTTON PESAN LEBIH SLIM */
@@ -514,7 +514,7 @@
         padding: 10px 22px;
         border-radius: 999px;
         border: none;
-        background: linear-gradient(135deg, #22c55e, #16a34a);
+        background: linear-gradient(135deg, #16a39a, #16a39a);
         color: white;
         font-weight: 600;
         font-size: 14px;

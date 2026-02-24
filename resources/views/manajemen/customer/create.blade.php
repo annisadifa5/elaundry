@@ -39,6 +39,21 @@
             value="{{ old('lokasi') }}"
         >
 
+        <div class="toggle-wrapper">
+            <span>Aktifkan Member</span>
+
+            <label class="switch">
+                <input type="hidden" name="is_member" value="0">
+
+                <input type="checkbox"
+                    name="is_member"
+                    value="1"
+                    {{ old('is_member') ? 'checked' : '' }}>
+
+                <span class="slider"></span>
+            </label>
+        </div>
+
         {{-- ACTION --}}
         <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
             <a href="{{ route('manajemen.customer.index') }}" class="btn" style="background:#e2e8f0;">
@@ -94,6 +109,61 @@
 
     .btn:hover {
         opacity: 0.9;
+    }
+
+    /* ========================= */
+    /* 🍏 TOGGLE SWITCH STYLE */
+    /* ========================= */
+
+    .toggle-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 15px;
+        max-width: 300px;
+    }
+
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 50px;
+        height: 26px;
+    }
+
+    .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        inset: 0;
+        background-color: #e2e8f0;
+        transition: .4s;
+        border-radius: 34px;
+    }
+
+    .slider:before {
+        content: "";
+        position: absolute;
+        height: 20px;
+        width: 20px;
+        left: 3px;
+        bottom: 3px;
+        background-color: white;
+        transition: .4s;
+        border-radius: 50%;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+
+    .switch input:checked + .slider {
+        background-color: #16a39a; /* warna ON */
+    }
+
+    .switch input:checked + .slider:before {
+        transform: translateX(24px);
     }
 </style>
 @endsection
