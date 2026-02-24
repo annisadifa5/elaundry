@@ -31,6 +31,8 @@
         <div class="section-title">Data Customer</div>
 
         <div class="row">
+            <input type="hidden" name="id_outlet" value="2">
+
             <input type="text" name="nama_lengkap" placeholder="Nama Customer" required>
             <input type="text" name="no_telp" placeholder="No Telepon" required>
         </div>

@@ -6,142 +6,62 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
         * { box-sizing: border-box; font-family: 'Inter', sans-serif; }
-
         body { margin: 0; background: #f7fbfc; }
 
-        .wrapper { display: flex; min-height: 100vh; }
-
-        /* ================= SIDEBAR ================= */
-        .sidebar {
-            width: 250px;
+        /* ================= NAVBAR ================= */
+        .navbar {
             background: #16a39a;
             color: white;
-            padding: 25px;
-            display: flex;
-            flex-direction: column;
-            transition: all .3s ease;
-            z-index: 2000;
-        }
-
-        .sidebar-header {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 40px;
-        }
-
-        .hamburger-btn {
-            background: none;
-            border: none;
-            color: white;
-            font-size: 22px;
-            cursor: pointer;
-        }
-
-        .sidebar-title {
-            font-size: 20px;
-            font-weight: 700;
-            white-space: nowrap;
-        }
-
-        /* ===== COLLAPSED MODE ===== */
-        .sidebar.collapsed {
-            width: 72px;
-            padding: 20px 8px;
-        }
-
-        .sidebar.collapsed .sidebar-title,
-        .sidebar.collapsed span,
-        .sidebar.collapsed .submenu {
-            display: none !important;
-        }
-
-        .sidebar.collapsed .menu a,
-        .sidebar.collapsed .dropdown-toggle {
-            justify-content: center;
-        }
-
-        .sidebar.collapsed svg {
-            margin: 0 auto;
-        }
-
-        .divider {
-            height: 1px;
-            background: rgba(255,255,255,.35);
-            margin: 18px 0;
-        }
-
-        .menu a,
-        .dropdown-toggle {
+            padding: 15px 30px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            font-size: 15px;
-            font-weight: 600;
+        }
+
+        .nav-title {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-menu a {
             color: white;
             text-decoration: none;
-            margin-bottom: 14px;
-            padding: 0 12px;
-            height: 25px;
-            cursor: pointer;
-        }
-
-        .menu-left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .menu svg {
-            width: 16px;
-            height: 16px;
-            stroke: white;
-            stroke-width: 1.6;
-        }
-
-        .submenu {
-            margin-left: 28px;
-            margin-top: 6px;
-            display: none;
-            flex-direction: column;
-        }
-
-        .submenu.show { display: flex; }
-
-        .submenu a {
+            font-weight: 600;
             font-size: 14px;
-            margin-bottom: 10px;
-            opacity: .95;
+            position: relative;
         }
 
-        .arrow {
-            width: 14px;
-            height: 14px;
-            transition: transform .2s;
+        .nav-menu a:hover {
+            opacity: 0.85;
         }
 
-        .arrow.rotate { transform: rotate(180deg); }
+        .nav-menu a.active {
+            border-bottom: 2px solid white;
+            padding-bottom: 4px;
+        }
 
         .logout {
-            margin-top: auto;
-            background: #FE7F2D;
+            background: #e67800;
             border: none;
             color: white;
-            padding: 12px;
-            border-radius: 30px;
+            padding: 8px 18px;
+            border-radius: 20px;
             cursor: pointer;
             font-weight: 600;
-            width: 80%;
         }
 
         /* ================= CONTENT ================= */
         .content {
-            flex: 1;
             padding: 30px;
-            transition: all .3s ease;
         }
 
         .page-title {
@@ -172,7 +92,7 @@
         .form-group {
             display: flex;
             flex-direction: column;
-             margin-bottom: 8px;
+            margin-bottom: 8px;
             gap: 6px;
         }
 
@@ -189,58 +109,8 @@
             height: 90px;
         }
 
-        .layanan-flex {
-            display: flex;
-            flex-wrap: wrap;   /* 🔥 ini yang bikin ke samping lalu turun */
-            gap: 8px;
-        }
-
-        .layanan-chip {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .layanan-chip select {
-            width: 150px;      /* 🔥 ukuran kecil / compact */
-            padding: 6px;
-            font-size: 13px;
-        }
-
-        .layanan-row {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .layanan-row select {
-            width: 220px;
-            padding: 8px;
-        }
-
-        .chip-wrapper {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-
-        .chip {
-            background: #eef2ff;
-            border-radius: 20px;
-            padding: 6px 12px;
-            font-size: 13px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .chip span {
-            cursor: pointer;
-            font-weight: bold;
-        }
-
         .btn {
-            background: #ff8a00;
+            background: #e67800;
             color: white;
             border: none;
             padding: 10px 18px;
@@ -312,103 +182,64 @@
             color: white;
         }
 
-
         /* ===== RESPONSIVE ===== */
         @media (max-width: 768px) {
-            .sidebar { position: fixed; height: 100%; }
-            .content { margin-left: 72px; }
-        }
+    .nav-menu {
+        gap: 15px;
+        font-size: 13px;
+    }
+
+    .logout {
+        padding: 6px 12px;
+        font-size: 13px;
+    }
+}
     </style>
 
-    <!-- ================= TAMBAHKAN FONT AWESOME DI BAWAH INI ================= -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
     @stack('styles')
 </head>
 
 <body>
-<div class="wrapper">
 
-    <!-- SIDEBAR -->
-    <div class="sidebar">
-        <div class="sidebar-header">
-            <button id="sidebarToggle" class="hamburger-btn">☰</button>
-            <span class="sidebar-title">Kasir</span>
-        </div>
+<div class="navbar">
+    <span class="nav-title">Kasir</span>
 
-        <div class="menu">
-            <a href="{{ route('kasir.dashboard') }}">
-                <div class="menu-left">
-                    <svg fill="none" viewBox="0 0 24 24"><path d="M3 9.75L12 4.5l9 5.25v9.75H3z"/></svg>
-                    <span>Beranda</span>
-                </div>
-            </a>
+    <div class="nav-menu">
+        <a href="{{ route('kasir.dashboard') }}" 
+           class="{{ request()->routeIs('kasir.dashboard') ? 'active' : '' }}">
+           Beranda
+        </a>
 
-            <a href="{{ route('reservasi.create') }}">
-                <div class="menu-left">
-                    <svg fill="none" viewBox="0 0 24 24"><path d="M8 7h8M8 11h8M8 15h6"/><rect x="4" y="3" width="16" height="18" rx="2"/></svg>
-                    <span>Reservasi</span>
-                </div>
-            </a>
+        <a href="{{ route('reservasi.create') }}" 
+           class="{{ request()->routeIs('reservasi.create') ? 'active' : '' }}">
+           Reservasi
+        </a>
 
-            <a href="{{ route('pemesanan.create') }}">
-                <div class="menu-left">
-                    <svg fill="none" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 8h18"/></svg>
-                    <span>Pemesanan</span>
-                </div>
-            </a>
+        <a href="{{ route('pemesanan.create') }}" 
+           class="{{ request()->routeIs('pemesanan.create') ? 'active' : '' }}">
+           Pemesanan
+        </a>
 
-            <div class="divider"></div>
+        <a href="{{ route('kasir.lacak.index') }}" 
+           class="{{ request()->routeIs('kasir.lacak.*') ? 'active' : '' }}">
+           Update Status
+        </a>
 
-            <a href="{{ route('kasir.lacak.index') }}">
-                <div class="menu-left">
-                    <svg fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
-                    <span>Update Status</span>
-                </div>
-            </a>
-
-            <a href="{{ route('kasir.riwayat.index') }}">
-                <div class="menu-left">
-                    <svg fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 9v4l2 2"/></svg>
-                    <span>Riwayat</span>
-                </div>
-            </a>
-        </div>
-
-        <form method="POST" action="{{ route('logout') }}" style="display:flex; justify-content:center;">
-            @csrf
-            <button class="logout"><span>Logout</span></button>
-        </form>
+        <a href="{{ route('kasir.riwayat.index') }}" 
+           class="{{ request()->routeIs('kasir.riwayat.*') ? 'active' : '' }}">
+           Riwayat
+        </a>
     </div>
 
-    <!-- CONTENT -->
-    <div class="content">
-        @yield('content')
-    </div>
+    <form method="POST" action="{{ route('logout') }}">
+        @csrf
+        <button class="logout">Logout</button>
+    </form>
 </div>
 
-<script>
-function toggleMenu(id) {
-    const submenu = document.getElementById(id);
-    const arrow = submenu.previousElementSibling.querySelector('.arrow');
-    submenu.classList.toggle('show');
-    arrow.classList.toggle('rotate');
-}
+<div class="content">
+    @yield('content')
+</div>
 
-document.addEventListener('DOMContentLoaded', () => {
-    const sidebar = document.querySelector('.sidebar');
-    const toggleBtn = document.getElementById('sidebarToggle');
-
-    if (window.innerWidth <= 768) sidebar.classList.add('collapsed');
-
-    toggleBtn.addEventListener('click', () => sidebar.classList.toggle('collapsed'));
-
-    window.addEventListener('resize', () => {
-        window.innerWidth <= 768
-            ? sidebar.classList.add('collapsed')
-            : sidebar.classList.remove('collapsed');
-    });
-});
-</script>
 </body>
 </html>

@@ -28,10 +28,54 @@
     </div>
 </div>
 
+{{-- ================= TRACKING PESANAN ================= --}}
+<div class="timeline">
+
+@php
+    $statuses = [
+        'diterima' => 'fa-truck',
+        'dicuci' => 'fa-soap',
+        'dikeringkan' => 'fa-sun',
+        'disetrika' => 'fa-shirt',
+        'selesai' => 'fa-box'
+    ];
+
+    $active = request('status');
+    $keys = array_keys($statuses);
+@endphp
+
+@foreach($statuses as $status => $icon)
+
+@php
+    $currentIndex = array_search($status, $keys);
+    $activeIndex = array_search($active, $keys);
+@endphp
+
+<a href="{{ route('kasir.dashboard',['status'=>$status]) }}"
+   class="timeline-step 
+   {{ $activeIndex > $currentIndex ? 'completed' : '' }}
+   {{ $active == $status ? 'active' : '' }}">
+
+    <div class="icon">
+        <i class="fa-solid {{ $icon }}"></i>
+    </div>
+
+    <div class="dot"></div>
+
+    <div class="label">
+        {{ ucfirst($status) }}
+        <div class="count">{{ $statusCounts[$status] ?? 0 }}</div>
+    </div>
+
+</a>
+
+@endforeach
+</div>
+
 {{-- ================= ANTRIAN PESANAN ================= --}}
 <div class="card">
     <h4>Antrian Pesanan</h4>
-
+    <div class="table-wrapper">
     <table class="table">
         <thead>
             <tr>
@@ -48,41 +92,88 @@
             
             <tr>
                 <td>{{ $loop->iteration }}</td>
-            <td>{{ $item->customer->nama_lengkap ?? '-' }}</td>
-            <td>{{ $item->jenis_layanan ?? '-' }}</td>
-            <td>Rp {{ number_format($item->total_harga,0,',','.') }}</td>
+            @php
+    $isSelesai = request('status') == 'selesai';
+@endphp
+
+<td>
+    @if($isSelesai)
+        {{ $item->pemesanan->customer->nama_lengkap ?? '-' }}
+    @else
+        {{ $item->customer->nama_lengkap ?? '-' }}
+    @endif
+</td>
+
+<td>
+    @if($isSelesai)
+        {{ $item->pemesanan->jenis_layanan ?? '-' }}
+    @else
+        {{ $item->jenis_layanan ?? '-' }}
+    @endif
+</td>
+
+<td>
+    @if($isSelesai)
+        Rp {{ number_format($item->pemesanan->total_harga ?? 0,0,',','.') }}
+    @else
+        Rp {{ number_format($item->total_harga ?? 0,0,',','.') }}
+    @endif
+</td>
                 <td>
                     <span class="badge">
                         {{ ucfirst($item->status_proses ?? 'menunggu') }}
                     </span>
                 </td>
                 <td class="aksi">
-                    <!-- NOTA DAN DETAIL -->
-                     <div style="display:flex;gap:6px;">
-                        @if(isset($item->id_pemesanan))
-                            <a href="{{ route('kasir.pemesanan.show', $item->id_pemesanan) }}" 
-                            class="icon-btn" title="Detail">
-                                <i class="fa-solid fa-eye"></i>
-                            </a>
+    <div style="display:flex;gap:6px;">
 
-                            <a href="{{ route('pemesanan.nota', $item->id_pemesanan) }}" 
-                            class="icon-btn" title="Nota" target="_blank">
-                                <i class="fa-solid fa-book"></i>
-                            </a>
+        @php
+            $isSelesai = request('status') == 'selesai';
+        @endphp
 
-                        @elseif(isset($item->id_reservasi))
-                            <a href="{{ route('kasir.reservasi.show', $item->id_reservasi) }}" 
-                            class="icon-btn" title="Detail">
-                                <i class="fa-solid fa-eye"></i>
-                            </a>
+        @if($isSelesai)
 
-                            <a href="{{ route('reservasi.nota', $item->id_reservasi) }}" 
-                            class="icon-btn" title="Nota" target="_blank">
-                                <i class="fa-solid fa-book"></i>
-                            </a>
-                        @endif
-                    </div>
-                </td>
+            {{-- Data dari HistoryPemesanan --}}
+            <a href="{{ route('kasir.pemesanan.show', $item->id_pemesanan) }}" 
+               class="icon-btn" title="Detail">
+                <i class="fa-solid fa-eye"></i>
+            </a>
+
+            <a href="{{ route('pemesanan.nota', $item->id_pemesanan) }}" 
+               class="icon-btn" title="Nota" target="_blank">
+                <i class="fa-solid fa-book"></i>
+            </a>
+
+        @else
+
+            {{-- Logic lama (pemesanan & reservasi biasa) --}}
+            @if(isset($item->id_pemesanan))
+                <a href="{{ route('kasir.pemesanan.show', $item->id_pemesanan) }}" 
+                   class="icon-btn" title="Detail">
+                    <i class="fa-solid fa-eye"></i>
+                </a>
+
+                <a href="{{ route('pemesanan.nota', $item->id_pemesanan) }}" 
+                   class="icon-btn" title="Nota" target="_blank">
+                    <i class="fa-solid fa-book"></i>
+                </a>
+
+            @elseif(isset($item->id_reservasi))
+                <a href="{{ route('kasir.reservasi.show', $item->id_reservasi) }}" 
+                   class="icon-btn" title="Detail">
+                    <i class="fa-solid fa-eye"></i>
+                </a>
+
+                <a href="{{ route('reservasi.nota', $item->id_reservasi) }}" 
+                   class="icon-btn" title="Nota" target="_blank">
+                    <i class="fa-solid fa-book"></i>
+                </a>
+            @endif
+
+        @endif
+
+    </div>
+</td>
             </tr>
             @empty
             <tr>
@@ -93,6 +184,7 @@
             @endforelse
         </tbody>
     </table>
+</div>
 </div>
 
 <style>
@@ -141,5 +233,121 @@
     color: white;
 }
 
+.timeline {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 60px 0 50px;
+    position: relative;
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    top: 55px;
+    left: 5%;
+    right: 5%;
+    height: 3px;
+    background: #e5e7eb;
+    z-index: 0;
+}
+
+.timeline-step {
+    flex: 1;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+}
+
+.timeline-step .icon {
+    font-size: 28px;
+    color: #9ca3af;
+    margin-bottom: 12px;
+}
+
+.timeline-step .dot {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #d1d5db;
+    margin: 0 auto 12px;
+    border: 3px solid white;
+}
+
+.timeline-step .label {
+    font-size: 13px;
+    color: #6b7280;
+}
+
+.timeline-step .count {
+    font-size: 16px;
+    font-weight: 700;
+    margin-top: 4px;
+}
+
+/* COMPLETED */
+.timeline-step.completed .icon {
+    color: #374151;
+}
+
+.timeline-step.completed .dot {
+    background: #374151;
+}
+
+/* ACTIVE */
+.timeline-step.active .icon {
+    color: #e67800;
+}
+
+.timeline-step.active .dot {
+    background: #e67800;
+    box-shadow: 0 0 0 4px rgba(16,185,129,0.2);
+}
+
+.timeline-step.active .label {
+    color: #e67800;
+}
+
+.icon {
+    font-size: 28px;
+}
+
+.label {
+    font-size: 14px;
+}
+
+.count {
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    overflow: hidden; /* biar gak bocor keluar */
+}
+
+.table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.table {
+    width: 100%;
+    min-width: 800px; /* penting supaya bisa scroll */
+    border-collapse: collapse;
+}
+
+.timeline-step {
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.timeline-step:hover .icon {
+    transform: translateY(-3px);
+}
 </style>
 @endsection

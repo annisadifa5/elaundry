@@ -10,13 +10,11 @@
         }
 
         #nota{
-            width:58mm;
-            padding:6px;
+            width:80mm;
+            padding:8px;
         }
 
-        .center{
-            text-align:center;
-        }
+        .center{ text-align:center; }
 
         .line{
             border-top:1px dashed #000;
@@ -26,16 +24,14 @@
         .row{
             display:flex;
             justify-content:space-between;
+            margin:2px 0;
         }
 
-        .small{
-            font-size:11px;
-        }
+        .small{ font-size:11px; }
+        .bold{ font-weight:bold; }
 
         @media print {
-            body{
-                margin:0;
-            }
+            body{ margin:0; }
         }
     </style>
 </head>
@@ -55,37 +51,98 @@
         {{ $reservasi->outlet->provinsi ?? '' }}
         {{ $reservasi->outlet->kode_pos ?? '' }}<br>
 
-        {{ $reservasi->outlet->no_telp ?? '' }}
+        Telp: {{ $reservasi->outlet->no_telp ?? '-' }}
     </div>
-
 
     <div class="line"></div>
 
-    <!-- INFO -->
+    <!-- INFO RESERVASI -->
     <div class="small">
         Reservasi : RSV-{{ $reservasi->id_reservasi }}<br>
         Tanggal   : {{ $reservasi->tanggal_jemput }}<br>
         Jam       : {{ $reservasi->jam_jemput }}<br>
-        Pelanggan : {{ $reservasi->customer->nama_lengkap }}
+        Pelanggan : {{ $reservasi->customer->nama_lengkap ?? $reservasi->nama_lengkap }}<br>
+        No. HP    : {{ $reservasi->customer->no_telp ?? $reservasi->no_telp ?? '-' }}<br>
+        Alamat    : {{ $reservasi->alamat_jemput ?? '-' }}
     </div>
-
-    @if($reservasi->latitude && $reservasi->longitude)
-    <div class="small">
-        Lokasi :
-        <a href="https://www.google.com/maps?q={{ $reservasi->latitude }},{{ $reservasi->longitude }}"
-        target="_blank">
-            Buka Maps
-        </a>
-    </div>
-    @endif
 
     <div class="line"></div>
 
-    <!-- ITEM -->
+    <!-- DETAIL LAYANAN -->
+    <div class="center bold small">Detail Layanan</div>
+
+    <div class="line"></div>
+
+    @php
+        use App\Models\Harga;
+
+        $layananList = explode(',', $reservasi->jenis_layanan);
+        $qty = $reservasi->jumlah_item ?? 1;
+        $grandTotal = 0;
+    @endphp
+
+    @foreach($layananList as $kode)
+
+        @php
+            $harga = Harga::where('kode_layanan',$kode)->first();
+            $nama  = $harga->nama_layanan ?? ucwords(str_replace('_',' ',$kode));
+            $satuan = $harga->satuan ?? 'pcs';
+            $hargaSatuan = $harga->harga ?? 0;
+
+            $totalItem = $hargaSatuan * $qty;
+            $grandTotal += $totalItem;
+        @endphp
+
+        <div class="row">
+            <span>{{ $nama }}</span>
+        </div>
+
+        <div class="row small">
+            <span>{{ $qty }} {{ $satuan }} × {{ number_format($hargaSatuan,0,',','.') }}</span>
+            <span>Rp {{ number_format($totalItem,0,',','.') }}</span>
+        </div>
+
+    @endforeach
+
+    @if(!empty($reservasi->jumlah_item))
+    <div class="row small">
+        <span>Jumlah Item</span>
+        <span>{{ $reservasi->jumlah_item }} pcs</span>
+    </div>
+    @endif
+
+@if($reservasi->latitude && $reservasi->longitude)
+<div class="small">
+    Lokasi :
+    <a href="https://www.google.com/maps?q={{ $reservasi->latitude }},{{ $reservasi->longitude }}"
+       target="_blank">
+        Buka Maps
+    </a>
+</div>
+@endif
+
+    <div class="line"></div>
+
+    <!-- SUBTOTAL -->
+    <div class="row">
+        <span>Subtotal</span>
+        <span>Rp {{ number_format($grandTotal,0,',','.') }}</span>
+    </div>
+
+    <div class="line"></div>
+
+    <!-- TOTAL -->
     <div class="row">
     <span>{{ $reservasi->jenis_layanan }}</span>
     <span>Rp {{ number_format($reservasi->total_harga - $reservasi->ongkir,0,',','.') }}</span>
         </div>
+
+    <div class="line"></div>
+
+    <!-- STATUS -->
+    <div class="small">
+        Status : Menunggu Pickup
+    </div>
 
         @if($reservasi->jumlah_item)
         <div class="small">
@@ -115,14 +172,17 @@
 
     <!-- FOOTER -->
     <div class="center small">
-        Terima kasih 🙏<br>
-        Simpan nota ini
+        Terima kasih telah mempercayakan cucian Anda 🙏 <br>
+        Bersih Tak Kenal Waktu <br>
+        Simpan nota ini<br><br>
+
+        Jam Operasional : 08.00 - 21.00<br>
+        WA : {{ $reservasi->outlet->no_telp ?? '-' }}
     </div>
 
 </div>
 
 
-<!-- AUTO DOWNLOAD PNG -->
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <script>
 html2canvas(document.querySelector("#nota")).then(canvas => {
