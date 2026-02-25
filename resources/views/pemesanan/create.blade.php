@@ -31,8 +31,6 @@
         <div class="section-title">Data Customer</div>
 
         <div class="row">
-            <input type="hidden" name="id_outlet" value="2">
-
             <input type="text" name="nama_lengkap" placeholder="Nama Customer" required>
             <input type="text" name="no_telp" placeholder="No Telepon" required>
         </div>
@@ -72,14 +70,44 @@
         <span id="grand-total">Rp 0</span>
     </div>
 
+    {{-- PROMO --}}
+    <div class="card-section">
+        <div class="section-title">Promo</div>
+
+        <select id="promo_select" name="promo_id" onchange="applyPromo()">
+            <option value="">-- Tanpa Promo --</option>
+
+            @foreach($promos as $promo)
+                <option 
+                    value="{{ $promo->id_promo }}"
+                    data-basis="{{ $promo->basis_promo }}"
+                    data-nilai="{{ $promo->nilai_promo }}"
+                    data-minimal="{{ $promo->minimal_transaksi }}"
+                >
+                    {{ $promo->nama_promo }}
+                    ({{ $promo->basis_promo == 'persentase'
+                        ? $promo->nilai_promo.'%'
+                        : 'Rp '.number_format($promo->nilai_promo,0,',','.') }})
+                </option>
+            @endforeach
+        </select>
+
+        <div style="margin-top:8px; font-weight:600; color:#16a34a">
+            Diskon: <span id="diskon_text">Rp 0</span>
+        </div>
+    </div>
+
     <input type="hidden" name="total_harga" id="total_harga_input">
     <input type="hidden" name="detail_layanan" id="detail_layanan_input">
+    <input type="hidden" name="diskon" id="diskon_input">
 
     {{-- CATATAN --}}
     <div class="card-section">
         <div class="section-title">Catatan</div>
         <textarea name="catatan_khusus" placeholder="Catatan Khusus"></textarea>
     </div>
+
+
 
     <div style="text-align:right; margin-top:10px;">
         <button class="btn-submit">Pesan</button>
@@ -106,7 +134,9 @@
 
 <!-- Nota -->
 <script>
-    document.getElementById('form-pemesanan').addEventListener('submit', function(e) {
+    document.getElementById('form-pemesanan')
+    .addEventListener('submit', function(e) {
+
         e.preventDefault();
 
         const form = this;
@@ -119,24 +149,36 @@
             },
             body: formData
         })
-        .then(res => res.json())
-        .then(res => {
-            if (res.success) {
-                document.getElementById('successModal').style.display = 'flex';
+        .then(async res => {
 
-                // arahkan tombol nota
-                document.getElementById('btnNota')
-                    .href = `/pemesanan/${res.id}/nota`;
+            if (!res.ok) {
+                const text = await res.text();
+                console.log("ERROR RESPONSE:", text);
+                alert("Server Error. Cek console.");
+                return null;
             }
+
+            return res.json();
         })
-        .catch(err => {
+        .then(res => {
+
+        if (!res) return;
+
+        if (res.success) {
+
+            document.getElementById('successModal')
+                .style.display = 'flex';
+
+            document.getElementById('btnNota')
+                .href = `/pemesanan/${res.id}/nota`;
+        }
+    })
+    .catch(err => {
+        console.log(err);
             alert('Terjadi kesalahan');
         });
-    });
 
-    function closeModal() {
-        document.getElementById('successModal').style.display = 'none';
-    }
+    });
 </script>
 
 
@@ -396,6 +438,65 @@
     });
 </script>
 
+<script>
+    let diskonGlobal = 0;
+
+    function applyPromo() {
+
+        const select = document.getElementById('promo_select');
+        const selected = select.selectedOptions[0];
+
+        if (!selected || !selected.value) {
+            diskonGlobal = 0;
+            updateTotalFinal();
+            return;
+        }
+
+        const basis = selected.dataset.basis;
+        const nilai = parseInt(selected.dataset.nilai || 0);
+        const minimal = parseInt(selected.dataset.minimal || 0);
+
+        let total = parseInt(document
+            .getElementById('total_harga_input')
+            .value || 0);
+
+        if (total < minimal) {
+            alert("Minimal transaksi belum terpenuhi");
+            select.value = "";
+            diskonGlobal = 0;
+            updateTotalFinal();
+            return;
+        }
+
+        if (basis === "persentase") {
+            diskonGlobal = Math.floor((nilai / 100) * total);
+        } else {
+            diskonGlobal = nilai;
+        }
+
+        updateTotalFinal();
+    }
+
+    function updateTotalFinal() {
+
+        let total = parseInt(
+            document.getElementById('total_harga_input').value || 0
+        );
+
+        let totalAkhir = total - diskonGlobal;
+
+        if (totalAkhir < 0) totalAkhir = 0;
+
+        document.getElementById('diskon_text')
+            .innerText = formatRupiah(diskonGlobal);
+
+        document.getElementById('grand-total')
+            .innerText = formatRupiah(totalAkhir);
+
+        document.getElementById('diskon_input')
+            .value = diskonGlobal;
+    }
+</script>
 
 <style>
     .modal-overlay {

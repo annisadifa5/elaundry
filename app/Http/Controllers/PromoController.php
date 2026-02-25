@@ -38,8 +38,13 @@ class PromoController extends Controller
 
             // OPSIONAL
             'minimal_transaksi'     => 'nullable|numeric|min:0',
+            'maksimal_diskon'   => 'nullable|numeric|min:0',
+            'kuota'             => 'nullable|numeric|min:1',
 
-            'deskripsi_promo'       => 'required|string',
+            'role_akses'        => 'required|in:admin,kasir,semua',
+            'khusus_member'     => 'required|boolean',
+
+            'deskripsi_promo'   => 'required|string',
         ]);
 
         // SIMPAN DATA
@@ -49,6 +54,11 @@ class PromoController extends Controller
             'basis_promo'       => $validated['basis_promo'],
             'nilai_promo'       => $validated['nilai_promo'],
             'minimal_transaksi' => $validated['minimal_transaksi'] ?? 0,
+            'maksimal_diskon'   => $validated['maksimal_diskon'] ?? null,
+            'kuota'             => $validated['kuota'] ?? null,
+            'dipakai'           => 0,
+            'role_akses'        => $validated['role_akses'],
+            'khusus_member'     => $validated['khusus_member'],
             'status'            => $validated['status'],
             'tanggal_mulai'     => $validated['tanggal_mulai'],
             'tanggal_selesai'   => $validated['tanggal_selesai'],

@@ -14,12 +14,14 @@ class Promo extends Model
     protected $fillable = [
         'nama_promo',
         'skema',
-
-        // 🔥 PROMO BASIS
         'basis_promo',
         'nilai_promo',
         'minimal_transaksi',
-
+        'maksimal_diskon',
+        'kuota',
+        'dipakai',
+        'role_akses',
+        'khusus_member',
         'deskripsi_promo',
         'status',
         'tanggal_mulai',

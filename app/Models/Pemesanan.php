@@ -15,6 +15,7 @@ class Pemesanan extends Model
         'id_track',
         'id_cust',
         'id_outlet',
+        'id_promo',
         'jenis_layanan',
         'tipe_pemesanan',
         'no_order',
@@ -29,6 +30,8 @@ class Pemesanan extends Model
         'longitude',
         'jarak_km',
         'ongkir',
+        'diskon',
+        'total_akhir',
         'status_proses',
         'status_bayar'
         ];
@@ -61,6 +64,11 @@ class Pemesanan extends Model
     public function getTipeAttribute()
     {
         return 'pemesanan';
+    }
+
+    public function promo()
+    {
+        return $this->belongsTo(Promo::class, 'id_promo');
     }
 
 }

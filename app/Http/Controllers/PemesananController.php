@@ -8,6 +8,7 @@ use App\Models\Pemesanan;
 use App\Models\HistoryPemesanan;
 use App\Models\TrackPemesanan;
 use App\Models\Harga;
+use App\Models\Promo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
@@ -35,109 +36,113 @@ class PemesananController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-        'nama_lengkap'   => 'required|string|max:255',
-        'no_telp'        => 'required|string|max:20',
-        'alamat'         => 'required|string',
-        'id_outlet'      => 'required|exists:outlet,id_outlet',
-        // 'jenis_layanan'  => 'required|string',
-        // 'tipe_pemesanan' => 'required|string',
-        // 'berat_cucian'   => 'nullable|numeric|min:0.1',
-        // 'jumlah_item'    => 'nullable|integer|min:1',
-        'detail_layanan' => 'required',
-        'catatan_khusus' => 'nullable|string',
-    ]);
+        try {
+
+            $validated = $request->validate([
+                'nama_lengkap'   => 'required|string|max:255',
+                'no_telp'        => 'required|string|max:20',
+                'alamat'         => 'required|string',
+                'id_outlet'      => 'required|exists:outlet,id_outlet',
+                'detail_layanan' => 'required',
+                'catatan_khusus' => 'nullable|string',
+            ]);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'errors' => $e->errors()
+            ], 422);
+        }
 
         DB::beginTransaction();
 
         try {
-                $customer = Customer::firstOrCreate(
-                    ['no_telp' => $request->no_telp],
-                    [
-                        'nama_lengkap' => $request->nama_lengkap,
-                        'alamat'       => $request->alamat,
-                    ]
-                );
 
-                $detail = json_decode($request->detail_layanan, true);
+            $customer = Customer::firstOrCreate(
+                ['no_telp' => $request->no_telp],
+                [
+                    'nama_lengkap' => $request->nama_lengkap,
+                    'alamat'       => $request->alamat,
+                ]
+            );
 
-                $totalHarga = 0;
+            $detail = json_decode($request->detail_layanan, true);
 
-                foreach ($detail as $item) {
+            if (!$detail || count($detail) == 0) {
+                throw new \Exception("Detail layanan kosong");
+            }
 
-                    $harga = Harga::where('kode_layanan', $item['kode_layanan'])
-                        ->where('is_active', true)
-                        ->first();
+            $totalHarga = 0;
 
-                    if (!$harga) continue;
+            foreach ($detail as $item) {
 
-                    $totalHarga += $harga->harga * $item['qty'];
-                }
+                $harga = Harga::where('kode_layanan', $item['kode_layanan'])
+                    ->where('is_active', true)
+                    ->first();
 
-                $ongkir = 0;
-                $jarak = null;
+                if (!$harga) continue;
 
-                if ($request->latitude && $request->longitude) {
+                $totalHarga += $harga->harga * $item['qty'];
+            }
 
-                    $outlet = \App\Models\Outlet::find($request->id_outlet);
+            $totalFinal = $totalHarga;
 
-                    if ($outlet && $outlet->latitude && $outlet->longitude) {
+            $diskon = 0;
+            $idPromo = null;
 
-                        $jarak = $this->hitungJarak(
-                            $outlet->latitude,
-                            $outlet->longitude,
-                            $request->latitude,
-                            $request->longitude
-                        );
+            if ($request->promo_id) {
 
-                        $tarifPerKm = 3000;
-                        $ongkir = ceil($jarak) * $tarifPerKm;
+                $promo = Promo::find($request->promo_id);
+
+                if ($promo && $promo->status === 'aktif') {
+
+                    if ($promo->minimal_transaksi > $totalFinal) {
+                        throw new \Exception("Minimal transaksi promo belum terpenuhi");
                     }
+
+                    if ($promo->basis_promo === 'persentase') {
+                        $diskon = ($promo->nilai_promo / 100) * $totalFinal;
+                    } else {
+                        $diskon = $promo->nilai_promo;
+                    }
+
+                    $idPromo = $promo->id_promo;
                 }
+            }
 
-                $totalFinal = $totalHarga + $ongkir;
+            $totalAkhir = max(0, $totalFinal - $diskon);
 
-                $pemesanan = Pemesanan::create([
-                'no_order'        => 'ORD-' . now()->format('Ymd') . '-' . strtoupper(Str::random(6)),
-                'id_cust'         => $customer->id_cust,
-                'id_outlet'       => $request->id_outlet,
-                'jenis_layanan'   => 'multiple',
-                'tanggal_masuk'   => now(),
-                'total_harga'     => $totalFinal,
-                'latitude'        => $request->latitude,
-                'longitude'       => $request->longitude,
-                'jarak_km'        => $jarak,
-                'ongkir'          => $ongkir,
-                'catatan_khusus'  => $request->catatan_khusus,
-                'status_proses'   => 'diterima',
-                'status_bayar'    => 'belum',
-                'detail_layanan'  => json_encode($detail),
-            ]);
-
-            HistoryPemesanan::create([
-                'id_pemesanan'  => $pemesanan->id_pemesanan,
-                'status'        => 'diterima',
-                'jenis_layanan' => $pemesanan->jenis_layanan,
-                // 'tipe_pemesanan'=> $pemesanan->tipe_pemesanan,
-                'pembayaran'    => 'belum_bayar',
-            ]);
-
-            TrackPemesanan::create([
-                'id_pemesanan'   => $pemesanan->id_pemesanan,
-                'proses'         => 'diterima',
-                'jenis_layanan'  => $pemesanan->jenis_layanan,
-                'tanggal_mulai'  => now(),
+            $pemesanan = Pemesanan::create([
+                'no_order'       => 'ORD-' . now()->format('Ymd') . '-' . strtoupper(Str::random(6)),
+                'id_cust'        => $customer->id_cust,
+                'id_outlet'      => $request->id_outlet,
+                'jenis_layanan'  => 'multiple',
+                'tanggal_masuk'  => now(),
+                'total_harga'    => $totalFinal,
+                'diskon'         => $diskon,
+                'total_akhir'    => $totalAkhir,
+                'id_promo'       => $idPromo,
+                'catatan_khusus' => $request->catatan_khusus,
+                'status_proses'  => 'diterima',
+                'status_bayar'   => 'belum',
+                'detail_layanan' => json_encode($detail),
             ]);
 
             DB::commit();
+
             return response()->json([
                 'success' => true,
                 'id' => $pemesanan->id_pemesanan
             ]);
 
         } catch (\Exception $e) {
+
             DB::rollBack();
-            return back()->withErrors($e->getMessage())->withInput();
+
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage()
+            ], 500);
         }
     }
 
@@ -145,7 +150,12 @@ class PemesananController extends Controller
     {
         $hargaList = Harga::laundry()->get();
 
-        return view('pemesanan.create', compact('hargaList'));
+        $promos = Promo::where('status', 'aktif')
+            ->whereDate('tanggal_mulai', '<=', now())
+            ->whereDate('tanggal_selesai', '>=', now())
+            ->get();
+
+        return view('pemesanan.create', compact('hargaList', 'promos'));
     }
 
     public function show($id)

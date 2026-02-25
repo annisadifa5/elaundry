@@ -77,23 +77,22 @@
 </div>
 <style>
     .promo-card.aktif {
-    background: linear-gradient(135deg, #14b8a6, #0d9488);
-}
+        background: linear-gradient(135deg, #14b8a6, #0d9488);
+    }
 
-.promo-card.nonaktif {
-    background: linear-gradient(
-        to right,
-        #8e8e8e,
-        #6f6f6f
-    );
-    color: #f1f5f9;
-    opacity: 0.85;
-}
+    .promo-card.nonaktif {
+        background: linear-gradient(
+            to right,
+            #8e8e8e,
+            #6f6f6f
+        );
+        color: #f1f5f9;
+        opacity: 0.85;
+    }
 
-.btn-detail.disabled {
-    background: #cbd5e1;
-    cursor: not-allowed;
-}
-
+    .btn-detail.disabled {
+        background: #cbd5e1;
+        cursor: not-allowed;
+    }
 </style>
 @endsection
