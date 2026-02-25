@@ -10,10 +10,20 @@ class CustomerController extends Controller
     /**
      * Tampilkan data customer
      */
-    public function index()
+    public function index(Request $request)
     {
-        $customers = Customer::latest()->get();
-        return view('manajemen.customer.index', compact('customers'));
+        $filter = $request->filter;
+
+        $customers = Customer::when($filter === 'member', function ($q) {
+                $q->where('is_member', true);
+            })
+            ->when($filter === 'non', function ($q) {
+                $q->where('is_member', false);
+            })
+            ->latest()
+            ->get();
+
+        return view('manajemen.customer.index', compact('customers', 'filter'));
     }
 
     /**
@@ -74,13 +84,34 @@ class CustomerController extends Controller
             'email'        => 'nullable|email',
         ]);
 
+        // Update data utama
         $customer->update([
             'nama_lengkap' => $request->nama_lengkap,
             'alamat'       => $request->alamat,
             'no_telp'      => $request->no_telp,
             'lokasi'       => $request->lokasi,
             'email'        => $request->email,
+            'is_member'    => $request->has('is_member'),
         ]);
+
+        // 🔥 Kalau baru diaktifkan jadi member
+        if ($request->has('is_member') && !$customer->member_code) {
+
+            $customer->update([
+                'member_since' => now(),
+                'member_code'  => 'MBR' . str_pad($customer->id_cust, 4, '0', STR_PAD_LEFT),
+                'member_points'=> 0,
+            ]);
+        }
+
+        // 🔻 Kalau dimatikan dari member → non member
+        if (!$request->has('is_member')) {
+            $customer->update([
+                'member_since' => null,
+                'member_code'  => null,
+                'member_points'=> 0,
+            ]);
+        }
 
         return redirect()
             ->route('manajemen.customer.index')

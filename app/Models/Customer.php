@@ -25,6 +25,10 @@ class Customer extends Model
         'email',
         'no_telp',
         'alamat',
+        'is_member',
+        'member_since',
+        'member_code',
+        'member_points',
     ];
 
     // ❌ relasi ke user DIHAPUS

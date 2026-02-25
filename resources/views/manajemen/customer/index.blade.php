@@ -16,6 +16,24 @@
             </a>
         </div>
 
+        <!-- 🔥 FILTER MEMBER -->
+        <div class="filter-tabs">
+            <a href="{{ route('manajemen.customer.index') }}"
+            class="tab {{ !$filter ? 'active' : '' }}">
+                Semua
+            </a>
+
+            <a href="{{ route('manajemen.customer.index', ['filter'=>'member']) }}"
+            class="tab {{ $filter=='member' ? 'active' : '' }}">
+                Member
+            </a>
+
+            <a href="{{ route('manajemen.customer.index', ['filter'=>'non']) }}"
+            class="tab {{ $filter=='non' ? 'active' : '' }}">
+                Non Member
+            </a>
+        </div>
+
         {{-- TABLE --}}
         <div style="margin-top: 20px; overflow-x: auto;">
             <table class="table">
@@ -26,6 +44,7 @@
                         <th>Alamat</th>
                         <th>No. WhatsApp</th>
                         <th>Titik Lokasi</th>
+                        <th>Status Member</th>
                         <th style="text-align:center">Aksi</th>
                     </tr>
                 </thead>
@@ -43,6 +62,13 @@
                                     </a>
                                 @else
                                     -
+                                @endif
+                            </td>
+                            <td>
+                                @if($customer->is_member)
+                                    <span class="badge badge-member">Member</span>
+                                @else
+                                    <span class="badge badge-non">Non Member</span>
                                 @endif
                             </td>
                             <td class="aksi">
@@ -187,5 +213,64 @@
             color: #f97316;
         }
 
+        /* ============================= */
+        /* 🔥 FILTER TAB MODEL ORDER HISTORY */
+        /* ============================= */
+
+        .filter-tabs {
+            display: flex;
+            gap: 30px;
+            border-bottom: 2px solid #e2e8f0;
+            margin: 10px 0 20px 0;
+        }
+
+        .tab {
+            padding: 10px 0;
+            text-decoration: none;
+            font-weight: 600;
+            color: #64748b;
+            position: relative;
+        }
+
+        .tab:hover {
+            color: #16a39a;
+        }
+
+        .tab.active {
+            color: #16a39a;
+        }
+
+        .tab.active::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: -2px;
+            width: 100%;
+            height: 3px;
+            background: #16a39a;
+            border-radius: 2px;
+        }
+
+        /* ============================= */
+        /* 🎨 BADGE STATUS MEMBER */
+        /* ============================= */
+
+        .badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .badge-member {
+            background: rgba(22,163,154,0.15);
+            color: #16a39a;
+        }
+
+        .badge-non {
+            background: rgba(230,120,0,0.15);
+            color: #e67800;
+        }
     </style>
 @endsection

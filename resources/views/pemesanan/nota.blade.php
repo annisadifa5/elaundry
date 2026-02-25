@@ -7,11 +7,12 @@
         body{
             font-family: monospace;
             font-size:12px;
+            margin:0;
         }
 
         #nota{
             width:80mm;
-            padding:8px;
+            padding:6px;
         }
 
         .center{ text-align:center; }
@@ -24,22 +25,15 @@
         .row{
             display:flex;
             justify-content:space-between;
+            margin:2px 0;
         }
 
         .small{ font-size:11px; }
-
-        .bold{
-            font-weight:bold;
-        }
+        .bold{ font-weight:bold; }
 
         @media print {
-            body{ margin:0; }
-        }
-
-        .row{
-            display:flex;
-            justify-content:space-between;
-            margin:2px 0;
+            body { margin:0; }
+            #nota { width:80mm; }
         }
     </style>
 </head>
@@ -50,15 +44,9 @@
 
     <!-- HEADER -->
     <div class="center">
-        <strong>{{ $pemesanan->outlet->nama_outlet ?? 'LAUNDIO' }}</strong><br>
-
+        <div class="bold">{{ $pemesanan->outlet->nama_outlet ?? 'LAUNDIO' }}</div>
         {{ $pemesanan->outlet->jalan ?? '' }}<br>
-        {{ $pemesanan->outlet->kelurahan ?? '' }},
-        {{ $pemesanan->outlet->kecamatan ?? '' }}<br>
-        {{ $pemesanan->outlet->kota_kab ?? '' }},
-        {{ $pemesanan->outlet->provinsi ?? '' }}
-        {{ $pemesanan->outlet->kode_pos ?? '' }}<br>
-
+        {{ $pemesanan->outlet->kota_kab ?? '' }}<br>
         Telp: {{ $pemesanan->outlet->no_telp ?? '-' }}
     </div>
 
@@ -66,86 +54,18 @@
 
     <!-- INFO ORDER -->
     <div class="small">
-        Order   : {{ $pemesanan->no_order }}<br>
-        Tanggal : {{ $pemesanan->tanggal_masuk }}<br>
-        Pelanggan : {{ $pemesanan->customer->nama_lengkap }}<br>
-        No. HP  : {{ $pemesanan->customer->no_telp ?? '-' }}<br>
-        Alamat  : {{ $pemesanan->customer->alamat ?? '-' }}
+        <div>Order   : {{ $pemesanan->no_order }}</div>
+        <div>Tanggal : {{ $pemesanan->tanggal_masuk }}</div>
+        <div>Pelanggan : {{ $pemesanan->customer->nama_lengkap }}</div>
+        <div>No HP   : {{ $pemesanan->customer->no_telp ?? '-' }}</div>
     </div>
-
-    @if($pemesanan->latitude && $pemesanan->longitude)
-    <div class="small">
-        Lokasi :
-        <a href="https://www.google.com/maps?q={{ $pemesanan->latitude }},{{ $pemesanan->longitude }}"
-        target="_blank">
-            Buka Maps
-        </a>
-    </div>
-    @endif
 
     <div class="line"></div>
 
     <!-- DETAIL LAYANAN -->
-    <div class="center bold small">Detail Layanan</div>
-
+    <div class="center bold small">DETAIL LAYANAN</div>
     <div class="line"></div>
 
-    @php
-    use App\Models\Harga;
-
-    $layananList = explode(',', $pemesanan->jenis_layanan);
-
-    $qty = $pemesanan->berat_cucian 
-            ?? $pemesanan->jumlah_item 
-            ?? 1;
-    @endphp
-
-    @foreach($layananList as $kode)
-
-    @php
-    $harga = Harga::where('kode_layanan',$kode)->first();
-    $nama  = $harga->nama_layanan ?? ucwords(str_replace('_',' ',$kode));
-    $satuan = $harga->satuan ?? 'pcs';
-    $hargaSatuan = $harga->harga ?? 0;
-
-    $totalItem = $hargaSatuan * $qty;
-    @endphp
-
-    <div class="row">
-        <span>{{ $nama }}</span>
-    </div>
-
-    <div class="row small">
-        <span>{{ $qty }} {{ $satuan }} × {{ number_format($hargaSatuan,0,',','.') }}</span>
-        <span>Rp {{ number_format($totalItem,0,',','.') }}</span>
-    </div>
-
-    @endforeach
-
-    <!-- Jika ada berat
-    @if(!empty($pemesanan->berat_cucian))
-    <div class="row small">
-        <span>Berat</span>
-        <span>{{ $pemesanan->berat_cucian }} kg</span>
-    </div>
-    @endif -->
-
-    <!-- Jika ada jumlah item -->
-    @if(!empty($pemesanan->jumlah_item))
-    <div class="row small">
-        <span>Jumlah Item</span>
-        <span>{{ $pemesanan->jumlah_item }} pcs</span>
-    </div>
-    @endif
-
-    <div class="line"></div>
-
-    <!-- SUBTOTAL -->
-    <div class="row">
-        <span>Subtotal</span>
-        <span>Rp {{ number_format($pemesanan->total_harga,0,',','.') }}</span>
-    
-    <!-- tiara -->
     @php
         $detail = json_decode($pemesanan->detail_layanan ?? '[]', true);
         $detail = is_array($detail) ? $detail : [];
@@ -164,22 +84,17 @@
                 $totalLayanan += $subtotal;
             @endphp
 
-            <div class="row">
-                <span>{{ $layanan->nama_layanan ?? '-' }}</span>
+            <div>{{ $layanan->nama_layanan ?? '-' }}</div>
+
+            <div class="row small">
+                <span>{{ $qty }} x {{ number_format($harga,0,',','.') }}</span>
                 <span>Rp {{ number_format($subtotal,0,',','.') }}</span>
             </div>
-
-            <div class="small">
-                {{ $qty }} x Rp {{ number_format($harga,0,',','.') }}
-            </div>
-
-            <div class="line"></div>
 
         @endforeach
 
     @else
 
-        <!-- fallback untuk order lama -->
         <div class="row">
             <span>Layanan</span>
             <span>Rp {{ number_format($pemesanan->total_harga - $pemesanan->ongkir,0,',','.') }}</span>
@@ -187,7 +102,7 @@
 
     @endif
 
-    {{-- <div class="line"></div> --}}
+    <div class="line"></div>
 
     <!-- JARAK & ONGKIR -->
     <div class="row">
@@ -198,69 +113,38 @@
     <div class="row">
         <span>Ongkir</span>
         <span>Rp {{ number_format($pemesanan->ongkir,0,',','.') }}</span>
-    
     </div>
 
     <div class="line"></div>
 
     <!-- TOTAL -->
-    <div class="row">
-        <strong>Total</strong>
-        <strong>Rp {{ number_format($pemesanan->total_harga,0,',','.') }}</strong>
+    <div class="row bold">
+        <span>TOTAL</span>
+        <span>Rp {{ number_format($pemesanan->total_harga,0,',','.') }}</span>
     </div>
 
     <div class="line"></div>
 
     <!-- STATUS -->
     <div class="small">
-        Status Proses : {{ ucfirst($pemesanan->status_proses ?? 'diterima') }}<br>
-        Status Bayar  : {{ ucfirst($pemesanan->status_bayar ?? 'belum') }}
+        <div>Status Proses : {{ ucfirst($pemesanan->status_proses ?? 'diterima') }}</div>
+        <div>Status Bayar  : {{ ucfirst($pemesanan->status_bayar ?? 'belum') }}</div>
     </div>
 
     <div class="line"></div>
-
-    <!-- JADWAL
-    <div class="small">
-        Tgl Jemput : {{ $pemesanan->tanggal_jemput ?? '-' }}<br>
-        Jam Jemput : {{ $pemesanan->jam_jemput ?? '-' }}<br>
-        Estimasi Selesai : {{ $pemesanan->estimasi_selesai ?? '-' }}
-    </div>
-
-    <div class="line"></div> -->
-
-    <!-- CATATAN -->
-    @if(!empty($pemesanan->catatan_khusus))
-    <div class="small">
-        Catatan:<br>
-        {{ $pemesanan->catatan_khusus }}
-    </div>
-
-    <div class="line"></div>
-    @endif
 
     <!-- FOOTER -->
     <div class="center small">
-        Terima kasih telah mempercayakan cucian Anda 🙏  <br>
-        Bersih Tak Kenal Waktu <br>
-        Simpan nota ini<br><br>
-
-        Jam Operasional : 08.00 - 21.00<br>
-        WA : {{ $pemesanan->outlet->no_telp ?? '-' }}
+        Terima kasih 🙏 <br>
+        Bersih Tak Kenal Waktu<br><br>
+        Jam: 08.00 - 21.00<br>
+        WA: {{ $pemesanan->outlet->no_telp ?? '-' }}
     </div>
 
 </div>
 
-
-<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <script>
-html2canvas(document.querySelector("#nota")).then(canvas => {
-    let link = document.createElement('a');
-    link.download = 'nota-{{ $pemesanan->id_pemesanan }}.png';
-    link.href = canvas.toDataURL();
-    link.click();
-
-    window.print();
-});
+window.print();
 </script>
 
 </body>
