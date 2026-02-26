@@ -475,21 +475,90 @@
             color: white;
         }
 
-        /* ===== DESKTOP ===== */
+        .mobile-hamburger {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .mobile-hamburger {
+        display: block;
+        position: relative;
+        top: 16px;
+        left: 16px;
+        z-index: 3000;
+        background: #16a39a;
+        color: white;
+        border: none;
+        font-size: 22px;
+        padding: 10px 14px;
+        border-radius: 10px;
+        cursor: pointer;
+    }
+}
+
+        /* ===== DESKTOP =====
         @media (min-width: 769px) {
             .sidebar {
                 position: relative;
                 transform: none;
                 padding: 50px 22px;
             }
-        }
+        } */
 
+        /* ===== MOBILE MODE ===== */
+@media (max-width: 768px) {
+
+    .wrapper {
+        flex-direction: row;
+    }
+
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: -260px;
+        height: 100vh;
+        width: 260px;
+        padding: 25px;
+        z-index: 2000;
+        transition: transform 0.3s ease;
+        transform: translateX(0);
+    }
+
+    .sidebar.mobile-show {
+        transform: translateX(260px);
+    }
+
+    .content {
+        width: 100%;
+        padding: 20px;
+        margin-left: 0;
+    }
+
+    .overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.4);
+        display: none;
+        z-index: 1500;
+    }
+
+    .overlay {
+    cursor: pointer;
+}
+
+    .overlay.show {
+        display: block;
+    }
+}
     </style>
     @stack('styles')
 </head>
 <body>
 {{-- <button id="sidebarToggle" class="global-hamburger">☰</button> --}}
+<button id="mobileToggle" class="mobile-hamburger">☰</button>
+
 <div class="wrapper">
+    <div class="overlay" id="overlay"></div>
      <!-- SIDEBAR -->
     <div class="sidebar">
         <div class="sidebar-header">
@@ -648,25 +717,44 @@ function toggleMenu(id) {
 document.addEventListener('DOMContentLoaded', () => {
     const sidebar = document.querySelector('.sidebar');
     const toggleBtn = document.getElementById('sidebarToggle');
+    const mobileToggle = document.getElementById('mobileToggle');
+    const overlay = document.getElementById('overlay');
+    const menuLinks = document.querySelectorAll('.menu a');
 
-    // mobile default icon-only
-    if (window.innerWidth <= 768) {
-        sidebar.classList.add('collapsed');
-    }
-
-    toggleBtn.addEventListener('click', () => {
-        sidebar.classList.toggle('collapsed');
+        menuLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            if (window.innerWidth <= 768) {
+                sidebar.classList.remove('mobile-show');
+                overlay.classList.remove('show');
+            }
+        });
     });
 
-    window.addEventListener('resize', () => {
-        if (window.innerWidth <= 768) {
-            sidebar.classList.add('collapsed');
-        } else {
-            sidebar.classList.remove('collapsed');
-        }
+    // DESKTOP toggle (collapse)
+    if (toggleBtn) {
+        toggleBtn.addEventListener('click', () => {
+            if (window.innerWidth > 768) {
+                sidebar.classList.toggle('collapsed');
+            }
+        });
+    }
+
+    // MOBILE toggle (off-canvas)
+    if (mobileToggle) {
+        mobileToggle.addEventListener('click', () => {
+            sidebar.classList.add('mobile-show');
+            overlay.classList.add('show');
+        });
+    }
+
+    // CLICK OVERLAY = CLOSE
+    overlay.addEventListener('click', () => {
+        sidebar.classList.remove('mobile-show');
+        overlay.classList.remove('show');
     });
 });
 </script>
+
 {{-- untuk dropdown menu --}}
 <script>
 document.addEventListener("DOMContentLoaded", function () {

@@ -349,5 +349,88 @@
 .timeline-step:hover .icon {
     transform: translateY(-3px);
 }
+
+/* ================= MOBILE FIX ================= */
+@media (max-width: 768px) {
+
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+
+    .stat-card {
+        padding: 14px;
+    }
+
+    .stat-card h2 {
+        font-size: 18px;
+    }
+
+}
+
+@media (max-width: 768px) {
+
+    .timeline {
+        flex-wrap: wrap;
+        gap: 20px;
+        margin: 30px 0;
+    }
+
+    .timeline::before {
+        display: none;
+    }
+
+    .timeline-step {
+        width: 33.33%;
+    }
+
+    .timeline-step .icon {
+        font-size: 22px;
+    }
+
+    .timeline-step .count {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 768px) {
+
+    .table {
+        min-width: 650px;
+    }
+
+    .icon-btn {
+        width: 32px;
+        height: 32px;
+    }
+}
+
+@media (max-width: 768px) {
+
+    .page-title {
+        font-size: 18px;
+        margin-bottom: 15px;
+    }
+
+    .card {
+        padding: 15px;
+    }
+}
+
+/* BIAR G GESER KANAN KIRI */
+html, body {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+.wrapper {
+    overflow-x: hidden;
+}
+
+.content {
+    overflow-x: hidden;
+}
+
 </style>
 @endsection

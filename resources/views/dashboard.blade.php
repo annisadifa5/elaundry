@@ -75,6 +75,10 @@
 
     {{-- STYLE DASHBOARD --}}
     <style>
+        body {
+    overflow-x: hidden;
+}
+
         .page-title {
             font-weight: 600;
             margin-bottom: 16px;
@@ -177,6 +181,64 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        /* ================= MOBILE ADMIN DASHBOARD ================= */
+@media (max-width: 768px) {
+
+    .dashboard-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+
+    .card.summary {
+        padding: 14px;
+        gap: 10px;
+    }
+
+    .card.summary .icon {
+        font-size: 22px;
+        padding: 10px;
+    }
+
+    .card.summary .info h4 {
+        font-size: 16px;
+    }
+
+}
+
+@media (max-width: 480px) {
+
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+@media (max-width: 768px) {
+
+    .chart-wrapper {
+        height: 260px;
+    }
+
+    .chart-card h4 {
+        font-size: 15px;
+    }
+
+}
+
+@media (max-width: 768px) {
+
+    .page-title {
+        font-size: 18px;
+        margin-bottom: 12px;
+    }
+
+    .chart-card {
+        padding: 14px;
+    }
+
+}
+
         </style>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

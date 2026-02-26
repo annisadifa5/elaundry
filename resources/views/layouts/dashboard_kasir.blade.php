@@ -11,6 +11,9 @@
     <style>
         * { box-sizing: border-box; font-family: 'Inter', sans-serif; }
         body { margin: 0; background: #f7fbfc; }
+        body {
+            overflow-x: hidden;
+        }
 
         /* ================= NAVBAR ================= */
         .navbar {
@@ -87,6 +90,12 @@
             display: flex;
             gap: 15px;
             margin-bottom: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .row {
+                flex-direction: column;
+            }
         }
 
         .form-group {
@@ -184,16 +193,68 @@
 
         /* ===== RESPONSIVE ===== */
         @media (max-width: 768px) {
-    .nav-menu {
-        gap: 15px;
-        font-size: 13px;
-    }
+            .nav-menu {
+                gap: 15px;
+                font-size: 13px;
+            }
 
-    .logout {
-        padding: 6px 12px;
-        font-size: 13px;
-    }
-}
+            .logout {
+                padding: 6px 12px;
+                font-size: 13px;
+            }
+        }
+
+        .menu-toggle {
+            display: none;
+            font-size: 22px;
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+        }
+
+        /* ===== MOBILE ===== */
+        @media (max-width: 768px) {
+
+            .menu-toggle {
+                display: block;
+            }
+
+            .nav-menu {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 65px;
+                right: 0;
+                background: #16a39a;
+                width: 100%;
+                padding: 15px;
+            }
+
+            .nav-menu a {
+                padding: 10px 0;
+            }
+
+            .nav-menu.show {
+                display: flex;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .table {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        
     </style>
 
     @stack('styles')
@@ -202,9 +263,16 @@
 <body>
 
 <div class="navbar">
-    <span class="nav-title">Kasir</span>
 
-    <div class="nav-menu">
+    <div class="nav-left">
+            <button class="menu-toggle" onclick="toggleMenu()">
+            ☰
+        </button>    
+    
+        <span class="nav-title">Kasir</span>
+    </div>
+
+    <div class="nav-menu" id="navMenu">
         <a href="{{ route('kasir.dashboard') }}" 
            class="{{ request()->routeIs('kasir.dashboard') ? 'active' : '' }}">
            Beranda
@@ -241,5 +309,10 @@
     @yield('content')
 </div>
 
+<script>
+function toggleMenu() {
+    document.getElementById("navMenu").classList.toggle("show");
+}
+</script>
 </body>
 </html>

@@ -145,7 +145,7 @@ class LacakController extends Controller
         if (auth()->user()->role === 'admin') {
             $outlets = Outlet::all();
         } else {
-            $outlets = Outlet::where('id', auth()->user()->outlet_id)->get();
+            $outlets = Outlet::where('id_outlet', auth()->user()->outlet_id)->get();
         }
 
         return view('lacak.index', compact('pemesanans', 'trackingCount', 'persen', 'outlets'));

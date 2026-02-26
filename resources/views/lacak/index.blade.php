@@ -219,7 +219,7 @@
     display: flex;             /* 🔥 ini penting */
     align-items: center;       /* vertikal tengah */
     gap: 12px;
-    transiton: all .25s ease;
+    transition: all .25s ease;
 }
 
 .track-card p {
@@ -260,5 +260,26 @@
     cursor: pointer;
 }
 
+/* biar ga geser */
+.row {
+    display: flex;
+    flex-wrap: wrap;   /* 🔥 INI KUNCI */
+    gap: 10px;
+    align-items: center;
+}
+
+@media (max-width: 768px) {
+
+    .row select,
+    .row input {
+        flex: 1 1 48%;   /* 2 kolom */
+        min-width: 0;
+    }
+
+    .row button {
+        flex: 1 1 100%;  /* tombol full width */
+    }
+
+}
     </style>
 @endsection
