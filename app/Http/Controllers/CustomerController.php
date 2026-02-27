@@ -47,11 +47,16 @@ class CustomerController extends Controller
             'email'        => 'nullable|email',
         ]);
 
+        $lokasi = null;
+
+        if ($request->latitude && $request->longitude) {
+            $lokasi = "https://www.google.com/maps?q={$request->latitude},{$request->longitude}";
+        }
         Customer::create([
             'nama_lengkap' => $request->nama_lengkap,
             'alamat'       => $request->alamat,
             'no_telp'      => $request->no_telp,
-            'lokasi'       => $request->lokasi,
+            'lokasi'       => $lokasi,
             'email'        => $request->email,
         ]);
 
@@ -85,11 +90,16 @@ class CustomerController extends Controller
         ]);
 
         // Update data utama
+        $lokasi = $customer->lokasi; // default pakai lama
+
+        if ($request->latitude && $request->longitude) {
+            $lokasi = "https://www.google.com/maps?q={$request->latitude},{$request->longitude}";
+        }
         $customer->update([
             'nama_lengkap' => $request->nama_lengkap,
             'alamat'       => $request->alamat,
             'no_telp'      => $request->no_telp,
-            'lokasi'       => $request->lokasi,
+            'lokasi'       => $lokasi,
             'email'        => $request->email,
             'is_member'    => $request->has('is_member'),
         ]);

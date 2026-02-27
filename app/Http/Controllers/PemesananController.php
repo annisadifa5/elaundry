@@ -44,7 +44,8 @@ class PemesananController extends Controller
                 'alamat'         => 'required|string',
                 'id_outlet'      => 'required|exists:outlet,id_outlet',
                 'detail_layanan' => 'required',
-                'catatan_khusus' => 'nullable|string',
+                'latitude'       => 'required',
+                'longitude'      => 'required',
             ]);
 
         } catch (\Illuminate\Validation\ValidationException $e) {
@@ -65,6 +66,10 @@ class PemesananController extends Controller
                     'alamat'       => $request->alamat,
                 ]
             );
+
+            $customer->update([
+                'alamat' => $request->alamat
+            ]);
 
             $detail = json_decode($request->detail_layanan, true);
 
@@ -87,30 +92,61 @@ class PemesananController extends Controller
 
             $totalFinal = $totalHarga;
 
-            $diskon = 0;
-            $idPromo = null;
+            $jarak = 0;
+            $ongkir = 0;
 
-            if ($request->promo_id) {
+            if ($request->latitude && $request->longitude) {
 
-                $promo = Promo::find($request->promo_id);
+                $outlet = \App\Models\Outlet::find($request->id_outlet);
 
-                if ($promo && $promo->status === 'aktif') {
+                if ($outlet && $outlet->latitude && $outlet->longitude) {
 
-                    if ($promo->minimal_transaksi > $totalFinal) {
-                        throw new \Exception("Minimal transaksi promo belum terpenuhi");
-                    }
+                    $jarak = $this->hitungJarak(
+                        $outlet->latitude,
+                        $outlet->longitude,
+                        $request->latitude,
+                        $request->longitude
+                    );
 
-                    if ($promo->basis_promo === 'persentase') {
-                        $diskon = ($promo->nilai_promo / 100) * $totalFinal;
-                    } else {
-                        $diskon = $promo->nilai_promo;
-                    }
+                    $tarifPerKm = 2000; // ganti sesuai aturan kamu
+                    $ongkir = round($jarak) * $tarifPerKm;
 
-                    $idPromo = $promo->id_promo;
+                    $totalFinal += $ongkir;
                 }
             }
 
-            $totalAkhir = max(0, $totalFinal - $diskon);
+            $biayaPelayanan = 0;
+            $diskon = 0;
+            $idPromo = null;
+
+            if ($request->id_promo) {
+
+                $promo = Promo::find($request->id_promo);
+
+                if (!$promo) {
+                    throw new \Exception("Promo tidak ditemukan");
+                }
+
+                // cek minimal transaksi
+                if ($promo->minimal_transaksi && $totalHarga < $promo->minimal_transaksi) {
+                    throw new \Exception("Minimal transaksi belum terpenuhi");
+                }
+
+                // hitung diskon
+                if ($promo->basis_promo === 'persentase') {
+                    $diskon = ($promo->nilai_promo / 100) * $totalHarga;
+                } else {
+                    $diskon = $promo->nilai_promo;
+                }
+
+                $diskon = min($diskon, $totalHarga);
+
+                $totalHarga -= $diskon;
+
+                $idPromo = $promo->id_promo;
+            }
+
+            $totalAkhir = max(0, $totalHarga + $ongkir + $biayaPelayanan);
 
             $pemesanan = Pemesanan::create([
                 'no_order'       => 'ORD-' . now()->format('Ymd') . '-' . strtoupper(Str::random(6)),
@@ -122,10 +158,22 @@ class PemesananController extends Controller
                 'diskon'         => $diskon,
                 'total_akhir'    => $totalAkhir,
                 'id_promo'       => $idPromo,
+                'jarak_km'       => $jarak,
+                'ongkir'         => $ongkir,
+                'latitude'       => $request->latitude,
+                'longitude'      => $request->longitude,
                 'catatan_khusus' => $request->catatan_khusus,
                 'status_proses'  => 'diterima',
                 'status_bayar'   => 'belum',
                 'detail_layanan' => json_encode($detail),
+            ]);
+
+            $linkMaps = "https://www.google.com/maps?q={$request->latitude},{$request->longitude}";
+
+            $customer->update([
+                'alamat' => $request->alamat,
+                'latitude'  => $request->latitude,
+                'longitude' => $request->longitude,
             ]);
 
             DB::commit();
@@ -173,7 +221,7 @@ class PemesananController extends Controller
 
     public function nota($id)
     {
-        $pemesanan = Pemesanan::with(['customer','outlet'])
+        $pemesanan = Pemesanan::with(['customer','outlet','promo'])
             ->findOrFail($id);
 
         return view('pemesanan.nota', compact('pemesanan'));

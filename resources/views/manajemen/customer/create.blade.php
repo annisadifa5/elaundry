@@ -32,12 +32,14 @@
             value="{{ old('no_telp') }}"
         >
 
-        <input
-            type="url"
-            name="lokasi"
-            placeholder="Titik Lokasi (URL Google Maps)"
-            value="{{ old('lokasi') }}"
-        >
+        <button type="button" onclick="ambilLokasi()" class="btn" style="background:#16a39a; color:white; margin-top:10px;">
+            📍 Ambil Titik Lokasi
+        </button>
+
+        <input type="hidden" name="latitude" id="latitude">
+        <input type="hidden" name="longitude" id="longitude">
+
+        <small id="lokasiStatus" style="display:block; margin-top:5px; color:#64748b;"></small>
 
         <div class="toggle-wrapper">
             <span>Aktifkan Member</span>
@@ -64,6 +66,27 @@
             </button>
         </div>
     </form>
+
+<script>
+    function ambilLokasi() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+
+                document.getElementById('latitude').value = position.coords.latitude;
+                document.getElementById('longitude').value = position.coords.longitude;
+
+                document.getElementById('lokasiStatus').innerHTML =
+                    "Lokasi berhasil diambil ✔";
+
+            }, function(error) {
+                alert("Gagal mengambil lokasi. Pastikan GPS aktif.");
+            });
+        } else {
+            alert("Browser tidak mendukung GPS.");
+        }
+    }
+</script>
+
 </div>
 
 {{-- STYLE (KONSISTEN DENGAN HALAMAN KARYAWAN) --}}

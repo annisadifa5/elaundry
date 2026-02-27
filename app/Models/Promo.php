@@ -26,5 +26,8 @@ class Promo extends Model
         'status',
         'tanggal_mulai',
         'tanggal_selesai',
+        'minimal_jarak',
+        'maksimal_jarak',
+        'target_diskon',
     ];
 }

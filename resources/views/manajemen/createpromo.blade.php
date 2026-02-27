@@ -8,6 +8,16 @@
 <div class="card" style="max-width: 100%;">
     <h4>Input Promo</h4>
 
+    @if ($errors->any())
+        <div style="color:red;">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     <form method="POST" action="{{ route('manajemen.storepromo') }}">
     @csrf
 
@@ -62,6 +72,49 @@
         <textarea name="deskripsi_promo"
                   placeholder="Deskripsi Promo"
                   required></textarea>
+    </div>
+
+    {{-- ROLE AKSES --}}
+    <div class="row">
+        <select name="role_akses" required>
+            <option value="">Role Akses</option>
+            <option value="admin">Admin</option>
+            <option value="kasir">Kasir</option>
+            <option value="semua">Semua</option>
+        </select>
+    </div>
+
+    {{-- KHUSUS MEMBER --}}
+    <div class="row">
+        <select name="khusus_member" required>
+            <option value="">Khusus Member?</option>
+            <option value="1">Ya</option>
+            <option value="0">Tidak</option>
+        </select>
+    </div>
+
+    {{-- MAKSIMAL DISKON --}}
+    <div class="row">
+        <input type="number" name="maksimal_diskon"
+            placeholder="Maksimal Diskon (Rp)"
+            min="0">
+    </div>
+
+    {{-- KUOTA --}}
+    <div class="row">
+        <input type="number" name="kuota"
+            placeholder="Kuota Promo"
+            min="1">
+    </div>
+
+    {{-- TARGET DISKON --}}
+    <div class="row">
+        <select name="target_diskon" required>
+            <option value="">Target Diskon</option>
+            <option value="produk">Harga Produk</option>
+            <option value="ongkir">Ongkir</option>
+            <option value="pelayanan">Biaya Pelayanan</option>
+        </select>
     </div>
 
     <div class="btn-row">

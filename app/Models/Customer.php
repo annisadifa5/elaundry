@@ -25,6 +25,8 @@ class Customer extends Model
         'email',
         'no_telp',
         'alamat',
+        'latitude',
+        'longitude',
         'is_member',
         'member_since',
         'member_code',

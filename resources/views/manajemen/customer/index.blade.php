@@ -56,9 +56,11 @@
                             <td>{{ $customer->alamat }}</td>
                             <td>{{ $customer->no_telp }}</td>
                             <td>
-                                @if ($customer->lokasi)
-                                    <a href="{{ $customer->lokasi }}" target="_blank" class="link-lokasi">
-                                         Lihat
+                                @if ($customer->latitude && $customer->longitude)
+                                    <a href="https://www.google.com/maps?q={{ $customer->latitude }},{{ $customer->longitude }}"
+                                    target="_blank"
+                                    class="link-lokasi">
+                                        Lihat
                                     </a>
                                 @else
                                     -

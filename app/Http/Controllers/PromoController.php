@@ -45,6 +45,7 @@ class PromoController extends Controller
             'khusus_member'     => 'required|boolean',
 
             'deskripsi_promo'   => 'required|string',
+            'target_diskon'     => 'required|in:produk,ongkir,pelayanan',
         ]);
 
         // SIMPAN DATA
@@ -63,6 +64,7 @@ class PromoController extends Controller
             'tanggal_mulai'     => $validated['tanggal_mulai'],
             'tanggal_selesai'   => $validated['tanggal_selesai'],
             'deskripsi_promo'   => $validated['deskripsi_promo'],
+            'target_diskon'    => $validated['target_diskon'],
         ]);
 
         return redirect()
