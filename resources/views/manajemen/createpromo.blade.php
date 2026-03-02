@@ -43,21 +43,22 @@
 
     {{-- STATUS & TANGGAL --}}
     <div class="row">
-        <select name="status" required>
+        <select name="status" class="col-equal" required>
             <option value="">Status</option>
             <option value="aktif">Aktif</option>
             <option value="nonaktif">Non Aktif</option>
         </select>
 
-    <div class="date-group">
-        <input type="date" name="tanggal_mulai" required>
-        <label>Tanggal Mulai</label>
-    </div>
+        <div class="date-group col-equal">
+            <input type="date" name="tanggal_mulai" required placeholder=" ">
+            <label>Tanggal Mulai</label>
+        </div>
 
-    <div class="date-group">
-        <input type="date" name="tanggal_selesai" required>
-        <label>Tanggal Selesai</label>
-    </div>
+        <div class="date-group col-equal">
+            <input type="date" name="tanggal_selesai" required placeholder=" ">
+            <label>Tanggal Selesai</label>
+        </div>
+
     </div>
 
     {{-- MINIMAL TRANSAKSI --}}
@@ -142,11 +143,25 @@ html, body {
     margin-bottom: 12px;
 }
 
-/* input default desktop */
+/* ===== SAMAKAN TINGGI SEMUA FIELD (WAJIB) ===== */
 .row input,
-.row select,
-.row textarea,
-.row .date-group {
+.row select {
+    height: 45px;
+    padding: 12px;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+/* ===== 3 KOLOM SEIMBANG (STATUS & TANGGAL) ===== */
+.col-equal {
+    flex: 1 1 calc(33.333% - 12px);
+    min-width: 220px;
+}
+
+/* input default desktop */
+.row input:not(.col-equal),
+.row select:not(.col-equal),
+.row textarea {
     flex: 1;
     min-width: 220px;
     max-width: 100%;
@@ -181,6 +196,11 @@ html, body {
         flex-direction: column;
     }
 
+    /* 👇 TAMBAH DI SINI */
+    .col-equal {
+        flex: 1 1 100%;
+    }
+
     .btn-row .btn,
     .btn-row a {
         width: 100%;
@@ -190,29 +210,30 @@ html, body {
 
 .date-group {
     position: relative;
-    margin-bottom: 20px;
 }
 
 .date-group input {
-    width: 100%;
     height: 45px;
     padding: 12px;
     font-size: 14px;
+    box-sizing: border-box;
 }
 
 .date-group label {
     position: absolute;
     left: 12px;
     top: 12px;
+    font-size: 14px;
     color: #888;
     pointer-events: none;
     transition: 0.2s ease;
+    background: white;
 }
 
-/* sembunyikan format bawaan */
+/* sembunyikan format bawaan
 input[type="date"]::-webkit-datetime-edit {
     color: transparent;
-}
+} */
 
 /* tampilkan tanggal kalau sudah isi / focus */
 input[type="date"]:focus::-webkit-datetime-edit,
@@ -220,13 +241,12 @@ input[type="date"]:valid::-webkit-datetime-edit {
     color: black;
 }
 
-/* efek label naik */
+/* label naik */
 .date-group input:focus + label,
-.date-group input:valid + label {
+.date-group input:not(:placeholder-shown) + label {
     top: -8px;
     left: 8px;
     font-size: 11px;
-    background: white;
     padding: 0 4px;
     color: #00b894;
 }

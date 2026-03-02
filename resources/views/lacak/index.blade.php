@@ -59,7 +59,7 @@
             $role = auth()->user()->role;
         @endphp
         <form method="GET" action="{{ route($role . '.lacak.index') }}">
-            <div class="row">
+            <div class="row filter-row">
                 <select name="outlet_id">
                     <option value="">Semua Outlet</option>
                     @foreach($outlets as $outlet)
@@ -98,7 +98,9 @@
                 <input type="date" name="to" value="{{ request('to') }}">
 
 
-                <button class="btn" type="submit">Terapkan</button>
+                <div class="filter-action">
+                    <button class="btn-apply">Terapkan</button>
+                </div>
             </div>
         </form>
 
@@ -297,7 +299,68 @@
             .row button {
                 flex: 1 1 100%;  /* tombol full width */
             }
+        }
+        /* ===============================
+        DESKTOP
+        =============================== */
+        .filter-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: nowrap;
+        }
 
+        /* input & select */
+        .filter-row select,
+        .filter-row input {
+            flex: 1 1 160px;
+            min-width: 150px;
+            max-width: 180px;
+            height: 42px;
+        }
+
+        /* area button */
+        .filter-action {
+            flex: 0 0 auto;
+        }
+
+        .btn-apply {
+            background: #ff8c1a;      /* oren */
+            color: #fff;
+            border: none;
+            height: 42px;
+            padding: 0 22px;
+            border-radius: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .btn-apply:hover {
+            background: #e67e0f;
+        }
+
+        /* ===============================
+        MOBILE
+        =============================== */
+        @media (max-width: 768px) {
+            .filter-row {
+                flex-wrap: wrap;
+            }
+
+            .filter-row select,
+            .filter-row input {
+                flex: 1 1 48%;
+                max-width: 100%;
+            }
+
+            .filter-action {
+                flex: 1 1 100%;
+            }
+
+            .btn-apply {
+                width: 100%;
+            }
         }
     </style>
 @endsection

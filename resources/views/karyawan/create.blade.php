@@ -53,10 +53,19 @@
             <option value="Kurir">Kurir</option>
         </select>
 
+        <select name="id_outlet" required>
+            <option value="">Pilih Outlet</option>
+            @foreach($outlets as $outlet)
+                <option value="{{ $outlet->id_outlet }}">
+                    {{ $outlet->nama_outlet }}
+                </option>
+            @endforeach
+        </select>
+
         <select name="status">
             <option value="">Status Karyawan</option>
-            <option value="aktif">Aktif</option>
-            <option value="tidak_aktif">Tidak Aktif</option>
+            <option value="Aktif">Aktif</option>
+            <option value="Tidak Aktif">Tidak Aktif</option>
         </select>
 
         <input

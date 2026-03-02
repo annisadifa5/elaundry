@@ -11,6 +11,16 @@
 @csrf
 @method('PUT')
 
+@if ($errors->any())
+    <div style="background:#fee2e2; padding:12px; margin-bottom:15px; border-radius:6px;">
+        <ul style="margin:0; padding-left:18px; color:#991b1b;">
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
     {{-- DATA PRIBADI --}}
     <h4>DATA PRIBADI</h4>
 
@@ -48,7 +58,9 @@
 
     <p>
         <strong>Tanggal Lahir:</strong><br>
-        <input type="date" name="tanggal_lahir" value="{{ $karyawan->tanggal_lahir }}">
+        <input type="date"
+       name="tanggal_lahir"
+       value="{{ optional($karyawan->tanggal_lahir)->format('Y-m-d') }}">
     </p>
 
     <p>
@@ -65,10 +77,23 @@
     </p>
 
     <p>
+    <strong>Outlet:</strong><br>
+    <select name="id_outlet" required>
+        <option value="">Pilih Outlet</option>
+        @foreach($outlets as $outlet)
+            <option value="{{ $outlet->id_outlet }}"
+                {{ old('id_outlet', $karyawan->id_outlet) == $outlet->id_outlet ? 'selected' : '' }}>
+                {{ $outlet->nama_outlet }}
+            </option>
+        @endforeach
+    </select>
+    </p>
+
+    <p>
         <strong>Status:</strong><br>
         <select name="status">
-            <option value="aktif" {{ $karyawan->status == 'aktif' ? 'selected' : '' }}>Aktif</option>
-            <option value="tidak_aktif" {{ $karyawan->status == 'tidak_aktif' ? 'selected' : '' }}>Tidak Aktif</option>
+            <option value="Aktif" {{ $karyawan->status == 'Aktif' ? 'selected' : '' }}>Aktif</option>
+            <option value="Tidak Aktif" {{ $karyawan->status == 'Tidak Aktif' ? 'selected' : '' }}>Tidak Aktif</option>
         </select>
     </p>
 

@@ -26,11 +26,12 @@
             <table class="table">
                 <thead>
                     <tr>
-                        <th>No.</th>
-                        <th>Nama Karyawan</th>
-                        <th>ID Karyawan</th>
-                        <th>JK</th>
-                        <th>Status</th>
+                        <th style="text-align:center;">No.</th>
+                        <th style="text-align:center;">Nama Karyawan</th>
+                        <th style="text-align:center;">ID Karyawan</th>
+                        <th style="text-align:center;">JK</th>
+                        <th style="text-align:center;">Outlet</th>
+                        <th style="text-align:center;">Status</th>
                         <th style="text-align:center">Aksi</th>
                     </tr>
                 </thead>
@@ -41,7 +42,8 @@
                             <td>{{ $karyawan->nama_karyawan }}</td>
                             <td>{{ $karyawan->id_karyawan }}</td>
                             <td>{{ $karyawan->jenis_kelamin }}</td>
-                            <td>
+                            <td>{{ $karyawan->outlet->nama_outlet ?? '-' }}</td>
+                            <td style="text-align:center;">
                                 @php
                                     $status = strtolower(trim($karyawan->status));
                                 @endphp
@@ -56,7 +58,7 @@
                             </td>
                             <td class="aksi">
                                 {{-- DETAIL --}}
-                                <a href="{{ route('karyawan.show', $karyawan->id_karyawan) }}" title="Detail">👁</a>
+                                <a href="{{ route('karyawan.show', $karyawan->id_karyawan) }}" title="Detail" class="icon-detail">👁</a>
 
                                 {{-- HAPUS --}}
                                 <form action="{{ route('karyawan.destroy', $karyawan->id_karyawan) }}"
@@ -179,13 +181,24 @@
         }
 
         .badge.aktif {
-            background: #dcfce7;
-            color: #166534;
+            background: rgba(22,163,154,0.15);
+            color: #16a39a;
         }
 
         .badge.nonaktif {
-            background: #fee2e2;
-            color: #991b1b;
+            background: rgba(230,120,0,0.15);
+            color: #e67800;
+        }
+
+        .aksi a.icon-detail {
+            text-decoration: none;
+            font-size: 16px;
+            margin: 0 4px;
+            color: #64748b; /* abu-abu */
+        }
+
+        .aksi a.icon-detail:hover {
+            opacity: 0.7;
         }
     </style>
 @endsection

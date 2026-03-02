@@ -28,6 +28,12 @@ class Karyawan extends Model
     'email'
 ];
 
+    // ⭐ TAMBAHAN INI
+    protected $casts = [
+        'tanggal_lahir' => 'date',
+        'tanggal_masuk' => 'date',
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class, 'id_user', 'id');

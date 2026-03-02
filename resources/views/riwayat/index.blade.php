@@ -19,18 +19,24 @@
             $role = auth()->user()->role;
         @endphp
         <form method="GET" action="{{ route($role . '.riwayat.index') }}">
-            <div class="row">
-                <select name="layanan">
+            <div class="row filter-row">
+
+                <div class="filter-item">
+                    <select name="layanan">
                     <option value="">Jenis Layanan</option>
                     <option value="cuci" {{ request('layanan')=='cuci'?'selected':'' }}>Cuci</option>
                     <option value="setrika" {{ request('layanan')=='setrika'?'selected':'' }}>Setrika</option>
                     <option value="cuci_setrika" {{ request('layanan')=='cuci_setrika'?'selected':'' }}>Cuci Setrika</option>
                     <option value="sprei" {{ request('layanan')=='sprei'?'selected':'' }}>Sprei</option>
-                </select>
+                </select></div>
 
-                <input type="date" name="from" value="{{ request('from') }}">
+                <div class="filter-item">
+                    <input type="date" name="from" value="{{ request('from') }}">
+                </div>
 
-                <button class="btn" type="submit">Terapkan</button>
+                    <div class="filter-item">
+                        <button class="btn" type="submit">Terapkan</button>
+                    </div>
             </div>
         </form>
 
@@ -212,6 +218,56 @@
 
         .inline {
             display: inline;
+        }
+
+        /* ================= FILTER LAYOUT ================= */
+
+        .filter-row {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        /* Select & Date memanjang */
+        .filter-item:nth-child(1),
+        .filter-item:nth-child(2) {
+            flex: 1;
+        }
+
+        /* Tombol kecil di kanan */
+        .filter-item:nth-child(3) {
+            flex: 0;
+        }
+
+        /* Input full di dalam kotaknya */
+        .filter-item select,
+        .filter-item input {
+            width: 100%;
+            padding: 8px 10px;
+        }
+
+        /* Tombol tidak melebar */
+        .filter-item button {
+            white-space: nowrap;
+            padding: 8px 18px;
+        }
+
+        /* ================= MOBILE ================= */
+
+        @media (max-width: 768px) {
+
+            .filter-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .filter-item {
+                width: 100%;
+            }
+
+            .filter-item button {
+                width: 100%;
+            }
         }
     </style>
 @endsection
