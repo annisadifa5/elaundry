@@ -31,8 +31,6 @@
         <div class="section-title">Data Customer</div>
 
         <div class="row">
-            <input type="hidden" name="id_outlet" value="3">
-
             <input type="text" name="nama_lengkap" placeholder="Nama Customer" required>
             <input type="text" name="no_telp" placeholder="No Telepon" required>
         </div>
@@ -45,6 +43,7 @@
 
         <input type="hidden" name="latitude" id="latitude">
         <input type="hidden" name="longitude" id="longitude">
+        <input type="hidden" name="ongkir" id="ongkir_input">
     </div>
 
     {{-- SECTION DETAIL --}}
@@ -76,7 +75,7 @@
     <div class="card-section">
         <div class="section-title">Promo</div>
 
-        <select id="promo_select" name="promo_id" onchange="applyPromo()">
+        <select id="promo_select" name="id_promo" onchange="applyPromo()">
             <option value="">-- Tanpa Promo --</option>
 
             @foreach($promos as $promo)
@@ -335,6 +334,8 @@
 
 {{-- Maps dan Ongkir --}}
 <script>
+    let jarakGlobal = 0;
+    let ongkirGlobal = 0;
     document.addEventListener("DOMContentLoaded", function () {
 
         const outletLat = -6.9815723;
@@ -360,8 +361,12 @@
             const jarakMeter = outlet.distanceTo(customer);
             const jarakKm = jarakMeter / 1000;
 
-            const ongkirPerKm = 3000; // Rp 3.000 per km
+            jarakGlobal = jarakKm;
+
+            const ongkirPerKm = 3000;
             const ongkir = Math.round(jarakKm * ongkirPerKm);
+
+            ongkirGlobal = ongkir;
 
             return ongkir;
         }
@@ -385,6 +390,8 @@
 
             document.getElementById('total_harga_input')
                 .value = grandTotal;
+            
+            applyPromo();
         }
 
         function setCustomerMarker(lat, lng) {
@@ -392,15 +399,65 @@
             document.getElementById('latitude').value = lat;
             document.getElementById('longitude').value = lng;
 
+            // Hapus marker lama kalau ada
             if (customerMarker) {
                 map.removeLayer(customerMarker);
             }
 
-            customerMarker = L.marker([lat, lng]).addTo(map);
-            map.setView([lat, lng], 16);
+            // Buat marker baru
+            customerMarker = L.marker([lat, lng], {
+                draggable: true
+            }).addTo(map);
+
+            map.setView([lat, lng], 15);
 
             const ongkir = hitungOngkir(lat, lng);
+
+            document.getElementById('ongkir_input').value = ongkir;
+
             updateGrandTotalDenganOngkir(ongkir);
+
+            // Kalau marker digeser
+            customerMarker.on('dragend', function(e) {
+                const pos = e.target.getLatLng();
+
+                document.getElementById('latitude').value = pos.lat;
+                document.getElementById('longitude').value = pos.lng;
+
+                const ongkir = hitungOngkir(pos.lat, pos.lng);
+                document.getElementById('ongkir_input').value = ongkir;
+
+                updateGrandTotalDenganOngkir(ongkir);
+
+                reverseGeocode(pos.lat, pos.lng);
+            });
+        }
+
+        function reverseGeocode(lat, lng) {
+
+            fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&accept-language=id`, {
+                headers: {
+                    'User-Agent': 'LaundioApp'
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Gagal reverse geocode");
+                }
+                return response.json();
+            })
+            .then(data => {
+
+                console.log("Reverse result:", data);
+
+                if (data && data.display_name) {
+                    document.getElementById('alamat').value = data.display_name;
+                }
+
+            })
+            .catch(error => {
+                console.log("Reverse error:", error);
+            });
         }
 
         // Klik manual
@@ -440,6 +497,7 @@
     });
 </script>
 
+
 <script>
     let diskonGlobal = 0;
 
@@ -458,21 +516,31 @@
         const nilai = parseInt(selected.dataset.nilai || 0);
         const minimal = parseInt(selected.dataset.minimal || 0);
 
-        let total = parseInt(document
-            .getElementById('total_harga_input')
-            .value || 0);
+        let total = parseInt(
+            document.getElementById('total_harga_input').value || 0
+        );
 
+        // Cek minimal transaksi
         if (total < minimal) {
-            alert("Minimal transaksi belum terpenuhi");
-            select.value = "";
             diskonGlobal = 0;
             updateTotalFinal();
             return;
         }
 
-        if (basis === "persentase") {
+        if (basis === "gratis_ongkir") {
+
+            if (jarakGlobal < 1) {
+                diskonGlobal = ongkirGlobal;
+            } else {
+                diskonGlobal = 0;
+            }
+
+        } else if (basis === "persentase") {
+
             diskonGlobal = Math.floor((nilai / 100) * total);
-        } else {
+
+        } else { // nominal
+
             diskonGlobal = nilai;
         }
 
@@ -497,6 +565,13 @@
 
         document.getElementById('diskon_input')
             .value = diskonGlobal;
+    }
+</script>
+
+{{-- Tutup Modal --}}
+<script>
+    function closeModal() {
+        document.getElementById('successModal').style.display = 'none';
     }
 </script>
 

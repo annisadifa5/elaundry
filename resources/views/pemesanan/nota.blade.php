@@ -60,6 +60,16 @@
         <div>No HP   : {{ $pemesanan->customer->no_telp ?? '-' }}</div>
     </div>
 
+    @if($pemesanan->latitude && $pemesanan->longitude)
+        <div class="small">
+            Lokasi :
+            <a href="https://www.google.com/maps?q={{ $pemesanan->latitude }},{{ $pemesanan->longitude }}"
+            target="_blank">
+                Buka Maps
+            </a>
+        </div>
+        @endif
+
     <div class="line"></div>
 
     <!-- DETAIL LAYANAN -->
@@ -115,12 +125,41 @@
         <span>Rp {{ number_format($pemesanan->ongkir,0,',','.') }}</span>
     </div>
 
+     @php
+        $promo = \App\Models\Promo::where('id_promo', $pemesanan->id_promo)->first();
+    @endphp
+
     <div class="line"></div>
 
-    <!-- TOTAL -->
+    {{-- RINCIAN DISKON --}}
+    @php
+        $subtotal = $totalLayanan + $pemesanan->ongkir;
+        $diskon = $pemesanan->diskon ?? 0;
+        $totalAkhir = $subtotal - $diskon;
+    @endphp
+
+    <div class="row">
+        <span>Subtotal</span>
+        <span>Rp {{ number_format($subtotal,0,',','.') }}</span>
+    </div>
+
+    @if($pemesanan->promo && $pemesanan->diskon > 0)
+
+        <div class="row small">
+            <span>Promo</span>
+            <span>{{ $pemesanan->promo->nama_promo }}</span>
+        </div>
+
+        <div class="row small">
+            <span>Diskon</span>
+            <span>-Rp {{ number_format($pemesanan->diskon,0,',','.') }}</span>
+        </div>
+
+    @endif
+
     <div class="row bold">
-        <span>TOTAL</span>
-        <span>Rp {{ number_format($pemesanan->total_harga,0,',','.') }}</span>
+        <span>TOTAL BAYAR</span>
+        <span>Rp {{ number_format($totalAkhir,0,',','.') }}</span>
     </div>
 
     <div class="line"></div>

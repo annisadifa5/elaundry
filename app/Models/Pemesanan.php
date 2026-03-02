@@ -68,7 +68,7 @@ class Pemesanan extends Model
 
     public function promo()
     {
-        return $this->belongsTo(Promo::class, 'id_promo');
+        return $this->belongsTo(Promo::class, 'id_promo', 'id_promo');
     }
 
 }
