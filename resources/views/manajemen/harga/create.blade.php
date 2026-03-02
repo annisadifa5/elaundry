@@ -105,17 +105,21 @@
 
                 {{-- CHECKBOX --}}
 
-                <div class="form-group checkbox-group">
-                    <label class="checkbox-label">
+                <div class="form-group">
+                    <label>Layanan Opsional (Jasa)</label>
+
+                    <label class="switch">
                         <input type="checkbox" name="is_optional" id="is_optional" value="1" disabled>
-                        <span>Layanan Opsional (Jasa)</span>
+                        <span class="slider"></span>
                     </label>
                 </div>
 
-                <div class="form-group checkbox-group">
-                    <label class="checkbox-label">
+                <div class="form-group">
+                    <label>Aktif</label>
+
+                    <label class="switch">
                         <input type="checkbox" name="is_active" value="1" checked>
-                        <span>Aktif</span>
+                        <span class="slider"></span>
                     </label>
                 </div>
 
@@ -226,6 +230,59 @@
             background: #f97316;
         }
 
+        /* ===================== */
+/* TOGGLE SWITCH STYLE   */
+/* ===================== */
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 26px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #cbd5e1;
+    border-radius: 30px;
+    transition: .3s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 3px;
+    bottom: 3px;
+    background: white;
+    border-radius: 50%;
+    transition: .3s;
+}
+
+input:checked + .slider {
+    background: #16a39a; /* hijau seperti gambar */
+}
+
+input:checked + .slider:before {
+    transform: translateX(24px);
+}
+
+input:disabled + .slider {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
     </style>
 
     <script>

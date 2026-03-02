@@ -1,5 +1,42 @@
 @extends('layouts.dashboard')
 
+<style>
+    .section-title {
+        margin-top: 30px;
+        padding-bottom: 8px;
+        border-bottom: 2px solid #e5e7eb;
+        font-weight: 600;
+    }
+
+    .section {
+        margin-bottom: 25px;
+    }
+
+    /* ============================= */
+    /* 🎨 BADGE STATUS KARYAWAN */
+    /* ============================= */
+
+    .badge {
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        display: inline-block;
+    }
+
+    /* Aktif = Hijau Tosca Soft */
+    .badge-aktif {
+        background: rgba(22,163,154,0.15);
+        color: #16a39a;
+    }
+
+    /* Tidak Aktif = Orange Soft */
+    .badge-nonaktif {
+        background: rgba(230,120,0,0.15);
+        color: #e67800;
+    }
+</style>
+
 @section('title', 'Detail Karyawan')
 
 @section('content')
@@ -8,7 +45,8 @@
 <div class="card" style="max-width: 100%;">
 
     {{-- DATA PRIBADI --}}
-    <h4>DATA PRIBADI</h4>
+    <h4 class="section-title">DATA PRIBADI</h4>
+    <div class="section">
 
     <p><strong>Nama:</strong> {{ $karyawan->nama_karyawan }}</p>
     <p><strong>Jenis Kelamin:</strong>
@@ -20,35 +58,43 @@
         {{ \Carbon\Carbon::parse($karyawan->tanggal_lahir)->format('d M Y') }}
     </p>
     <p><strong>NIK:</strong> {{ $karyawan->nik }}</p>
-
+    </div>
     {{-- DATA PEKERJAAN --}}
-    <h4 style="margin-top:20px;">DATA PEKERJAAN</h4>
+    <h4 class="section-title">DATA PEKERJAAN</h4>
+    <div class="section">
 
     <p><strong>Jabatan:</strong> {{ $karyawan->jabatan }}</p>
+    <p><strong>Outlet:</strong> 
+        {{ $karyawan->outlet->nama_outlet ?? '-' }}
+    </p>
+
     @php
     $status = strtolower(trim($karyawan->status));
     @endphp
 
     <p><strong>Status:</strong>
         @if ($status == 'aktif')
-            <span class="badge aktif">Aktif</span>
+            <span class="badge badge-aktif">Aktif</span>
         @elseif ($status == 'tidak_aktif')
-            <span class="badge nonaktif">Tidak Aktif</span>
+            <span class="badge badge-nonaktif">Tidak Aktif</span>
         @else
-            <span class="badge nonaktif">Tidak Diketahui</span>
+            <span class="badge badge-nonaktif">Tidak Diketahui</span>
         @endif
     </p>
     <p><strong>Tanggal Masuk:</strong>
         {{ \Carbon\Carbon::parse($karyawan->tanggal_masuk)->format('d M Y') }}
     </p>
+    </div>
 
     {{-- KONTAK --}}
-    <h4 style="margin-top:20px;">KONTAK</h4>
+    <h4 class="section-title">KONTAK</h4>
+    <div class="section">
 
     <p>No HP: {{ $karyawan->no_hp }}</p>
     <p>Email: {{ $karyawan->email }}</p>
     <p>Alamat:</p>
     <p>{{ $karyawan->alamat }}</p>
+    </div>
 
     {{-- AKSI --}}
     <div style="margin-top:30px; display:flex; gap:10px;">

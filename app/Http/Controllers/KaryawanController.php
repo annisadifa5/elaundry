@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Karyawan;
+use App\Models\Outlet;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -15,7 +16,7 @@ class KaryawanController extends Controller
      */
     public function index()
     {
-        $karyawans = Karyawan::latest()->get();
+        $karyawans = Karyawan::with('outlet')->latest()->get();
         return view('karyawan.index', compact('karyawans'));
     }
 
@@ -24,7 +25,8 @@ class KaryawanController extends Controller
      */
     public function create()
     {
-        return view('karyawan.create');
+        $outlets = Outlet::all(); // ambil semua outlet
+        return view('karyawan.create', compact('outlets'));
     }
 
     /**
@@ -44,6 +46,7 @@ class KaryawanController extends Controller
             'email'         => 'required|email',
             'tempat_lahir'  => 'required|string|max:255',  // baru
             'agama'         => 'required|string|max:50',   // baru
+            'id_outlet' => 'required|exists:outlet,id_outlet',
         ]);
 
         Karyawan::create([
@@ -51,7 +54,7 @@ class KaryawanController extends Controller
             'id_user'       => Auth::id(),
 
             // SEMENTARA (NANTI BISA DIGANTI DINAMIS)
-            'id_outlet'     => 1,
+            'id_outlet' => $request->id_outlet,
 
             'nama_karyawan'  => $request->nama_karyawan,
             'nik'            => $request->nik,
@@ -87,7 +90,9 @@ class KaryawanController extends Controller
     public function edit($id)
     {
         $karyawan = Karyawan::findOrFail($id);
-        return view('karyawan.edit', compact('karyawan'));
+        $outlets = Outlet::all();
+
+        return view('karyawan.edit', compact('karyawan','outlets'));
     }
 
     /**
@@ -101,18 +106,19 @@ class KaryawanController extends Controller
             'nama_karyawan' => 'required|string|max:255',
             'nik'           => 'required|unique:karyawan,nik,' . $id . ',id_karyawan',
             'jabatan'       => 'required|string|max:100',
-            'status'        => 'required|in:aktif,tidak_aktif',
+            'status'        => 'required|in:Aktif,Tidak Aktif',
             'jenis_kelamin' => 'required|in:L,P',
             'tanggal_lahir' => 'required|date',
             'tanggal_masuk' => 'required|date',
             'no_hp'         => 'required',
             'email'         => 'required|email',
+            'id_outlet'     => 'required|exists:outlet,id_outlet',
         ]);
 
         $karyawan->update([
             'nama_karyawan' => $request->nama_karyawan,
             'nik'           => $request->nik,
-            'status' => trim(strtolower($request->status)),
+            'status' => $request->status,
             'alamat'        => $request->alamat ?? '-',
             'jabatan'       => $request->jabatan,
             'jenis_kelamin' => $request->jenis_kelamin,
@@ -122,6 +128,7 @@ class KaryawanController extends Controller
             'tanggal_masuk' => $request->tanggal_masuk,
             'no_hp'         => $request->no_hp,
             'email'         => $request->email,
+            'id_outlet' => $request->id_outlet,
         ]);
 
     return redirect()
