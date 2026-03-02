@@ -112,7 +112,7 @@
                         <th>Payment</th>
                         <th>Tipe</th>
                         <th>Jenis Layanan</th>
-                        <th>Aksi</th>
+                        <th style="text-align:center;">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -140,7 +140,9 @@
                         <form method="POST" action="{{ route($role . '.lacak.next', $id) }}">
                             @csrf
                             <input type="hidden" name="source" value="{{ $p->source ?? '' }}">
-                            <button type="submit">
+                            <button 
+                                type="submit"
+                                class="{{ $p->status_proses === 'disetrika' ? 'selesai' : '' }}">
                                 {{ $p->status_proses === 'disetrika' ? 'Selesai' : 'Next' }}
                             </button>
                         </form>
@@ -187,99 +189,115 @@
         }
 
         .aksi button {
-            background: none;
+            background: #ff8a00;
+            color: white;
             border: none;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
             cursor: pointer;
-            font-size: 16px;
-            margin-right: 6px;
+            transition: all 0.2s ease;
         }
 
         .aksi button:hover {
-            opacity: 0.7;
+            background: #e67800;
+            transform: translateY(-2px);
         }
 
         .aksi button.selesai {
-            color: #16a39a;
+            color: #ffffff;
             font-weight: bold;
         }
 
-.tracking-dashboard {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: 16px;
-    margin-bottom: 24px;
-}
+        .aksi button:active {
+            transform: scale(0.96);
+        }
 
-.track-card {
-    background: #fff;
-    border-radius: 10px;
-    padding: 10px 14px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.04);
-    
-    display: flex;             /* 🔥 ini penting */
-    align-items: center;       /* vertikal tengah */
-    gap: 12px;
-    transition: all .25s ease;
-}
+        .aksi button.selesai {
+            background: #16a39a;
+        }
 
-.track-card p {
-    margin: 0;
-    font-size: 13px;
-    color: #64748b;
-}
+        .aksi button.selesai:hover {
+            background: #16a39a;
+        }
 
-.track-card h3 {
-    margin: 0;
-    font-size: 22px;
-    font-weight: 700;
-}
+        .tracking-dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
 
-.track-icon {
-    width: 42px;
-    height: 42px;
-    border-radius: 10px;
-    background: #f1f9f9;
+        .track-card {
+            background: #fff;
+            border-radius: 10px;
+            padding: 10px 14px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+            display: flex;           
+            align-items: center;      
+            gap: 12px;
+            transition: all .25s ease;
+        }
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+        .track-card p {
+            margin: 0;
+            font-size: 13px;
+            color: #64748b;
+        }
 
-    font-size: 22px;
-}
+        .track-card h3 {
+            margin: 0;
+            font-size: 22px;
+            font-weight: 700;
+        }
 
-/* warna lembut kayak contoh */
-.track-card.diterima { border-left: 5px solid #FFEE91; }
-.track-card.dicuci { border-left: 5px solid #EA7B7B; }
-.track-card.dikeringkan { border-left: 5px solid #9CCFFF; }
-.track-card.disetrika { border-left: 5px solid #A3D78A; }
-.track-card.selesai { border-left: 5px solid #E6CFA9; }
+        .track-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            background: #f1f9f9;
 
-.track-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 24px rgba(0,0,0,0.12);
-    cursor: pointer;
-}
+            display: flex;
+            align-items: center;
+            justify-content: center;
 
-/* biar ga geser */
-.row {
-    display: flex;
-    flex-wrap: wrap;   /* 🔥 INI KUNCI */
-    gap: 10px;
-    align-items: center;
-}
+            font-size: 22px;
+        }
 
-@media (max-width: 768px) {
+        /* warna lembut kayak contoh */
+        .track-card.diterima { border-left: 5px solid #FFEE91; }
+        .track-card.dicuci { border-left: 5px solid #EA7B7B; }
+        .track-card.dikeringkan { border-left: 5px solid #9CCFFF; }
+        .track-card.disetrika { border-left: 5px solid #A3D78A; }
+        .track-card.selesai { border-left: 5px solid #E6CFA9; }
 
-    .row select,
-    .row input {
-        flex: 1 1 48%;   /* 2 kolom */
-        min-width: 0;
-    }
+        .track-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.12);
+            cursor: pointer;
+        }
 
-    .row button {
-        flex: 1 1 100%;  /* tombol full width */
-    }
+        /* biar ga geser */
+        .row {
+            display: flex;
+            flex-wrap: wrap;   /* 🔥 INI KUNCI */
+            gap: 10px;
+            align-items: center;
+        }
 
-}
+        @media (max-width: 768px) {
+
+            .row select,
+            .row input {
+                flex: 1 1 48%;   /* 2 kolom */
+                min-width: 0;
+            }
+
+            .row button {
+                flex: 1 1 100%;  /* tombol full width */
+            }
+
+        }
     </style>
 @endsection
